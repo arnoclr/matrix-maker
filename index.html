@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KPP dev</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/balm-ui@next/dist/balm-ui.css" />
+    <style>
+    @font-face {
+        font-family: parisine;
+        src: url(fonts/parisine-girouette.ttf);
+    }
+    canvas {
+        image-rendering: optimizeSpeed;             /* Older versions of FF          */
+        image-rendering: -moz-crisp-edges;          /* FF 6.0+                       */
+        image-rendering: -webkit-optimize-contrast; /* Safari                        */
+        image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
+        image-rendering: pixelated;                 /* Awesome future-browsers       */
+        -ms-interpolation-mode: nearest-neighbor;   /* IE                            */
+        font-smooth: never;
+        -webkit-font-smoothing : none;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <canvas 
+        v-write="[frontLine,frontText,frontLineColor,frontLineColorOutline,frontLineColorForeground,frontTextColor,frontTextSize]" 
+        style="border: 1px solid grey;" height="64" width="256">
+        </canvas>
+        <ui-divider></ui-divider>
+        <h4>Line</h4>
+        <ui-textfield input-type="number" v-model="frontLine">line</ui-textfield>
+        <input type="color" v-model="frontLineColor">Line color
+        <input type="color" v-model="frontLineColorOutline">Line outline color
+        <input type="color" v-model="frontLineColorForeground">Line foreground color
+        <h4>Dest</h4>
+        <ui-textfield v-model="frontText">text</ui-textfield>
+        <input type="color" v-model="frontTextColor">Text color
+        <ui-slider v-model="frontTextSize" type="discrete" :step="2"></ui-slider>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://cdn.jsdelivr.net/npm/balm-ui@next"></script>
+    <script src="https://cdn.jsdelivr.net/npm/balm-ui@next/dist/balm-ui-plus.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jcanvas/21.0.1/min/jcanvas.min.js" integrity="sha512-pu2L+33GBCuTrTU3mNJphG2Hm2JKlLA01280LIiz29D40f/UFOU5dEVxVuW46p+HZeZhXvQsUxtVFxPabX9S9g==" crossorigin="anonymous"></script>
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                frontText: '',
+                frontLine: '',
+                frontLineColor: '#000000',
+                frontLineColorOutline: '#FFFFFF',
+                frontLineColorForeground: '#FFFF00',
+                frontTextColor: '#FFA500',
+                frontTextSize: 32,
+            },
+            directives: {
+                write: function(canvas, data) {
+                    var ctx = canvas.getContext("2d");
+                    ctx.clearRect(0, 0, 300, 150);
+                    ctx.imageSmoothingEnabled= false
+                    ctx.font = data.value[6] + "px parisine";
+                    margin = 32 - ((32 - data.value[6]) / 2)
+
+                    // init backgrounds colors
+                    ctx.fillStyle = "black";
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    ctx.fillStyle = "#800000",
+                    ctx.fillRect(230, 0, 26, 64);
+                    ctx.fillRect(50, 32, 10, 32);
+
+                    // line
+                    ctx.fillStyle = data.value[4];
+                    ctx.fillRect(0, 0, 50, 32);
+                    ctx.strokeStyle = data.value[3];
+                    ctx.lineWidth = 1;
+                    ctx.strokeText(data.value[0], 25, margin);
+                    ctx.fillStyle = data.value[2];
+                    ctx.fillText(data.value[0], 25, margin);
+
+                    // dest
+                    ctx.fillStyle = data.value[5];
+                    ctx.textAlign = 'center';
+                    ctx.fillText(data.value[1], 140, margin);
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>
