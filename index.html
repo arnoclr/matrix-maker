@@ -8,16 +8,14 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/balm-ui@next/dist/balm-ui.css" />
     <style>
     @font-face {
-        font-family: parisine;
-        src: url(fonts/parisine-girouette.ttf);
+        font-family: Pixellari;
+        src: url(fonts/Pixellari.ttf);
+    }
+    @font-face {
+        font-family: new_browserlink;
+        src: url(fonts/new_browserlink.ttf);
     }
     canvas {
-        image-rendering: optimizeSpeed;             /* Older versions of FF          */
-        image-rendering: -moz-crisp-edges;          /* FF 6.0+                       */
-        image-rendering: -webkit-optimize-contrast; /* Safari                        */
-        image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
-        image-rendering: pixelated;                 /* Awesome future-browsers       */
-        -ms-interpolation-mode: nearest-neighbor;   /* IE                            */
         font-smooth: never;
         -webkit-font-smoothing : none;
     }
@@ -27,25 +25,32 @@
 <body>
     <div id="app">
         <canvas 
-        v-write="[frontLine,frontText,frontLineColor,frontLineColorOutline,frontLineColorForeground,frontTextColor,frontTextSize]" 
+        v-write="[frontLine,frontText,frontLineColor,frontLineColorOutline,frontLineColorForeground,frontTextColor,frontTextSize,selectedFont]" 
         style="border: 1px solid grey;" height="64" width="256">
         </canvas>
         <ui-divider></ui-divider>
         <h4>Line</h4>
         <ui-textfield input-type="number" v-model="frontLine">line</ui-textfield>
-        <input type="color" v-model="frontLineColor">Line color
-        <input type="color" v-model="frontLineColorOutline">Line outline color
-        <input type="color" v-model="frontLineColorForeground">Line foreground color
+        <p></p>
+        <input class="mdc-button" type="color" v-model="frontLineColor">Line color
+        <input class="mdc-button" type="color" v-model="frontLineColorOutline">Line outline color
+        <input class="mdc-button" type="color" v-model="frontLineColorForeground">Line foreground color
         <h4>Dest</h4>
-        <ui-textfield v-model="frontText">text</ui-textfield>
-        <input type="color" v-model="frontTextColor">Text color
+        <ui-textfield v-model="frontText" input-type="textarea" rows="2">text</ui-textfield>
+        <p></p>
+        <input class="mdc-button" type="color" v-model="frontTextColor">Text color
         <ui-slider v-model="frontTextSize" type="discrete" :step="2"></ui-slider>
+        <ui-select
+        v-model="selectedFont"
+        :options="fontList"
+        default-label="Font"
+        ></ui-select>
+        <ui-button @click="_downloadCanvas">download image</ui-button>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script src="https://cdn.jsdelivr.net/npm/balm-ui@next"></script>
     <script src="https://cdn.jsdelivr.net/npm/balm-ui@next/dist/balm-ui-plus.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jcanvas/21.0.1/min/jcanvas.min.js" integrity="sha512-pu2L+33GBCuTrTU3mNJphG2Hm2JKlLA01280LIiz29D40f/UFOU5dEVxVuW46p+HZeZhXvQsUxtVFxPabX9S9g==" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas2image@1.0.5/canvas2image.min.js"></script>
     <script>
         new Vue({
             el: '#app',
@@ -55,15 +60,37 @@
                 frontLineColor: '#000000',
                 frontLineColorOutline: '#FFFFFF',
                 frontLineColorForeground: '#FFFF00',
-                frontTextColor: '#FFA500',
+                frontTextColor: '#FF8000',
                 frontTextSize: 32,
+                selectedFont: 'new_browserlink',
+                fontList: [
+                    {
+                        value: 'new_browserlink',
+                        label: 'New Browserlink'
+                    },
+                    {
+                        value: 'Pixellari',
+                        label: 'Pixellari'
+                    }
+                ]
+            },
+            methods: {
+                _downloadCanvas: function() {
+                    let downloadLink = document.createElement('a');
+                    downloadLink.setAttribute('download', this.frontLine + this.frontText + '.png');
+                    let canvas = document.querySelector('canvas');
+                    let dataURL = canvas.toDataURL('image/png');
+                    let url = dataURL.replace(/^data:image\/png/,'data:application/octet-stream');
+                    downloadLink.setAttribute('href', url);
+                    downloadLink.click();
+                }
             },
             directives: {
                 write: function(canvas, data) {
                     var ctx = canvas.getContext("2d");
                     ctx.clearRect(0, 0, 300, 150);
                     ctx.imageSmoothingEnabled= false
-                    ctx.font = data.value[6] + "px parisine";
+                    ctx.font = data.value[6] + "px " + data.value[7];
                     margin = 32 - ((32 - data.value[6]) / 2)
 
                     // init backgrounds colors
@@ -85,7 +112,13 @@
                     // dest
                     ctx.fillStyle = data.value[5];
                     ctx.textAlign = 'center';
-                    ctx.fillText(data.value[1], 140, margin);
+                    if(data.value[1].includes('\n')) {
+                        destText = data.value[1].split('\n');
+                        ctx.fillText(destText[0], 140, 32 - margin/2);
+                        ctx.fillText(destText[1], 140, margin/2);
+                    } else {
+                        ctx.fillText(data.value[1], 140, margin);
+                    }
                 }
             }
         });
