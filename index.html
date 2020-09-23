@@ -19,6 +19,10 @@
         font-smooth: never;
         -webkit-font-smoothing : none;
     }
+    body {
+        font-smooth: never;
+        -webkit-font-smoothing : none;
+    }
     </style>
 </head>
 
@@ -45,6 +49,9 @@
         :options="fontList"
         default-label="Font"
         ></ui-select>
+        <ui-textfield v-model="selectedFont">Custom installed font</ui-textfield>
+        <ui-switch id="basic-switch" v-model="removeAntiAliasing"></ui-switch>
+        <label for="basic-switch">Pixelated effect</label>
         <ui-button @click="_downloadCanvas">download image</ui-button>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
@@ -63,6 +70,7 @@
                 frontTextColor: '#FF8000',
                 frontTextSize: 32,
                 selectedFont: 'new_browserlink',
+                removeAntiAliasing: false,
                 fontList: [
                     {
                         value: 'new_browserlink',
@@ -75,7 +83,29 @@
                 ]
             },
             methods: {
+                _removeAntiAliasing() {
+                    cv = document.querySelector('canvas');
+                    ctx = cv.getContext('2d');
+                    // loop over all pixels
+                    for (let x = 0; x < 230; x++) {
+                        for (let y = 0; y < 64; y++) {
+                            c = ctx.getImageData(x, y, 1, 1).data;
+                            hex = "#" + ("000000" + ((c[0] << 16) | (c[1] << 8) | c[2]).toString(16)).slice(-6).toUpperCase();
+                            // line
+                            if(x <= 50 && hex != this.frontLineColor && hex != this.frontLineColorForeground) {
+                                ctx.fillStyle = this.frontLineColorOutline;
+                                ctx.fillRect(x, y, 1, 1);
+                            }
+                            // dest up
+                            if(x > 50 && hex != '#000000') {
+                                ctx.fillStyle = this.frontTextColor;
+                                ctx.fillRect(x, y, 1, 1);
+                            }
+                        }
+                    }
+                },
                 _downloadCanvas: function() {
+                    this.removeAntiAliasing ? this._removeAntiAliasing() : null;
                     let downloadLink = document.createElement('a');
                     downloadLink.setAttribute('download', this.frontLine + this.frontText + '.png');
                     let canvas = document.querySelector('canvas');
