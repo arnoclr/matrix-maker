@@ -7,6 +7,7 @@
     <title>bitmap json font</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/balm-ui@next/dist/balm-ui.css" />
+    <link rel="stylesheet" href="data/style.css">
 </head>
 
 <body>
@@ -14,47 +15,77 @@
     <div id="app">
 
         <div class="demo-container">
-            <!-- Drawer -->
-            <ui-drawer viewport-height>
-                <ui-drawer-header>
-                    <ui-drawer-title>{{ current.name }}</ui-drawer-title>
-                    <ui-drawer-subtitle>{{ current.code }}</ui-drawer-subtitle>
-                    <canvas width="256" height="64" style="border: solid 1px black;margin-left:-18px;" id="canvas"></canvas>
-                </ui-drawer-header>
-                <ui-drawer-content>
-                    <ui-nav>
-                        <ui-nav-item id="destsList" v-for="dest in dests" :key="dest.code" @click="selectCurrent(dest)">
-                            {{dest.code}}.{{dest.name}}</ui-nav-item>
-                        <ui-textfield input-type="number" v-model="addDestCode" v-on:keyup.enter="addDest(addDestCode)">add
-                            dest</ui-textfield>
-                    </ui-nav>
-                </ui-drawer-content>
-            </ui-drawer>
+            <!-- App bar -->
+            <ui-top-app-bar class="demo-app-bar" content-selector=".demo-content" :nav-icon="false">
+                kpp dev
+                <template #toolbar="{ toolbarItemClass }">
+                    <ui-icon-button :class="toolbarItemClass" icon="save" @click="saveDestsInLocalStorage()"></ui-icon-button>
+                    <ui-icon-button :class="toolbarItemClass" icon="get_app" @click="downloadCanvas()"></ui-icon-button>
+                </template>
+            </ui-top-app-bar>
             <!-- Content -->
             <div class="demo-content">
-                <!-- App bar -->
-                <ui-top-app-bar class="demo-app-bar" content-selector=".demo-app-content" :nav-icon="false">
-                    kpp dev
-                </ui-top-app-bar>
+                <!-- Drawer -->
+                <ui-drawer viewport-height>
+                    <ui-drawer-header>
+                        <ui-drawer-title>{{ current.name }}</ui-drawer-title>
+                        <ui-drawer-subtitle>{{ current.code }}</ui-drawer-subtitle>
+                        <canvas width="256" height="64" style="border: solid 1px black;margin-left:-18px;" id="canvas"></canvas>
+                    </ui-drawer-header>
+                    <ui-drawer-content>
+                        <ui-nav>
+                            <ui-nav-item id="destsList" v-for="(dest, index) in dests" :key="index" @click="selectCurrent(index)">
+                                ({{index}}){{dest.code}}.{{dest.name}}
+                            </ui-nav-item>
+                            <ui-textfield input-type="number" v-model="addDestCode" v-on:keyup.enter="addDest(addDestCode)">add
+                                dest
+                            </ui-textfield>
+                        </ui-nav>
+                    </ui-drawer-content>
+                </ui-drawer>
                 <!-- App content -->
                 <div class="demo-app-content">
 
+                    <!-- Edit current matrix section -->
                     <section v-show="current.code">
                         <ui-textfield id="dest" v-model="current.name">dest</ui-textfield>
 
                         <img src="data/overlayImage.png" id="overlayImage" style="display: none;">
                         <canvas width="1024" height="256" style="border: solid 1px black;" id="previewCanvas"></canvas>
                         
+                        <!-- Front text -->
                         <hr>
-                        <h4>front text</h4>
-                        <ui-textfield v-model="current.front.text" id="frontText" v-on:keyup="writeFrontText()" @change="saveCurrentIntoDests()">front text</ui-textfield>
+                        <h4>Front text</h4>
+                        <ui-textfield v-model="current.front.text" id="frontText" input-type="textarea" rows="2" v-on:keyup="writeFrontText()" @change="saveCurrentIntoDests()">front text</ui-textfield>
+                        <ui-select v-model="current.front.font" :options="fontList" @change="loadFont(current.front.font)" id="fontSelector"></ui-select>
+                        <input type="color" v-model="current.front.color" />
+
+                        <!-- Line -->
+                        <hr>
+                        <h4>Line text</h4>
+                        <ui-textfield v-model="current.line.text" @keyup="writeLineText()">front line number</ui-textfield>
+                        <ui-select v-model="current.line.font" :options="fontList" @change="loadFont(current.line.font)" id="fontSelector"></ui-select>
+                        <input type="color" v-model="current.line.fore" @change="refreshMatrix()" />
+                        <input type="color" v-model="current.line.back" @change="refreshMatrix()" />
+                        <input type="color" v-model="current.line.outl" @change="refreshMatrix()" />
+                        <ui-form-field>
+                            <ui-switch v-model="current.front.line" @change="refreshMatrix()"></ui-switch>
+                            <label>Show line on front</label>
+                        </ui-form-field>
+
+                        <!-- Side text -->
+                        <hr>
+                        <h4>Side text</h4>
+                        <ui-textfield v-model="current.side.text" @keyup="writeSideText">Side text</ui-textfield>
+                        <ui-select v-model="current.side.font" :options="fontList" @change="loadFont(current.side.font)" id="fontSelector"></ui-select>
+                        <input type="color" v-model="current.side.color" />
 
                         <hr>
-                        <ui-select v-model="selectedFont" :options="fontList" @change="loadFont(selectedFont)" id="fontSelector"></ui-select>
 
-                        <ui-icon-button icon="delete" @click="deleteDest(current.code)"></ui-icon-button>
+                        <ui-icon-button icon="delete" @click="deleteDest()"></ui-icon-button>
                     </section>
 
+                    <!-- Empty selection section -->
                     <section v-show="!current.code" style="width: 100%;text-align: center;">
                         <ui-icon style="font-size: 15rem;color: grey;">add_circle_outline</ui-icon>
                         <p>Start by select a destination ou create it in the side nav.</p>
@@ -65,11 +96,14 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/balm-ui@8.0.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/balm-ui@8.0.0/dist/balm-ui-plus.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas2image@1.0.5/canvas2image.min.js"></script>
-    <script src="data/script.js"></script>
+    <script type="text/javascript">
+        var _c = new Date().getTime();
+        document.write('<script type="text/javascript" src="data/script.js?c='+_c+'"><\/script>');
+    </script>
 
 </body>
 
