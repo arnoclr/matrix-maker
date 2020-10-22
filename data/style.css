@@ -4,6 +4,18 @@
     overflow: auto;
 }
 
+.menu-content {
+    position: relative;
+}
+
+html {
+    overflow: hidden;
+}
+
 body {
     margin: 0;
+}
+
+input[type=color] {
+    cursor: pointer;
 }

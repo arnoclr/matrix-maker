@@ -30,6 +30,7 @@ new Vue({
         },
         fonts: {},
         fontList,
+        downloadMenu: false,
     },
     methods: {
         // Matrix
@@ -74,7 +75,6 @@ new Vue({
                     var char = text.substr(i, 1);
                     var cData = [];
                     // load font
-                    console.log(this.fonts[font])
                     if (!this.fonts[font]) {
                         this.loadFont(font);
                     }
@@ -112,8 +112,8 @@ new Vue({
                 var splitedText = this.current.front.text.split('\n');
                 var dims = this.bitmapTextDims(splitedText[0], this.current.front.font);
                 this.fillBitmapTextDraw(this.ctx, splitedText[0], Math.round(textWidth-(dims.width/2)), Math.round(8+(dims.height/2)), this.current.front.font, this.current.front.color, ()=>{});
-                var dims = this.bitmapTextDims(splitedText[1], this.current.front.font);
-                this.fillBitmapTextDraw(this.ctx, splitedText[1], Math.round(textWidth-(dims.width/2)), Math.round(24+(dims.height/2)), this.current.front.font, this.current.front.color, ()=>{});
+                var dims = this.bitmapTextDims(splitedText[1], this.current.front.fontb);
+                this.fillBitmapTextDraw(this.ctx, splitedText[1], Math.round(textWidth-(dims.width/2)), Math.round(24+(dims.height/2)), this.current.front.fontb, this.current.front.color, ()=>{});
             } else {
                 var dims = this.bitmapTextDims(this.current.front.text, this.current.front.font);
                 this.fillBitmapTextDraw(this.ctx, this.current.front.text, Math.round(textWidth-(dims.width/2)), Math.round(16+(dims.height/2)), this.current.front.font, this.current.front.color, ()=>{});
@@ -126,7 +126,7 @@ new Vue({
             this.ctx.fillStyle = "#000000";
             this.ctx.fillRect(60, 32, 170, 32);
             var dims = this.bitmapTextDims(this.current.side.text, this.current.side.font);
-            this.fillBitmapTextDraw(this.ctx, this.current.side.text, Math.round(145-(dims.width/2)), Math.round(48+(dims.height/2)), this.current.side.font, this.current.front.color, ()=>{});
+            this.fillBitmapTextDraw(this.ctx, this.current.side.text, Math.round(145-(dims.width/2)), Math.round(48+(dims.height/2)), this.current.side.font, this.current.side.color, ()=>{});
             this.renderCanvas(this.ctx, this.previewCtx);
         },
 
@@ -148,9 +148,10 @@ new Vue({
 
         // refresh matrix
         refreshMatrix: function() {
+            this.writeLineText();
             this.writeFrontText();
             this.writeSideText();
-            this.writeLineText();
+            this.drawRedPattern();
             this.renderCanvas(this.ctx, this.previewCtx);
             this.saveCurrentIntoDests();
         },
@@ -159,6 +160,11 @@ new Vue({
         renderCanvas: function(ctx, previewCtx) {
             previewCtx.drawImage(this.canvas, 0, 0, 1024, 256);
             previewCtx.drawImage(overlayImage, 0, 0, 1024, 256);
+        },
+        drawRedPattern: function() {
+            this.ctx.fillStyle = "#800000";
+            this.ctx.fillRect(230, 0, 26, 64);
+            this.ctx.fillRect(50, 32, 10, 32);
         },
         downloadCanvas: function() {
             let downloadLink = document.createElement('a');
@@ -201,6 +207,16 @@ new Vue({
             } : null;
         },
         
+        // download menu
+        onSelected(data) {
+            if(data.index == 0) {
+                this.current.code ? this.downloadCanvas() : this.$toast('No matrix selected');
+            }
+            if(data.index == 1) {
+                this.generateHof();
+            }
+        },
+        
         // dest logic
         addDest: function(code) {
             this.current = {
@@ -229,13 +245,17 @@ new Vue({
             this.$toast(code + ' added in dests');
         },
         deleteDest: function() {
-            this.$confirm(`Are you sure to delete ${this.current.code} ? (${this.current.index})`).then((r) => {
-                if (r) {
-                    this.dests.splice(this.current.index, 1);
-                    this.$toast(this.current.code + ' deleted from dests');
-                    this.current.code = null;
-                }
-            })
+            if(this.current.code) {
+                this.$confirm(`Are you sure to delete ${this.current.code} ? (${this.current.index})`).then((r) => {
+                    if (r) {
+                        this.dests.splice(this.current.index, 1);
+                        this.$toast(this.current.code + ' deleted from dests');
+                        this.current.code = null;
+                    }
+                })
+            } else {
+                this.$toast('No selected destination to delete');
+            }
         },
         selectCurrent: function(index) {
             this.current = this.dests[index];
@@ -270,7 +290,130 @@ new Vue({
             this.fonts[font] = JSON.parse(localStorage[font]);
             this.refreshMatrix();
             this.$toast(font + ' loaded');
+        },
+
+        // generate hof
+        generateHof: function() {
+            var hofName = prompt("HOF Depot Name:");
+            var folderName = "KPPMaker-" + this.uuidv4();
+            var zip = new JSZip();
+            var codeBook = new AsciiTable('DESTINATION CODES');
+
+            //zip.file(folderName + ".hof", generateHOF(folderName, hofName));
+            zip.file(folderName + ".hof", this.generateHOF2(folderName, hofName));
+
+            var vehicles = zip.folder("vehicles");
+            var Anzeigen = vehicles.folder("Anzeigen");
+            var Krueger = Anzeigen.folder("Krueger");
+            var f230x32 = Krueger.folder("230x32");
+            var img = f230x32.folder(folderName);
+            var lastCode = this.current ? this.current.code : 0;
+            codeBook.setHeading("CODE", "NAME", "LINE TEXT", "FRONT TEXT", "SIDE TEXT");
+            var i = 0;
+            for (var dest in this.dests) {
+                curCode = dest.code;
+                this.selectCurrent(i);
+                i++
+                img.file(dest.code + ".png", $("#canvas").getCanvasImage().substr(22), {base64: true});
+                codeBook.addRow(dest, this.dests[dest].name, this.dests[dest].line.text, this.dests[dest].front.text.replace(/\n+/g, '-'), this.dests[dest].side.text.replace(/\n+/g, '-'));
+            }
+            zip.file("codebook.txt", codeBook.toString());
+            curCode = lastCode;
+            zip.generateAsync({type:"blob"}).then(function(content) {
+                saveFile("hof.zip", "application/zip", content);
+            });
+            this.current = null;
+        },
+        uuidv4: function() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        },
+        generateHOF2: function(dir, name) {
+            var terminus_list = "";
+            for (var dest in this.dests) {
+                terminus_list += "\t" + dest + "\t" + (this.dests[dest].name != ""?this.dests[dest].name:"NO NAME") + "\t" + (this.dests[dest].name != ""?this.dests[dest].name:"NO NAME") + "\t" + this.dests[dest].front.text.replace(/\n+/g, '-') + "\t\t" + this.dests[dest].side.text.replace(/\n+/g, '-') + "\t\t" + this.dests[dest].name + "\t\t" + dir + "\\" + dest + ".png\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\r\n";
+            }
+            var rtn = "HOF AND IMAGES GENERATED WITH SIMPLE OMSI K++ MAKER\r\n" +
+                "https://kpp.genav.ch/\r\n" +
+                "\r\n" +
+                "\r\n" +
+                "[name]\r\n" +
+                name + "\r\n" +
+                "\r\n" +
+                "[servicetrip]\r\n" +
+                (this.dests[Object.keys(this.dests)[0]].name != ""?this.dests[Object.keys(this.dests)[0]].name:"NO NAME") + "\r\n" +
+                "\r\n" +
+                "[global_strings]\r\n" +
+                "6\r\n" +
+                name + "\r\n" +
+                name + "\r\n" +
+                name + "\r\n" +
+                "\r\n" +
+                "\r\n" +
+                "\r\n" +
+                "\r\n" +
+                "stringcount_terminus\r\n" +
+                "26\r\n" +
+                "\r\n" +
+                "stringcount_busstop\r\n" +
+                "9\r\n" +
+                "\r\n" +
+                "\r\n" +
+                "[addterminus_list]\r\n" +
+                terminus_list +
+                "[end]\r\n" +
+                "\r\n" +
+                "\r\n" +
+                "[addbusstop_list]\r\n" +
+                "STOP List\t\t\t\t\t\t\t\t\r\n" +
+                "[end]\r\n" +
+                "\r\n" +
+                "\n";
+            return this.downloadUtf16(rtn);
+        },
+        downloadUtf16: function(str) {
+        
+            // ref: https://stackoverflow.com/q/6226189
+            var charCode, byteArray = [];
+        
+            // BE BOM
+            //byteArray.push(254, 255);
+        
+            // LE BOM
+            byteArray.push(255, 254);
+        
+            for (var i = 0; i < str.length; ++i) {
+        
+                charCode = str.charCodeAt(i);
+        
+                // BE Bytes
+                //byteArray.push((charCode & 0xFF00) >>> 8);
+                //byteArray.push(charCode & 0xFF);
+        
+                // LE Bytes
+                byteArray.push(charCode & 0xff);
+                byteArray.push(charCode / 256 >>> 0);
+            }
+        
+            return new Blob([new Uint8Array(byteArray)], {type:'text/plain;charset=UCS-2LE;'});
+            // var blobUrl = URL.createObjectURL(blob);
+            //
+            // // ref: https://stackoverflow.com/a/18197511
+            // var link = document.createElement('a');
+            // link.href = blobUrl;
+            // link.download = filename;
+            //
+            // if (document.createEvent) {
+            //     var event = document.createEvent('MouseEvents');
+            //     event.initEvent('click', true, true);
+            //     link.dispatchEvent(event);
+            // } else {
+            //     link.click();
+            // }
         }
+
     },
     mounted() {
         // init data
@@ -287,11 +430,22 @@ new Vue({
         this.previewCtx.imageSmoothingEnabled = false;
         this.ctx.fillBitmapTextDraw = this.fillBitmapTextDraw;
         this.ctx.bitmapTextDims = this.bitmapTextDims;
-        this.ctx.fillStyle = "#800000";
-        this.ctx.fillRect(230, 0, 26, 64);
-        this.ctx.fillRect(50, 32, 10, 32);
+        this.drawRedPattern();
 
         //window.onunload = this.saveDestsInLocalStorage();
     }
 })
 Vue.config.devtools = true
+
+function saveFile(name, type, data) {
+    if (data != null && navigator.msSaveBlob)
+        return navigator.msSaveBlob(new Blob([data], { type: type }), name);
+    var a = $("<a style='display: none;'/>");
+    var url = window.URL.createObjectURL(new Blob([data], {type: type}));
+    a.attr("href", url);
+    a.attr("download", name);
+    $("body").append(a);
+    a[0].click();
+    window.URL.revokeObjectURL(url);
+    a.remove();
+}
