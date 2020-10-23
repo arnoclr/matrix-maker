@@ -4,18 +4,103 @@
     overflow: auto;
 }
 
+.main-content {
+    padding: 16px;
+}
+
+.hof-data {
+    padding: 16px;
+}
+
 .menu-content {
     position: relative;
 }
 
+/* on matric hover elements */
+.canvasBox {
+    position: relative;
+}
+#lineOver {
+    position: absolute;
+    height: 256px;
+    width: 200px;
+}
+#frontOver {
+    position: absolute;
+    width: 720px;
+    height: 128px;
+    margin-left: 200px;
+}
+#sideOver {
+    position: absolute;
+    width: 680px;
+    height: 128px;
+    margin-left: 240px;
+    margin-top: 128px;
+}
+.matrixOver {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    transition: 0.1s;
+    transition-timing-function: ease;
+}
+.matrixOver:hover {
+    border:solid 5px #eee;
+    box-sizing: border-box;
+    border-radius: 5px;
+}
+
+/* empty state icon section */
+.empty-state {
+    width: 100%;
+    text-align: center;
+}
+.empty-state>i {
+    margin: 5rem;
+    font-size: 15rem;
+    color: grey;
+}
+
+/* illustration section */
+.illustration {
+    text-align: center;
+    padding: 1rem 5rem 1rem 5rem;
+}
+.illustration h4, .illustration p {
+    margin: 2px;
+}
+.illustration img {
+    margin-top: 2rem;
+    max-width: 100%;
+    height: auto;
+}
+
+/* preloader */
+#preloader {
+    width: 100vw;
+    height: 100vh;
+    background-color: #eee;
+    position: relative;
+}
+#preloader>div {
+    position: absolute;
+    top: 50%;
+    margin-left: 48vw;
+}
+
+/* display misc */
 html {
     overflow: hidden;
 }
-
 body {
     margin: 0;
 }
-
 input[type=color] {
     cursor: pointer;
+}
+
+/* detect mobile device */
+@media only screen and (max-width: 760px) {
+    #not-mobile { display: none; }
 }

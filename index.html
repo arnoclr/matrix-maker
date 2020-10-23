@@ -14,12 +14,72 @@
 
     <div id="app">
 
-        <div class="demo-container">
+        <!-- preloader -->
+        <div id="preloader">
+            <ui-spinner active></ui-spinner>
+        </div>
+
+        <!-- share dialog -->
+        <ui-dialog v-model="shareDialogOpen">
+            <ui-dialog-title>Share current matrix</ui-dialog-title>
+            <ui-dialog-content>
+                <ui-grid>
+                    <ui-grid-cell>
+                        <p>Open this link in a new browser to import current matrix.</p>
+                        <ui-textfield v-model="shurl">
+                            {{ current.name }} matrix link
+                            <template #after>
+                                <ui-textfield-icon @click.native="copyToClipboard(shurl)">content_copy</ui-textfield-icon>
+                            </template>
+                        </ui-textfield>
+                    </ui-grid-cell>
+                    <ui-grid-cell>
+                        <img :src="qrurl" alt="qr code">
+                    </ui-grid-cell>
+                </ui-grid>
+            </ui-dialog-content>
+            <ui-dialog-actions></ui-dialog-actions>
+        </ui-dialog>
+
+        <!-- download hof dialog -->
+        <ui-dialog v-model="downloadDialogOpen" :mask-closable="true">
+            <ui-dialog-content>
+                <section class="illustration">
+                    <ui-icon class="purple600">get_app</ui-icon>
+                    <h4>Last step</h4>
+                    <p>Select a hof name file</p>
+                    <img src="./data/illustrations/package.png">
+                </section>
+                <ui-textfield v-model="hofName">hof name</ui-textfield>
+                <ui-button style="float: right;" raised @click="generateHof()">Download</ui-button>
+            </ui-dialog-content>
+        </ui-dialog>
+
+        <!-- licence infos -->
+        <ui-drawer type="modal" :open="licenceDrawerOpen" style="margin-left:255px;">
+            <ui-drawer-header>
+                <ui-drawer-title>Infos</ui-drawer-title>
+                <ui-drawer-subtitle>Attributions</ui-drawer-subtitle>
+            </ui-drawer-header>
+            <ui-drawer-content>
+                <ui-nav>
+                    <ui-nav-item href="http://www.freepik.com">Designed by macrovector / Freepik</ui-nav-item>
+                </ui-nav>
+            </ui-drawer-content>
+        </ui-drawer>
+        <ui-drawer-backdrop style="margin-left:255px;"></ui-drawer-backdrop>
+
+        <!-- mobile disclaimer -->
+        <section v-show="isMobile" class="empty-state">
+            <ui-icon>desktop_access_disabled</ui-icon>
+            <p>Your screen is to small</p>
+        </section>
+
+        <div class="demo-container" v-show="!isMobile">
             <!-- App bar -->
-            <ui-top-app-bar class="demo-app-bar" content-selector=".demo-content" :nav-icon="false">
+            <ui-top-app-bar v-shadow="4" class="demo-app-bar" content-selector=".demo-content" :nav-icon="false">
                 kpp dev
                 <template #toolbar="{ toolbarItemClass }">
-                    <ui-icon-button :class="toolbarItemClass" v-tooltip="'Delete actual destination'" aria-describedby="delete" icon="delete" @click="deleteDest()" v-show="current.code"></ui-icon-button>
                     <ui-icon-button :class="toolbarItemClass" v-tooltip="'Save all destinations in device storage'" aria-describedby="save in storage" icon="save" @click="saveDestsInLocalStorage()"></ui-icon-button>
                     
                     <div class="menu-content">
@@ -48,76 +108,130 @@
                     </ui-drawer-header>
                     <ui-drawer-content>
                         <ui-nav>
-                            <ui-nav-item id="destsList" v-for="(dest, index) in dests" :key="index" @click="selectCurrent(index)">
+                            <ui-nav-item href="#" id="destsList" v-for="(dest, index) in dests" :key="index" @click="selectCurrent(index)">
                                 ({{index}}){{dest.code}}.{{dest.name}}
                             </ui-nav-item>
-                            <ui-textfield input-type="number" v-model="addDestCode" v-on:keyup.enter="addDest(addDestCode)">add
+                            <ui-textfield style="width:7rem;margin-left:8px;" input-type="number" v-model="addDestCode" v-on:keyup.enter="addDest(addDestCode)">add
                                 dest
                             </ui-textfield>
                         </ui-nav>
+                        <ui-icon-button style="position: absolute;bottom:1%;" @click="licenceDrawerOpen=!licenceDrawerOpen" :icon="licenceDrawerOpen ? 'close' : 'info'"></ui-icon-button>
                     </ui-drawer-content>
                 </ui-drawer>
                 <!-- App content -->
                 <div class="demo-app-content">
 
-                    <!-- Edit current matrix section -->
-                    <section v-show="current.code">
-                        <ui-textfield v-model="current.code" input-type="number">code</ui-textfield>
-                        <ui-textfield v-model="current.name">dest</ui-textfield>
+                    <!-- hof data -->
+                    <section v-shadow="2" v-show="current.code" class="hof-data">
+                        <ui-textfield outlined v-model="current.code" input-type="number" style="width:7rem;">code</ui-textfield>
+                        <ui-textfield outlined v-model="current.name">dest</ui-textfield>
+                        <div style="padding:8px;display:inline">
+                            <ui-icon-button v-tooltip="'Share actual destination with qrcode'" aria-describedby="share" icon="share" @click="shareCurrent()"></ui-icon-button>
+                            <ui-icon-button v-tooltip="'Delete actual destination'" aria-describedby="delete" icon="delete" @click="deleteDest()"></ui-icon-button>
+                            <ui-icon-button v-tooltip="'Refresh matrix'" aria-describedby="refresh" icon="refresh" @click="refreshMatrix()"></ui-icon-button>
+                            <ui-icon-button v-tooltip="'Advanced settings'" aria-describedby="settings" icon="settings" @click="$balmUI.onOpen('destSettingsDialogOpen')"></ui-icon-button>
+                        </div>
+                    </section>
 
+                    <!-- Edit current matrix section -->
+                    <section v-show="current.code" class="main-content">
+
+                        <!-- dest settings dialog -->
+                        <ui-dialog v-model="destSettingsDialogOpen" :mask-closable="true">
+                            <ui-dialog-title>Settings for {{ current.code }}</ui-dialog-title>
+                            <ui-dialog-content>
+                                <ui-form-field>
+                                    <ui-switch v-model="current.front.line" @change="refreshMatrix()"></ui-switch>
+                                    <label>Show line on front</label>
+                                </ui-form-field>
+                            </ui-dialog-content>
+                            <ui-dialog-actions></ui-dialog-actions>
+                        </ui-dialog>
+
+                        <!-- preview canvas -->
                         <img src="data/overlayImage.png" id="overlayImage" style="display: none;">
-                        <canvas width="1024" height="256" style="border: solid 1px black;" id="previewCanvas"></canvas>
+
+                        <div class="canvasBox">
+                            <div @click="$balmUI.onOpen('lineDialogOpen')" v-tooltip="'Line options'" aria-describedby="line" class="matrixOver" id="lineOver"></div>
+                            <div @click="$balmUI.onOpen('frontDialogOpen')" v-tooltip="'Front text options'" aria-describedby="front" class="matrixOver" id="frontOver"></div>
+                            <div @click="$balmUI.onOpen('sideDialogOpen')" v-tooltip="'Side text options'" aria-describedby="side" class="matrixOver" id="sideOver"></div>
+                            <canvas width="1024" height="256" style="border: solid 1px black;" id="previewCanvas"></canvas>
+                        </div>
+
+                        <small>You can edit differents parts of the matrix by clicking on it.</small>
                         
                         <!-- Front text -->
-                        <hr>
-                        <h4>Front text</h4>
-                        <ui-textfield v-model="current.front.text" id="frontText" input-type="textarea" rows="2" cols="40" v-on:keyup="writeFrontText()" @change="saveCurrentIntoDests()">front text</ui-textfield>
-                        <template v-if="current.front.text">
-                            <ui-select v-model="current.front.font" :options="fontList" @change="loadFont(current.front.font)" id="fontSelector">{{ current.front.text.includes('\n') ? 'Top' : 'Main' }} font</ui-select>
-                            <ui-select v-model="current.front.fontb" :options="fontList" @change="loadFont(current.front.font)" id="fontSelector" v-show="current.front.text.includes('\n')">Bottom font</ui-select>
-                            <div style="position:relative; display:inline-block">
-                                <ui-button raised type="button" v-bind:style="{ backgroundColor: current.front.color }">front text color</ui-button raised>
-                                <input type="color" v-model="current.front.color" @change="refreshMatrix()" style="opacity:0; position:absolute; left:0;top:0;width:100%"/>
-                            </div>
-                        </template>
+                        <ui-dialog v-model="frontDialogOpen" :mask-closable="true">
+                            <ui-dialog-title>Front text options</ui-dialog-title>
+                            <ui-dialog-content>
+                                <template v-if="current.front.text">
+                                    <h4>Fonts</h4>
+                                    <ui-select v-model="current.front.font" :options="fontList" @change="loadFont(current.front.font)" id="fontSelector">{{ current.front.text.includes('\n') ? 'Top' : 'Main' }} font</ui-select>
+                                    <ui-select v-model="current.front.fontb" :options="fontList" @change="loadFont(current.front.font)" id="fontSelector" v-show="current.front.text.includes('\n')">Bottom font</ui-select>
+                                </template>
+                                <hr><h4>Text edition</h4>
+                                <ui-textfield maxlength="150" v-model="current.front.text" id="frontText" input-type="textarea" rows="2" cols="40" v-on:keyup="writeFrontText()" @change="saveCurrentIntoDests()">front text</ui-textfield>
+                                <div style="position:relative; display:inline-block">
+                                    <ui-button raised type="button" v-bind:style="{ backgroundColor: current.front.color, color: pickerTextColor(current.front.color) }">front text color</ui-button raised>
+                                    <input type="color" v-model="current.front.color" @change="refreshMatrix()" style="opacity:0; position:absolute; left:0;top:0;width:100%"/>
+                                </div>
+                            </ui-dialog-content>
+                            <ui-dialog-actions></ui-dialog-actions>
+                        </ui-dialog>
 
                         <!-- Line -->
-                        <hr>
-                        <h4>Line text</h4>
-                        <ui-textfield v-model="current.line.text" @keyup="writeLineText()">front line number</ui-textfield>
-                        <ui-select v-model="current.line.font" :options="fontList" @change="loadFont(current.line.font)" id="fontSelector"></ui-select>
-                        <div style="position:relative; display:inline-block">
-                            <ui-button raised type="button" v-bind:style="{ backgroundColor: current.line.fore }">line color</ui-button raised>
-                            <input type="color" v-model="current.line.fore" @change="refreshMatrix()" style="opacity:0; position:absolute; left:0;top:0;width:100%"/>
-                        </div>
-                        <div style="position:relative; display:inline-block">
-                            <ui-button raised type="button" v-bind:style="{ backgroundColor: current.line.outl }">line outline</ui-button raised>
-                            <input type="color" v-model="current.line.outl" @change="refreshMatrix()" style="opacity:0; position:absolute; left:0;top:0;width:100%"/>
-                        </div>
-                        <div style="position:relative; display:inline-block">
-                            <ui-button raised type="button" v-bind:style="{ backgroundColor: current.line.back }">line background</ui-button raised>
-                            <input type="color" v-model="current.line.back" @change="refreshMatrix()" style="opacity:0; position:absolute; left:0;top:0;width:100%"/>
-                        </div>
-                        <ui-form-field>
-                            <ui-switch v-model="current.front.line" @change="refreshMatrix()"></ui-switch>
-                            <label>Show line on front</label>
-                        </ui-form-field>
+                        <ui-dialog v-model="lineDialogOpen" :mask-closable="true">
+                            <ui-dialog-title>Line options</ui-dialog-title>
+                            <ui-dialog-content>
+                                <section>
+                                    <h4>Font</h4>
+                                    <ui-select v-model="current.line.font" :options="fontList" @change="loadFont(current.line.font)" id="fontSelector"></ui-select>
+                                </section>
+                                <hr><h4>Text edition</h4>
+                                <section>
+                                    <ui-textfield v-model="current.line.text" @keyup="writeLineText()">front line number</ui-textfield>
+                                    <br>
+                                    <div style="position:relative; display:inline-block">
+                                        <ui-button raised type="button" v-bind:style="{ backgroundColor: current.line.fore, color: pickerTextColor(current.line.fore) }">line color</ui-button raised>
+                                        <input type="color" v-model="current.line.fore" @change="refreshMatrix()" style="opacity:0; position:absolute; left:0;top:0;width:100%"/>
+                                    </div>
+                                    <div style="position:relative; display:inline-block">
+                                        <ui-button raised type="button" v-bind:style="{ backgroundColor: current.line.outl, color: pickerTextColor(current.line.outl) }">line outline</ui-button raised>
+                                        <input type="color" v-model="current.line.outl" @change="refreshMatrix()" style="opacity:0; position:absolute; left:0;top:0;width:100%"/>
+                                    </div>
+                                    <div style="position:relative; display:inline-block">
+                                        <ui-button raised type="button" v-bind:style="{ backgroundColor: current.line.back, color: pickerTextColor(current.line.back) }">line background</ui-button raised>
+                                        <input type="color" v-model="current.line.back" @change="refreshMatrix()" style="opacity:0; position:absolute; left:0;top:0;width:100%"/>
+                                    </div>
+                                </section>
+                            </ui-dialog-content>
+                            <ui-dialog-actions></ui-dialog-actions>
+                        </ui-dialog>
 
                         <!-- Side text -->
-                        <hr>
-                        <h4>Side text</h4>
-                        <ui-textfield v-model="current.side.text" @keyup="writeSideText">Side text</ui-textfield>
-                        <ui-select v-model="current.side.font" :options="fontList" @change="loadFont(current.side.font)" id="fontSelector"></ui-select>
-                        <div style="position:relative; display:inline-block">
-                            <ui-button raised type="button" v-bind:style="{ backgroundColor: current.side.color }">side color</ui-button raised>
-                            <input type="color" v-model="current.side.color" @change="refreshMatrix()" style="opacity:0; position:absolute; left:0;top:0;width:100%"/>
-                        </div>
-                        <div style="height: 5rem;"></div>
+                        <ui-dialog v-model="sideDialogOpen" :mask-closable="true">
+                            <ui-dialog-title>Side text options</ui-dialog-title>
+                            <ui-dialog-content>
+                                <section>
+                                    <h4>Font selection</h4>
+                                    <ui-select v-model="current.side.font" :options="fontList" @change="loadFont(current.side.font)" id="fontSelector"></ui-select>
+                                </section><hr>
+                                <section>
+                                    <h4>Text edition</h4>
+                                    <ui-textfield v-model="current.side.text" @keyup="writeSideText">Side text</ui-textfield><br>
+                                    <div style="position:relative; display:inline-block">
+                                        <ui-button raised type="button" v-bind:style="{ backgroundColor: current.side.color, color: pickerTextColor(current.side.color) }">side color</ui-button raised>
+                                        <input type="color" v-model="current.side.color" @change="refreshMatrix()" style="opacity:0; position:absolute; left:0;top:0;width:100%"/>
+                                    </div>
+                                </section>
+                            </ui-dialog-content>
+                            <ui-dialog-actions></ui-dialog-actions>
+                        </ui-dialog>
                     </section>
 
                     <!-- Empty selection section -->
-                    <section v-show="!current.code" style="width: 100%;text-align: center;">
-                        <ui-icon style="font-size: 15rem;color: grey;">touch_app</ui-icon>
+                    <section v-show="!current.code" class="empty-state">
+                        <ui-icon>touch_app</ui-icon>
                         <p>Start by select a destination ou create it in the side nav.</p>
                     </section>
 
@@ -126,6 +240,7 @@
         </div>
     </div>
 
+    <!-- scripts -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/balm-ui@8.0.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/balm-ui@8.0.0/dist/balm-ui-plus.js"></script>

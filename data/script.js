@@ -31,6 +31,17 @@ new Vue({
         fonts: {},
         fontList,
         downloadMenu: false,
+        shareDialogOpen: false,
+        frontDialogOpen: false,
+        lineDialogOpen: false,
+        sideDialogOpen: false,
+        downloadDialogOpen: false,
+        destSettingsDialogOpen: false,
+        licenceDrawerOpen: false,
+        shurl: null,
+        qrurl: null,
+        hofName: null,
+        isMobile: window.matchMedia('only screen and (max-width: 760px)').matches,
     },
     methods: {
         // Matrix
@@ -213,36 +224,54 @@ new Vue({
                 this.current.code ? this.downloadCanvas() : this.$toast('No matrix selected');
             }
             if(data.index == 1) {
-                this.generateHof();
+                this.$balmUI.onOpen('downloadDialogOpen');
+            }
+        },
+
+        // ui
+        pickerTextColor: function(color) {
+            if(color) {
+                var r = parseInt(color.substr(1,2),16);
+                var g = parseInt(color.substr(3,2),16);
+                var b = parseInt(color.substr(4,2),16);
+                var yiq = ((r*299)+(g*587)+(b*114))/1000;
+                // Return white if to dark, else return black
+                return (yiq < 40) ? 'white' : 'black';
+            } else {
+                return 'black';
             }
         },
         
         // dest logic
         addDest: function(code) {
-            this.current = {
-                code: code,
-                name: '',
-                front: {
-                    font: '',
-                    text: 'FRONT',
-                    line: true,
-                    color: '#FF6A00',
-                },
-                line: {
-                    font: '',
-                    text: code,
-                    back: '#FF0000',
-                    fore: '#FFFFFF',
-                    outl: '#000000',
-                },
-                side: {
-                    font: '',
-                    text: 'SIDE',
-                    color: '#FF6A00',
-                },
+            if(isNumber(code) && code > 0) {
+                this.current = {
+                    code: code,
+                    name: '',
+                    front: {
+                        font: '',
+                        text: 'FRONT',
+                        line: true,
+                        color: '#FF6A00',
+                    },
+                    line: {
+                        font: '',
+                        text: code,
+                        back: '#FF0000',
+                        fore: '#FFFFFF',
+                        outl: '#000000',
+                    },
+                    side: {
+                        font: '',
+                        text: 'SIDE',
+                        color: '#FF6A00',
+                    },
+                }
+                this.dests.push(this.current);
+                this.$toast(code + ' added in dests');
+            } else {
+                this.$toast('invalid code');
             }
-            this.dests.push(this.current);
-            this.$toast(code + ' added in dests');
         },
         deleteDest: function() {
             if(this.current.code) {
@@ -259,6 +288,9 @@ new Vue({
         },
         selectCurrent: function(index) {
             this.current = this.dests[index];
+            if (!this.current.code) {
+                this.current.code = prompt('please enter a new code');
+            }
             this.current.index = index;
             if (this.current.front.color == null) {
                 this.current.front.color = '#FF4400';
@@ -291,10 +323,21 @@ new Vue({
             this.refreshMatrix();
             this.$toast(font + ' loaded');
         },
+        shareCurrent: function() {
+            this.shurl = window.location.href.replace(/#+/, '') + '?share=' + base64_url_encode(JSON.stringify(this.current));
+            this.qrurl = 'https://api.qrserver.com/v1/create-qr-code/?data=' + this.shurl;
+            this.$balmUI.onOpen('shareDialogOpen');
+        },
 
         // generate hof
         generateHof: function() {
-            var hofName = prompt("HOF Depot Name:");
+            if(!this.hofName) {
+                return this.$toast('Name is empty');
+            } else {
+                this.downloadDialogOpen = false;
+                this.$alert('test')
+            }
+            var hofName = this.hofName;
             var folderName = "KPPMaker-" + this.uuidv4();
             var zip = new JSZip();
             var codeBook = new AsciiTable('DESTINATION CODES');
@@ -309,18 +352,16 @@ new Vue({
             var img = f230x32.folder(folderName);
             var lastCode = this.current ? this.current.code : 0;
             codeBook.setHeading("CODE", "NAME", "LINE TEXT", "FRONT TEXT", "SIDE TEXT");
-            var i = 0;
-            for (var dest in this.dests) {
-                curCode = dest.code;
-                this.selectCurrent(i);
-                i++
-                img.file(dest.code + ".png", $("#canvas").getCanvasImage().substr(22), {base64: true});
+            for (dest in this.dests) {
+                curCode = this.dests[dest].code;
+                this.selectCurrent(dest);
+                img.file(dest + ".png", $("#canvas").getCanvasImage().substr(22), {base64: true});
                 codeBook.addRow(dest, this.dests[dest].name, this.dests[dest].line.text, this.dests[dest].front.text.replace(/\n+/g, '-'), this.dests[dest].side.text.replace(/\n+/g, '-'));
             }
             zip.file("codebook.txt", codeBook.toString());
             curCode = lastCode;
             zip.generateAsync({type:"blob"}).then(function(content) {
-                saveFile("hof.zip", "application/zip", content);
+                saveFile(`${hofName}-kpp.genav.ch.zip`, "application/zip", content);
             });
             this.current = null;
         },
@@ -377,47 +418,42 @@ new Vue({
         
             // ref: https://stackoverflow.com/q/6226189
             var charCode, byteArray = [];
-        
-            // BE BOM
-            //byteArray.push(254, 255);
-        
-            // LE BOM
             byteArray.push(255, 254);
         
             for (var i = 0; i < str.length; ++i) {
-        
                 charCode = str.charCodeAt(i);
-        
-                // BE Bytes
-                //byteArray.push((charCode & 0xFF00) >>> 8);
-                //byteArray.push(charCode & 0xFF);
-        
-                // LE Bytes
                 byteArray.push(charCode & 0xff);
                 byteArray.push(charCode / 256 >>> 0);
             }
         
             return new Blob([new Uint8Array(byteArray)], {type:'text/plain;charset=UCS-2LE;'});
-            // var blobUrl = URL.createObjectURL(blob);
-            //
-            // // ref: https://stackoverflow.com/a/18197511
-            // var link = document.createElement('a');
-            // link.href = blobUrl;
-            // link.download = filename;
-            //
-            // if (document.createEvent) {
-            //     var event = document.createEvent('MouseEvents');
-            //     event.initEvent('click', true, true);
-            //     link.dispatchEvent(event);
-            // } else {
-            //     link.click();
-            // }
+        },
+        copyToClipboard: function(text) {
+            const elem = document.createElement('textarea');
+            elem.value = text;
+            document.body.appendChild(elem);
+            elem.select();
+            document.execCommand('copy');
+            document.body.removeChild(elem);
+            this.$toast('text copied to clipboard');
         }
 
     },
     mounted() {
+        // grey / cyan theme
+        this.$theme.primary = '#607d8b';
+        this.$theme.secondary = '#26c6da';
+
         // init data
-        if(localStorage.data) {
+        // with local storage or url share parameter
+        var url_string = window.location.href;
+        var url = new URL(url_string);
+        var s = url.searchParams.get("share");
+        if(s) {
+            this.dests.push(JSON.parse(base64_url_decode(s)));
+            this.$toast(`${this.dests[0].code} imported`);
+        }
+        else if(localStorage.data) {
             this.dests = JSON.parse(localStorage.data)
         }
 
@@ -432,7 +468,7 @@ new Vue({
         this.ctx.bitmapTextDims = this.bitmapTextDims;
         this.drawRedPattern();
 
-        //window.onunload = this.saveDestsInLocalStorage();
+        $('#preloader').fadeOut();
     }
 })
 Vue.config.devtools = true
@@ -448,4 +484,15 @@ function saveFile(name, type, data) {
     a[0].click();
     window.URL.revokeObjectURL(url);
     a.remove();
+}
+
+function isNumber(n) {
+    return !isNaN(parseFloat(n)) && !isNaN(n - 0);
+}
+
+function base64_url_encode(input) {
+    return encodeURI(btoa(input));
+}
+function base64_url_decode(input) {
+    return atob(decodeURI(input));
 }
