@@ -2,9 +2,21 @@
 <html lang="en">
 
 <head>
+
+    <!-- basic meta -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>bitmap json font</title>
+    <title>Simple kpp maker - OMSI 2</title>
+    <meta name="description" content="Create colored matrix for omsi 2 and generate hof easily.">
+
+    <!-- twitter card -->
+    <meta name="twitter:card" content="Create colored matrix for omsi 2 and generate hof easily."></meta>
+    <meta name="twitter:creator" content="@ipsumhh">
+
+    <!-- open graph -->
+    <meta property="og:title" content="Simple kpp maker - OMSI 2" />
+    <meta property="og:description" content="Create colored matrix for omsi 2 and generate hof easily." />
+    <meta property="og:image" content="./data/illustrations/banner.jpg" />
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/balm-ui@next/dist/balm-ui.css" />
     <link rel="stylesheet" href="data/style.css">
@@ -65,6 +77,10 @@
                 <ui-nav>
                     <ui-nav-item href="http://www.freepik.com">Designed by macrovector / Freepik</ui-nav-item>
                 </ui-nav>
+                <div style="padding:8px">
+                    <p>Site develloped by Adam Mathieson and Arno Cellarier. Fonts copyright their respective owners</p>
+                    <small>v2.0a</small>
+                </div>
             </ui-drawer-content>
         </ui-drawer>
         <ui-drawer-backdrop style="margin-left:255px;"></ui-drawer-backdrop>
@@ -72,7 +88,7 @@
         <!-- mobile disclaimer -->
         <section v-show="isMobile" class="empty-state">
             <ui-icon>desktop_access_disabled</ui-icon>
-            <p>Your screen is to small</p>
+            <p>Your screen is too small</p>
         </section>
 
         <div class="demo-container" v-show="!isMobile">
@@ -108,14 +124,23 @@
                     </ui-drawer-header>
                     <ui-drawer-content>
                         <ui-nav>
-                            <ui-nav-item href="#" id="destsList" v-for="(dest, index) in dests" :key="index" @click="selectCurrent(index)">
-                                ({{index}}){{dest.code}}.{{dest.name}}
+                            <ui-nav-item href="#" id="destsList" v-for="(dest, index) in dests" :key="index" @click="selectCurrent(index)" :active="index == current.index">
+                                <ui-item-first-content>
+                                    <ui-icon>map</ui-icon>
+                                </ui-item-first-content>
+                                <ui-item-text-content>{{dest.code}}.{{dest.name}}</ui-item-text-content>
+                            </ui-nav-item>
+                            <ui-nav-item href="https://forms.gle/DcYYG9u63hQnE8e67" target="_blank">
+                                <ui-item-first-content>
+                                    <ui-icon>feedback</ui-icon>
+                                </ui-item-first-content>
+                                <ui-item-text-content>Feedback</ui-item-text-content>
                             </ui-nav-item>
                             <ui-textfield style="width:7rem;margin-left:8px;" input-type="number" v-model="addDestCode" v-on:keyup.enter="addDest(addDestCode)">add
                                 dest
                             </ui-textfield>
                         </ui-nav>
-                        <ui-icon-button style="position: absolute;bottom:1%;" @click="licenceDrawerOpen=!licenceDrawerOpen" :icon="licenceDrawerOpen ? 'close' : 'info'"></ui-icon-button>
+                        <ui-icon-button v-tooltip="'Terms and attributions'" aria-describedby="details" style="position:absolute;bottom:8px;left:8px" @click="licenceDrawerOpen=!licenceDrawerOpen" :icon="licenceDrawerOpen ? 'close' : 'info'"></ui-icon-button>
                     </ui-drawer-content>
                 </ui-drawer>
                 <!-- App content -->
@@ -123,7 +148,7 @@
 
                     <!-- hof data -->
                     <section v-shadow="2" v-show="current.code" class="hof-data">
-                        <ui-textfield outlined v-model="current.code" input-type="number" style="width:7rem;">code</ui-textfield>
+                        <ui-textfield outlined v-model="current.code" input-type="number" style="width:7rem;" disabled>code</ui-textfield>
                         <ui-textfield outlined v-model="current.name">dest</ui-textfield>
                         <div style="padding:8px;display:inline">
                             <ui-icon-button v-tooltip="'Share actual destination with qrcode'" aria-describedby="share" icon="share" @click="shareCurrent()"></ui-icon-button>
@@ -140,10 +165,15 @@
                         <ui-dialog v-model="destSettingsDialogOpen" :mask-closable="true">
                             <ui-dialog-title>Settings for {{ current.code }}</ui-dialog-title>
                             <ui-dialog-content>
+                                <small>unique id : {{current.index}}</small><br>
                                 <ui-form-field>
                                     <ui-switch v-model="current.front.line" @change="refreshMatrix()"></ui-switch>
                                     <label>Show line on front</label>
                                 </ui-form-field>
+                                <hr>
+                                <p>Edit dest code</p>
+                                <ui-textfield outlined v-model="current.code" input-type="number" style="width:7rem;">code</ui-textfield>
+                                <br><small>Caution: do not delete the code entirely</small>
                             </ui-dialog-content>
                             <ui-dialog-actions></ui-dialog-actions>
                         </ui-dialog>

@@ -249,20 +249,21 @@ new Vue({
                     code: code,
                     name: '',
                     front: {
-                        font: '',
+                        font: '6x12',
+                        fontb: '6x12',
                         text: 'FRONT',
                         line: true,
                         color: '#FF6A00',
                     },
                     line: {
-                        font: '',
+                        font: '6x12',
                         text: code,
                         back: '#FF0000',
                         fore: '#FFFFFF',
                         outl: '#000000',
                     },
                     side: {
-                        font: '',
+                        font: '6x12',
                         text: 'SIDE',
                         color: '#FF6A00',
                     },
@@ -306,22 +307,26 @@ new Vue({
             this.$toast('Destinations saved in localStorage');
         },
         loadFont: function(font) {
-            if(!localStorage[font]) {
-                fetch('./bitmapFonts/'+font+'.json')
-                .then((response) => {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        this.$toast(`(${font}) error: ${response.status}`);
-                    }
-                })
-                .then((json) => {
-                    localStorage[font] = JSON.stringify(json);
-                });
+            if(font) {
+                if(!localStorage[font]) {
+                    fetch('./bitmapFonts/'+font+'.json')
+                    .then((response) => {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            this.$toast(`(${font}) error: ${response.status}`);
+                        }
+                    })
+                    .then((json) => {
+                        localStorage[font] = JSON.stringify(json);
+                    });
+                }
+                this.fonts[font] = JSON.parse(localStorage[font]);
+                this.refreshMatrix();
+                this.$toast(font + ' loaded');
+            } else {
+                this.$toast('empty font requested');
             }
-            this.fonts[font] = JSON.parse(localStorage[font]);
-            this.refreshMatrix();
-            this.$toast(font + ' loaded');
         },
         shareCurrent: function() {
             this.shurl = window.location.href.replace(/#+/, '') + '?share=' + base64_url_encode(JSON.stringify(this.current));
@@ -333,9 +338,6 @@ new Vue({
         generateHof: function() {
             if(!this.hofName) {
                 return this.$toast('Name is empty');
-            } else {
-                this.downloadDialogOpen = false;
-                this.$alert('test')
             }
             var hofName = this.hofName;
             var folderName = "KPPMaker-" + this.uuidv4();
@@ -364,6 +366,7 @@ new Vue({
                 saveFile(`${hofName}-kpp.genav.ch.zip`, "application/zip", content);
             });
             this.current = null;
+            this.$toast(`${hofName}-kpp.genav.ch.zip has been downloaded`);
         },
         uuidv4: function() {
             return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -455,6 +458,14 @@ new Vue({
         }
         else if(localStorage.data) {
             this.dests = JSON.parse(localStorage.data)
+            // retro compatibility for data of v1.x
+            if (this.dests.constructor === ({}).constructor) {
+                this.$toast('Old data detected, some options will be missing')
+                var arrayBuffer = [];
+                for(var i in this.dests)
+                    arrayBuffer.push(this.dests[i]);
+                this.dests = arrayBuffer;
+            }
         }
 
         this.canvas = document.getElementById("canvas");
