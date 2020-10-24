@@ -61,6 +61,7 @@ new Vue({
                 }
             } else {
                 this.$toast(font + ': is not usable');
+                this.loadFont(font);
             }
         },
         bitmapDrawCharacter: function(ctx, curX, y, cData, fillStyle) {
@@ -245,7 +246,7 @@ new Vue({
         // dest logic
         addDest: function(code) {
             if(isNumber(code) && code > 0) {
-                this.current = {
+                destBuffer = {
                     code: code,
                     name: '',
                     front: {
@@ -258,7 +259,7 @@ new Vue({
                     line: {
                         font: '6x12',
                         text: code,
-                        back: '#FF0000',
+                        back: '#26c6da',
                         fore: '#FFFFFF',
                         outl: '#000000',
                     },
@@ -268,7 +269,8 @@ new Vue({
                         color: '#FF6A00',
                     },
                 }
-                this.dests.push(this.current);
+                this.dests.push(destBuffer);
+                this.addDestCode = null;
                 this.$toast(code + ' added in dests');
             } else {
                 this.$toast('invalid code');
@@ -281,6 +283,7 @@ new Vue({
                         this.dests.splice(this.current.index, 1);
                         this.$toast(this.current.code + ' deleted from dests');
                         this.current.code = null;
+                        document.title = 'Select a destination or create it';
                     }
                 })
             } else {
@@ -297,6 +300,7 @@ new Vue({
                 this.current.front.color = '#FF4400';
             }
             this.refreshMatrix();
+            document.title = this.current.code + ' - ' + this.current.name;
         },
         saveCurrentIntoDests: function() {
             this.dests.splice(this.current.index, 1, this.current);
@@ -319,14 +323,19 @@ new Vue({
                     })
                     .then((json) => {
                         localStorage[font] = JSON.stringify(json);
+                        this.pushFont(font);
                     });
+                } else {
+                    this.pushFont(font);
                 }
-                this.fonts[font] = JSON.parse(localStorage[font]);
-                this.refreshMatrix();
-                this.$toast(font + ' loaded');
             } else {
                 this.$toast('empty font requested');
             }
+        },
+        pushFont: function(font) {
+            this.fonts[font] = JSON.parse(localStorage[font]);
+            this.refreshMatrix();
+            this.$toast(font + ' loaded');
         },
         shareCurrent: function() {
             this.shurl = window.location.href.replace(/#+/, '') + '?share=' + base64_url_encode(JSON.stringify(this.current));

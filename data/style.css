@@ -10,6 +10,11 @@
 
 .hof-data {
     padding: 16px;
+    position: relative;
+}
+.hof-data-btn-section {
+    display: inline;
+    position: absolute;
 }
 
 .menu-content {
@@ -87,6 +92,11 @@
     position: absolute;
     top: 50%;
     margin-left: 48vw;
+}
+
+/* colors */
+.bg-error {
+    background-color: var(--mdc-theme-error) !important;
 }
 
 /* display misc */

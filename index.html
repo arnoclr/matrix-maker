@@ -9,14 +9,30 @@
     <title>Simple kpp maker - OMSI 2</title>
     <meta name="description" content="Create colored matrix for omsi 2 and generate hof easily.">
 
+    <!-- app -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Material Design Lite">
+    <link rel="apple-touch-icon-precomposed" href="./data/icons/icon-192x192.png">
+
+    <meta name="msapplication-TileImage" content="./data/icons/icon-192x192.png">
+    <meta name="msapplication-TileColor" content="#26C6DA">
+    
+    <link rel="shortcut icon" href="./data/icons/icon-96x96.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#34515E">
+
     <!-- twitter card -->
-    <meta name="twitter:card" content="Create colored matrix for omsi 2 and generate hof easily."></meta>
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Simple kpp maker - OMSI 2">
+    <meta name="twitter:description" content="Create colored matrix for omsi 2 and generate hof easily."></meta>
     <meta name="twitter:creator" content="@ipsumhh">
+    <meta name="twitter:image" content="http://kpp.genav.ch/data/illustrations/banner.jpg">
 
     <!-- open graph -->
     <meta property="og:title" content="Simple kpp maker - OMSI 2" />
     <meta property="og:description" content="Create colored matrix for omsi 2 and generate hof easily." />
-    <meta property="og:image" content="./data/illustrations/banner.jpg" />
+    <meta property="og:image" content="http://kpp.genav.ch/data/illustrations/banner.jpg" />
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/balm-ui@next/dist/balm-ui.css" />
     <link rel="stylesheet" href="data/style.css">
@@ -75,7 +91,30 @@
             </ui-drawer-header>
             <ui-drawer-content>
                 <ui-nav>
-                    <ui-nav-item href="http://www.freepik.com">Designed by macrovector / Freepik</ui-nav-item>
+                    <ui-nav-item href="http://www.freepik.com">
+                        <ui-item-first-content>
+                            <ui-icon>wallpaper</ui-icon>
+                        </ui-item-first-content>
+                        <ui-item-text-content>Designed by macrovector / Freepik</ui-item-text-content>
+                    </ui-nav-item>
+                    <ui-nav-item href="https://github.com/Aryqs-Ipsum/matrix-maker">
+                        <ui-item-first-content>
+                            <ui-icon>integration_instructions</ui-icon>
+                        </ui-item-first-content>
+                        <ui-item-text-content>Open source project</ui-item-text-content>
+                    </ui-nav-item>
+                    <ui-nav-item href="https://kpp.genav.ch/discord">
+                        <ui-item-first-content>
+                            <ui-icon>quickreply</ui-icon>
+                        </ui-item-first-content>
+                        <ui-item-text-content>Discord server</ui-item-text-content>
+                    </ui-nav-item>
+                    <ui-nav-item href="https://www.instagram.com/_genav/">
+                        <ui-item-first-content>
+                            <ui-icon>camera_enhance</ui-icon>
+                        </ui-item-first-content>
+                        <ui-item-text-content>Instagram</ui-item-text-content>
+                    </ui-nav-item>
                 </ui-nav>
                 <div style="padding:8px">
                     <p>Site develloped by Adam Mathieson and Arno Cellarier. Fonts copyright their respective owners</p>
@@ -148,9 +187,9 @@
 
                     <!-- hof data -->
                     <section v-shadow="2" v-show="current.code" class="hof-data">
-                        <ui-textfield outlined v-model="current.code" input-type="number" style="width:7rem;" disabled>code</ui-textfield>
-                        <ui-textfield outlined v-model="current.name">dest</ui-textfield>
-                        <div style="padding:8px;display:inline">
+                        <ui-textfield outlined v-model="current.code" input-type="number" style="width:7rem;height:48px;" disabled>code</ui-textfield>
+                        <ui-textfield outlined v-model="current.name" style="height:48px;">dest</ui-textfield>
+                        <div class="hof-data-btn-section">
                             <ui-icon-button v-tooltip="'Share actual destination with qrcode'" aria-describedby="share" icon="share" @click="shareCurrent()"></ui-icon-button>
                             <ui-icon-button v-tooltip="'Delete actual destination'" aria-describedby="delete" icon="delete" @click="deleteDest()"></ui-icon-button>
                             <ui-icon-button v-tooltip="'Refresh matrix'" aria-describedby="refresh" icon="refresh" @click="refreshMatrix()"></ui-icon-button>
