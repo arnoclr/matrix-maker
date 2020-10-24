@@ -115,6 +115,11 @@ input[type=color] {
     #not-mobile { display: none; }
 }
 
+/* animations */
+#btn-spinning {
+    transition: all 1s ease-in-out;
+}
+
 /* fonts */
 body, ul, h1, h2, h3, h4, h5, h6, p, a, input, span, .mdc-snackbar__label {
     font-family: 'Poppins', 'Roboto', sans-serif !important;
