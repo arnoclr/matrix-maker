@@ -177,6 +177,27 @@ new Vue({
             this.ctx.fillStyle = "#800000";
             this.ctx.fillRect(230, 0, 26, 64);
             this.ctx.fillRect(50, 32, 10, 32);
+            // website url
+            $('canvas').drawText({
+                fillStyle: '#fff',
+                x: 220, y: 27,
+                fontSize: '7pt',
+                fontFamily: 'Verdana',
+                text: 'kpp.genav.ch',
+                fromCenter: false,
+                rotate: 90
+            });
+            // dest code
+            if(this.current.code) {
+                $('canvas').drawText({
+                    fillStyle: '#fff',
+                    x: 230, y: 52,
+                    fontSize: '7pt',
+                    fontFamily: 'Verdana',
+                    text: this.current.code,
+                    fromCenter: false,
+                });
+            }
         },
         downloadCanvas: function() {
             let downloadLink = document.createElement('a');

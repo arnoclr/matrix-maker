@@ -114,3 +114,8 @@ input[type=color] {
 @media only screen and (max-width: 760px) {
     #not-mobile { display: none; }
 }
+
+/* fonts */
+body, ul, h1, h2, h3, h4, h5, h6, p, a, input, span, .mdc-snackbar__label {
+    font-family: 'Poppins', 'Roboto', sans-serif !important;
+}
