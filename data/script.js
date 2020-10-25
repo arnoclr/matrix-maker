@@ -16,7 +16,7 @@ const fontList = [
 const iconList = [
     {
         label: 'none',
-        value: null
+        value: null,
     },
     {
         label: 'GARE',
@@ -29,6 +29,14 @@ const iconList = [
     {
         label: 'RER',
         value: 'icons/rer.png'
+    },
+    {
+        label: 'custom front',
+        value: null
+    },
+    {
+        label: 'custom side',
+        value: null
     }
 ]
 
@@ -272,10 +280,19 @@ var vm = new Vue({
                 reader.onload = () => {
                     var base64icon = 'data:image/png;base64,' + btoa(reader.result);
                     if(event.srcElement.id == 'frontIconInput') {
+                        iconList.splice(iconList.length - 1, 1, {
+                            label: 'custom front',
+                            value: base64icon,
+                        });
                         this.current.front.iconUrl = base64icon;
                     } else if(event.srcElement.id == 'sideIconInput') {
+                        iconList.splice(iconList.length - 2, 1, {
+                            label: 'custom side',
+                            value: base64icon,
+                        });
                         this.current.side.iconUrl = base64icon;
                     }
+                    iconList = $.unique(iconList);
                     this.refreshMatrix();
                 };
                 reader.onerror = function() {
@@ -445,11 +462,28 @@ var vm = new Vue({
         },
         selectCurrent: function(index) {
             this.current = this.dests[index];
-            if (!this.current.code) {
+            if(!this.current.code) {
                 this.current.code = prompt('please enter a new code');
             }
+            // import icon base64 value in select if custom icon detected
+            if(this.current.front.iconUrl) {
+                if(this.current.front.iconUrl.match(/data:image+/)) {
+                    iconList.splice(iconList.length - 1, 1, {
+                        label: 'custom front',
+                        value: this.current.front.iconUrl,
+                    });
+                }
+            };
+            if(this.current.side.iconUrl) {
+                if(this.current.side.iconUrl.match(/data:image+/)) {
+                    iconList.splice(iconList.length - 2, 1, {
+                        label: 'custom side',
+                        value: this.current.side.iconUrl,
+                    });
+                }
+            };
             this.current.index = index;
-            if (this.current.front.color == null) {
+            if(this.current.front.color == null) {
                 this.current.front.color = '#FF4400';
             }
             this.refreshMatrix();
@@ -682,5 +716,5 @@ window.addEventListener("iconLoaded", function() {
     setTimeout(() => {
         previewCtx.drawImage(canvas, 0, 0, 1024, 256);
         previewCtx.drawImage(overlayImage, 0, 0, 1024, 256);
-    }, 250);
+    }, 100);
 }, false);
