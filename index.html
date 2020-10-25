@@ -182,7 +182,7 @@
                                 </ui-item-first-content>
                                 <ui-item-text-content>Feedback</ui-item-text-content>
                             </ui-nav-item>
-                            <ui-textfield style="width:239px;height:48px;margin-left:8px;" input-type="number" v-model="addDestCode" v-on:keyup.enter="addDest(addDestCode)">add
+                            <ui-textfield style="width:239px;height:48px;margin-left:8px;" input-type="number" v-model="addDestCode" v-on:keyup.enter="addDest(addDestCode)">
                                 add dest
                                 <template #before>
                                     <ui-textfield-icon>create</ui-textfield-icon>
@@ -216,11 +216,20 @@
                             <ui-dialog-title>Settings for {{ current.code }}</ui-dialog-title>
                             <ui-dialog-content>
                                 <small>unique id : {{current.index}}</small><br>
-                                <ui-form-field>
-                                    <ui-switch v-model="current.front.line" @change="refreshMatrix()"></ui-switch>
-                                    <label>Show line on front</label>
-                                </ui-form-field>
-                                <hr>
+                                <ui-list>
+                                    <ui-item>
+                                        <ui-item-first-content>
+                                            <ui-switch v-model="current.front.line" @change="refreshMatrix()"></ui-switch>
+                                        </ui-item-first-content>
+                                        <ui-item-text-content>Show line on front</ui-item-text-content>
+                                    </ui-item>
+                                    <ui-item>
+                                        <ui-item-first-content>
+                                            <ui-switch v-model="autosave" @change="autosavePersist()"></ui-switch>
+                                        </ui-item-first-content>
+                                        <ui-item-text-content>Auto-save</ui-item-text-content>
+                                    </ui-item>
+                                </ui-list>
                                 <p>Edit dest code</p>
                                 <ui-textfield outlined v-model="current.code" input-type="number" style="width:7rem;">code</ui-textfield>
                                 <br><small>Caution: do not delete the code entirely</small>
@@ -232,8 +241,10 @@
                         <img src="data/overlayImage.png" id="overlayImage" style="display: none;">
 
                         <div class="canvasBox">
-                            <div @click="$balmUI.onOpen('lineDialogOpen')" v-tooltip="'Line options'" aria-describedby="line" class="matrixOver" id="lineOver"></div>
-                            <div @click="$balmUI.onOpen('frontDialogOpen')" v-tooltip="'Front text options'" aria-describedby="front" class="matrixOver" id="frontOver"></div>
+                            <div @click="$balmUI.onOpen('lineDialogOpen')" v-tooltip="'Line options'" aria-describedby="line" class="matrixOver" id="lineOver" v-show="current.front.line"></div>
+                            <div @click="$balmUI.onOpen('lineDialogOpen')" v-tooltip="'Line options'" aria-describedby="lineAlt" class="matrixOver" id="lineOverAlt" v-show="!current.front.line"></div>
+                            <div @click="$balmUI.onOpen('frontDialogOpen')" v-tooltip="'Front text options'" aria-describedby="front" class="matrixOver" id="frontOver" v-show="current.front.line"></div>
+                            <div @click="$balmUI.onOpen('frontDialogOpen')" v-tooltip="'Front text options'" aria-describedby="frontAlt" class="matrixOver" id="frontOverAlt" v-show="!current.front.line"></div>
                             <div @click="$balmUI.onOpen('sideDialogOpen')" v-tooltip="'Side text options'" aria-describedby="side" class="matrixOver" id="sideOver"></div>
                             <canvas width="1024" height="256" style="border: solid 1px black;" id="previewCanvas"></canvas>
                         </div>
@@ -292,45 +303,45 @@
                         <ui-dialog v-model="sideDialogOpen" :mask-closable="true">
                             <ui-dialog-title>Side text options</ui-dialog-title>
                             <ui-dialog-content>
-                                <section>
-                                    <h4>Font selection</h4>
-                                    <ui-select v-model="current.side.font" :options="fontList" @change="loadFont(current.side.font)" id="fontSelector"></ui-select>
-                                </section><hr>
-                                <section>
-                                    <h4>Text edition</h4>
-                                    <ui-textfield v-model="current.side.text" @keyup="refreshMatrix()">Side text</ui-textfield><br>
-                                    <div style="position:relative; display:inline-block">
-                                        <ui-button raised type="button" v-bind:style="{ backgroundColor: current.side.color, color: pickerTextColor(current.side.color) }">side color</ui-button raised>
-                                        <input type="color" v-model="current.side.color" @change="refreshMatrix()" style="opacity:0; position:absolute; left:0;top:0;width:100%"/>
-                                    </div>
-                                </section>
+                                <template v-if="current.side.text">
+                                    <h4>Fonts</h4>
+                                    <ui-select v-model="current.side.font" :options="fontList" @change="loadFont(current.side.font)" id="fontSelector">{{ current.side.text.includes('\n') ? 'Top' : 'Main' }} font</ui-select>
+                                    <ui-select v-model="current.side.fontb" :options="fontList" @change="loadFont(current.side.font)" id="fontSelector" v-show="current.side.text.includes('\n')">Bottom font</ui-select>
+                                </template>
+                                <hr><h4>Text edition</h4>
+                                <ui-textfield maxlength="150" v-model="current.side.text" id="frontText" input-type="textarea" rows="2" cols="40" @keyup="refreshMatrix()" @change="saveCurrentIntoDests()">front text</ui-textfield>
+                                <div style="position:relative; display:inline-block">
+                                    <ui-button raised type="button" v-bind:style="{ backgroundColor: current.side.color, color: pickerTextColor(current.side.color) }">side text color</ui-button raised>
+                                    <input type="color" v-model="current.side.color" @change="refreshMatrix()" style="opacity:0; position:absolute; left:0;top:0;width:100%"/>
+                                </div>
                             </ui-dialog-content>
                             <ui-dialog-actions></ui-dialog-actions>
                         </ui-dialog>
 
                         <!-- icons options -->
                         <ui-dialog v-model="iconDialogOpen" :mask-closable="true">
-                            <ui-dialog-title>Icon options <canvas id="iconLoader" width="32" height="32" style="width:32px;height:32px;float:right;margin-top:16px;"></canvas></ui-dialog-title>
+                            <ui-dialog-title>Icon options</ui-dialog-title>
                             <ui-dialog-content>
-                                <ui-grid>
+                                <ui-grid style="padding:0">
                                     <ui-grid-cell columns="6">
-                                        <ui-select v-model="current.front.iconUrl" :options="iconList" @change="refreshMatrix()">Front icon</ui-select>
-                                        <br>
-                                        <div style="position:relative; display:inline-block">
-                                            <ui-button raised type="button" v-bind:style="{ backgroundColor: current.front.iconHex, color: pickerTextColor(current.front.iconHex) }">Front icon color</ui-button raised>
-                                            <input type="color" v-model="current.front.iconHex" @change="refreshMatrix()" style="opacity:0; position:absolute; left:0;top:0;width:100%"/>
-                                        </div>
-                                        <br><small>Front icon</small>
+                                        <ui-select v-model="current.front.iconUrlL" :options="iconList" @change="refreshMatrix()">Front left icon</ui-select><img :src="current.front.iconUrlL" alt="">
+                                        <ui-select v-model="current.side.iconUrlL" :options="iconList" @change="refreshMatrix()">Side left icon</ui-select><img :src="current.side.iconUrlL" alt="">
                                     </ui-grid-cell>
                                     <ui-grid-cell columns="6">
-                                        <ui-select v-model="current.side.iconUrl" :options="iconList" @change="refreshMatrix()">Side icon</ui-select>
-                                        <div style="position:relative; display:inline-block">
-                                            <ui-button raised type="button" v-bind:style="{ backgroundColor: current.side.iconHex, color: pickerTextColor(current.side.iconHex) }">Side icon color</ui-button raised>
-                                            <input type="color" v-model="current.side.iconHex" @change="refreshMatrix()" style="opacity:0; position:absolute; left:0;top:0;width:100%"/>
-                                        </div>
-                                        <br><small>Side icon</small>
+                                        <ui-select v-model="current.front.iconUrlR" :options="iconList" @change="refreshMatrix()">Front right icon</ui-select><img :src="current.front.iconUrlR" alt="">
+                                        <ui-select v-model="current.side.iconUrlR" :options="iconList" @change="refreshMatrix()">Side right icon</ui-select><img :src="current.side.iconUrlR" alt="">
                                     </ui-grid-cell>
                                 </ui-grid>
+                                <br>
+                                <div style="position:relative; display:inline-block">
+                                    <ui-button raised type="button" v-bind:style="{ backgroundColor: current.front.iconHex, color: pickerTextColor(current.front.iconHex) }">Front icon color</ui-button raised>
+                                    <input type="color" v-model="current.front.iconHex" @change="refreshMatrix()" style="opacity:0; position:absolute; left:0;top:0;width:100%"/>
+                                </div>
+                                <br>
+                                <div style="position:relative; display:inline-block">
+                                    <ui-button raised type="button" v-bind:style="{ backgroundColor: current.side.iconHex, color: pickerTextColor(current.side.iconHex) }">Side icon color</ui-button raised>
+                                    <input type="color" v-model="current.side.iconHex" @change="refreshMatrix()" style="opacity:0; position:absolute; left:0;top:0;width:100%"/>
+                                </div>
                                 <ui-collapse with-icon ripple>
                                     <template #toggle>
                                       <div>Advanced options</div>
@@ -339,13 +350,14 @@
                                         <p style="margin-bottom:0;">Add customs icons.</p>
                                         <small>Must be black and white .png with 32px height and 29px width.</small>
                                         <br>
-                                        <input type="file" id="frontIconInput" @change="iconSubmitted">Front icon</input>
-                                        <input type="file" id="sideIconInput" @change="iconSubmitted">Side icon</input>
+                                        <input type="file" id="frontIconInputL" @change="iconSubmitted">Front left icon</input>
+                                        <input type="file" id="frontIconInputR" @change="iconSubmitted">Front right icon</input>
+                                        <input type="file" id="sideIconInputL" @change="iconSubmitted">Side left icon</input>
+                                        <input type="file" id="sideIconInputR" @change="iconSubmitted">Side right icon</input>
+                                        <br><canvas id="iconLoader" width="32" height="32" style="width:32px;height:32px;"></canvas>
                                     </div>
                                 </ui-collapse>
-                                <hr>
-                                <p>This is a preview feature, some things could not work as expected.</p>       
-                            </ui-dialog-content>
+                                </ui-dialog-content>
                             <ui-dialog-actions></ui-dialog-actions>
                         </ui-dialog>
 

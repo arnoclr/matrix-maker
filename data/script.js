@@ -1,5 +1,9 @@
 const fontList = [
     {
+        label: '6x12',
+        value: '6x12'
+    },
+    {
         label: 'luBS08',
         value: 'luBS08'
     },
@@ -8,9 +12,17 @@ const fontList = [
         value: 'luRS08'
     },
     {
-        label: '6x12',
-        value: '6x12'
-    }
+        label: 'luBS14',
+        value: 'luBS14'
+    },
+    {
+        label: 'luBS18',
+        value: 'luBS18'
+    },
+    {
+        label: 'luBS24',
+        value: 'luBS24'
+    },
 ]
 
 const iconList = [
@@ -19,8 +31,24 @@ const iconList = [
         value: null,
     },
     {
-        label: 'GARE',
+        label: 'Aeroport',
+        value: 'icons/aero.png'
+    },
+    {
+        label: 'Gare',
         value: 'icons/gare.png'
+    },
+    {
+        label: 'Hopital',
+        value: 'icons/hopital.png'
+    },
+    {
+        label: 'Metro',
+        value: 'icons/m.png'
+    },
+    {
+        label: 'Parking',
+        value: 'icons/p.png'
     },
     {
         label: 'PR',
@@ -31,11 +59,28 @@ const iconList = [
         value: 'icons/rer.png'
     },
     {
-        label: 'custom front',
+        label: 'SCO',
+        value: 'icons/sco.png'
+    },
+    {
+        label: 'Tramway',
+        value: 'icons/t.png'
+    },
+    // customs icons
+    {
+        label: 'custom left front', // -4
         value: null
     },
     {
-        label: 'custom side',
+        label: 'custom right front', // -3
+        value: null
+    },
+    {
+        label: 'custom left side', // -2
+        value: null
+    },
+    {
+        label: 'custom right side', // -1
         value: null
     }
 ]
@@ -72,8 +117,9 @@ var vm = new Vue({
         shurl: null,
         qrurl: null,
         hofName: null,
+        autosave: false,
         rot: 0,
-        isMobile: window.matchMedia('only screen and (max-width: 760px)').matches,
+        isMobile: window.matchMedia('only screen and (max-width: 960px)').matches,
     },
     methods: {
         // Matrix
@@ -150,18 +196,25 @@ var vm = new Vue({
             }
             this.iconCtx.fillStyle = hex;
             this.iconCtx.fillRect(0, 0, 32, 32);
-            var matrW = 0;
             var Xoff = 0;
-            if (showLine) {
-                if (matrix === 0) {
-                    matrW = 230
-                    Xoff = Xoff + 50;
-                }
-                if (matrix === 1) {
-                    matrW = 170;
-                    Xoff = Xoff + 32;
-                }
+            var Yoff = 0;
+            switch(matrix) {
+                case 0:
+                    Xoff+=50;
+                    break;
+                case 1:
+                    Xoff+=198;
+                    break;
+                case 2:
+                    Xoff+=60;
+                    Yoff+=32;
+                    break;
+                case 3:
+                    Xoff+=198;
+                    Yoff+=32;
+                    break;
             }
+            Xoff = (!showLine && matrix == 0) ? 0 : Xoff;
             this.iconCtx.width = 32;
             this.iconCtx.height = 32;
             this.iconCanvas.style.width = "32px";
@@ -173,29 +226,6 @@ var vm = new Vue({
                 var evt = new CustomEvent("iconLoaded");
                 window.dispatchEvent(evt);
                 function drawIconPX(x, y, matrix, hex) {
-                    switch (matrix) {
-                        case 0:
-                            if (x >= 0 && x < 230 && y >= 0 && y < 32) {
-                            } else {
-                                x = y = -99;
-                            }
-                            break;
-                        case 1:
-                            if (x >= 0 && x < 170 && y >= 0 && y < 32) {
-                                x = (x+60);
-                                y = (y+32);
-                            } else {
-                                x = y = -99;
-                            }
-                            break;
-                        case 2:
-                            if (x >= 0 && x < 50 && y >= 0 && y < 32) {
-                                y = (y+32);
-                            } else {
-                                x = y = -99;
-                            }
-                            break;
-                    }
                     var canvas = document.getElementById("canvas");
                     var ctx = canvas.getContext('2d');
                     ctx.fillStyle = hex;
@@ -204,17 +234,25 @@ var vm = new Vue({
                 var iconCanvas = document.getElementById("iconLoader");
                 var iconCtx = iconCanvas.getContext('2d');
                 iconCtx.drawImage(img, 1, 1);
-                for (var y = 0; y < 33; y++) {
-                    for (var x = 0; x < 33; x++) {
+                for (var y = 0; y < 32; y++) {
+                    for (var x = 0; x < 32; x++) {
                         if ((iconCtx.getImageData(x, y, 1, 1).data)[0] > 128) {
-                            drawIconPX(x + Xoff, y, matrix, hex);
+                            drawIconPX(x + Xoff, y + Yoff, matrix, hex);
                         } else {
-                            drawIconPX(x + Xoff, y, matrix, '#000000');
+                            drawIconPX(x + Xoff, y + Yoff, matrix, '#000000');
                         }
                     }
                 }
             }
             img.src = iconCode;
+        },
+
+        // text margin
+        // return margin top & bottom
+        setMarginText: function(topDims, bottomDims) {
+            var middle = 32 - topDims - bottomDims;
+            var margin = Math.round((middle - 2) / 2);
+            return (margin == 0) ? 1 : margin;
         },
 
         // front
@@ -226,10 +264,11 @@ var vm = new Vue({
             // 1/2 lines
             if (this.current.front.text.includes('\n')) {
                 var splitedText = this.current.front.text.split('\n');
-                var dims = this.bitmapTextDims(splitedText[0], this.current.front.font);
-                this.fillBitmapTextDraw(this.ctx, splitedText[0], Math.round(textWidth-(dims.width/2)), Math.round(8+(dims.height/2)), this.current.front.font, this.current.front.color, ()=>{});
-                var dims = this.bitmapTextDims(splitedText[1], this.current.front.fontb);
-                this.fillBitmapTextDraw(this.ctx, splitedText[1], Math.round(textWidth-(dims.width/2)), Math.round(24+(dims.height/2)), this.current.front.fontb, this.current.front.color, ()=>{});
+                var dimsTop = this.bitmapTextDims(splitedText[0], this.current.front.font);
+                var dimsBottom = this.bitmapTextDims(splitedText[1], this.current.front.fontb);
+                margin = this.setMarginText(dimsTop.height, dimsBottom.height)
+                this.fillBitmapTextDraw(this.ctx, splitedText[0], Math.round(textWidth-(dimsTop.width/2)), dimsTop.height + margin, this.current.front.font, this.current.front.color, ()=>{});
+                this.fillBitmapTextDraw(this.ctx, splitedText[1], Math.round(textWidth-(dimsBottom.width/2)), 32 - margin, this.current.front.fontb, this.current.front.color, ()=>{});
             } else {
                 var dims = this.bitmapTextDims(this.current.front.text, this.current.front.font);
                 this.fillBitmapTextDraw(this.ctx, this.current.front.text, Math.round(textWidth-(dims.width/2)), Math.round(16+(dims.height/2)), this.current.front.font, this.current.front.color, ()=>{});
@@ -241,9 +280,18 @@ var vm = new Vue({
         writeSideText: function() {
             this.ctx.fillStyle = "#000000";
             this.ctx.fillRect(60, 32, 170, 32);
-            var dims = this.bitmapTextDims(this.current.side.text, this.current.side.font);
-            this.fillBitmapTextDraw(this.ctx, this.current.side.text, Math.round(145-(dims.width/2)), Math.round(48+(dims.height/2)), this.current.side.font, this.current.side.color, ()=>{});
-            this.renderCanvas(this.ctx, this.previewCtx);
+            if (this.current.side.text.includes('\n')) {
+                var splitedText = this.current.side.text.split('\n');
+                var dimsTop = this.bitmapTextDims(splitedText[0], this.current.side.font);
+                var dimsBottom = this.bitmapTextDims(splitedText[1], this.current.side.fontb);
+                margin = this.setMarginText(dimsTop.height, dimsBottom.height)
+                this.fillBitmapTextDraw(this.ctx, splitedText[0], Math.round(145-(dimsTop.width/2)), 32 + dimsTop.height + margin, this.current.side.font, this.current.side.color, ()=>{});
+                this.fillBitmapTextDraw(this.ctx, splitedText[1], Math.round(145-(dimsBottom.width/2)), 64 - margin, this.current.side.fontb, this.current.side.color, ()=>{});
+            } else {
+                var dims = this.bitmapTextDims(this.current.side.text, this.current.side.font);
+                this.fillBitmapTextDraw(this.ctx, this.current.side.text, Math.round(145-(dims.width/2)), Math.round(48+(dims.height/2)), this.current.side.font, this.current.side.color, ()=>{});
+                this.renderCanvas(this.ctx, this.previewCtx);
+            }
         },
 
         // line
@@ -264,11 +312,17 @@ var vm = new Vue({
 
         // write icon at top and bottom
         writeIcon: function() {
-            if(this.current.front.iconUrl) {
-                this.drawIcon(this.current.front.iconUrl, 0, this.current.front.line, false, this.current.front.iconHex);
+            if(this.current.front.iconUrlL) {
+                this.drawIcon(this.current.front.iconUrlL, 0, this.current.front.line, false, this.current.front.iconHex);
             }
-            if(this.current.side.iconUrl) {
-                this.drawIcon(this.current.side.iconUrl, 1, this.current.side.line, false, this.current.side.iconHex);
+            if(this.current.front.iconUrlR) {
+                this.drawIcon(this.current.front.iconUrlR, 1, this.current.front.line, false, this.current.front.iconHex);
+            }
+            if(this.current.side.iconUrlL) {
+                this.drawIcon(this.current.side.iconUrlL, 2, this.current.side.line, false, this.current.side.iconHex);
+            }
+            if(this.current.side.iconUrlR) {
+                this.drawIcon(this.current.side.iconUrlR, 3, this.current.side.line, false, this.current.side.iconHex);
             }
         },
         iconSubmitted: function(event) {
@@ -279,20 +333,31 @@ var vm = new Vue({
 
                 reader.onload = () => {
                     var base64icon = 'data:image/png;base64,' + btoa(reader.result);
-                    if(event.srcElement.id == 'frontIconInput') {
-                        iconList.splice(iconList.length - 1, 1, {
-                            label: 'custom front',
+                    if(event.srcElement.id == 'frontIconInputL') {
+                        iconList.splice(iconList.length - 4, 1, {
+                            label: 'custom left front',
                             value: base64icon,
                         });
-                        this.current.front.iconUrl = base64icon;
-                    } else if(event.srcElement.id == 'sideIconInput') {
+                        this.current.front.iconUrlL = base64icon;
+                    } else if(event.srcElement.id == 'frontIconInputR') {
+                        iconList.splice(iconList.length - 3, 1, {
+                            label: 'custom right front',
+                            value: base64icon,
+                        });
+                        this.current.front.iconUrlR = base64icon;
+                    } else if(event.srcElement.id == 'sideIconInputL') {
                         iconList.splice(iconList.length - 2, 1, {
-                            label: 'custom side',
+                            label: 'custom left side',
                             value: base64icon,
                         });
-                        this.current.side.iconUrl = base64icon;
+                        this.current.side.iconUrlL = base64icon;
+                    } else if(event.srcElement.id == 'sideIconInputR') {
+                        iconList.splice(iconList.length - 1, 1, {
+                            label: 'custom right side',
+                            value: base64icon,
+                        });
+                        this.current.side.iconUrlR = base64icon;
                     }
-                    iconList = $.unique(iconList);
                     this.refreshMatrix();
                 };
                 reader.onerror = function() {
@@ -313,6 +378,9 @@ var vm = new Vue({
             this.drawRedPattern();
             this.renderCanvas(this.ctx, this.previewCtx);
             this.saveCurrentIntoDests();
+            if(this.autosave) {
+                this.saveDestsInLocalStorage();
+            }
         },
 
         // utils
@@ -466,19 +534,35 @@ var vm = new Vue({
                 this.current.code = prompt('please enter a new code');
             }
             // import icon base64 value in select if custom icon detected
-            if(this.current.front.iconUrl) {
-                if(this.current.front.iconUrl.match(/data:image+/)) {
-                    iconList.splice(iconList.length - 1, 1, {
-                        label: 'custom front',
-                        value: this.current.front.iconUrl,
+            if(this.current.front.iconUrlL) {
+                if(this.current.front.iconUrlL.match(/data:image+/)) {
+                    iconList.splice(iconList.length - 4, 1, {
+                        label: 'custom left front',
+                        value: this.current.front.iconUrlL,
                     });
                 }
             };
-            if(this.current.side.iconUrl) {
-                if(this.current.side.iconUrl.match(/data:image+/)) {
+            if(this.current.front.iconUrlR) {
+                if(this.current.front.iconUrlR.match(/data:image+/)) {
+                    iconList.splice(iconList.length - 3, 1, {
+                        label: 'custom right front',
+                        value: this.current.front.iconUrlR,
+                    });
+                }
+            };
+            if(this.current.side.iconUrlL) {
+                if(this.current.side.iconUrlL.match(/data:image+/)) {
                     iconList.splice(iconList.length - 2, 1, {
-                        label: 'custom side',
-                        value: this.current.side.iconUrl,
+                        label: 'custom left side',
+                        value: this.current.side.iconUrlL,
+                    });
+                }
+            };
+            if(this.current.side.iconUrlR) {
+                if(this.current.side.iconUrlR.match(/data:image+/)) {
+                    iconList.splice(iconList.length - 1, 1, {
+                        label: 'custom right side',
+                        value: this.current.side.iconUrlR,
                     });
                 }
             };
@@ -528,6 +612,13 @@ var vm = new Vue({
             this.shurl = window.location.href.replace(/#+/, '') + '?share=' + base64_url_encode(JSON.stringify(this.current));
             this.qrurl = 'https://api.qrserver.com/v1/create-qr-code/?data=' + this.shurl;
             this.$balmUI.onOpen('shareDialogOpen');
+        },
+        autosavePersist: function() {
+            if(this.autosave) {
+                localStorage.autosave = this.autosave;
+            } else {
+                localStorage.removeItem('autosave');
+            }
         },
 
         // generate hof
@@ -643,6 +734,11 @@ var vm = new Vue({
         this.$theme.primary = '#607d8b';
         this.$theme.secondary = '#26c6da';
 
+        // autosave init
+        if(localStorage.autosave) {
+            this.autosave = localStorage.autosave;
+        }
+
         // init data
         // with local storage or url share parameter
         var url_string = window.location.href;
@@ -709,6 +805,14 @@ function base64_url_encode(input) {
 }
 function base64_url_decode(input) {
     return atob(decodeURI(input));
+}
+
+function pause(milliseconds) {
+    const date = Date.now();
+    let currentDate = null;
+    do {
+      currentDate = Date.now();
+    } while (currentDate - date < milliseconds);
 }
 
 // icons preview rerender after loading

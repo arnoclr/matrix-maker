@@ -36,6 +36,17 @@
     height: 128px;
     margin-left: 200px;
 }
+#lineOverAlt {
+    position: absolute;
+    margin-top: 128px;
+    height: 128px;
+    width: 200px;
+}
+#frontOverAlt {
+    position: absolute;
+    width: 920px;
+    height: 128px;
+}
 #sideOver {
     position: absolute;
     width: 680px;
