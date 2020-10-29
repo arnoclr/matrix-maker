@@ -260,6 +260,13 @@ var vm = new Vue({
             this.ctx.fillStyle = "#000000";
             var tlx = (this.current.front.line) ? 50 : 0;
             var textWidth = (this.current.front.line) ? 140 : 115;
+            // center text if L/R icon selected
+            if(this.current.front.iconUrlL) {
+                textWidth+=15;
+            }
+            if(this.current.front.iconUrlR) {
+                textWidth-=15;
+            }
             this.ctx.fillRect(tlx, 0, 230, 32);
             // 1/2 lines
             if (this.current.front.text.includes('\n')) {
@@ -280,16 +287,25 @@ var vm = new Vue({
         writeSideText: function() {
             this.ctx.fillStyle = "#000000";
             this.ctx.fillRect(60, 32, 170, 32);
+            var textWidth = 145;
+            // center text if L/R icon selected
+            if(this.current.side.iconUrlL) {
+                textWidth+=15;
+            }
+            if(this.current.side.iconUrlR) {
+                textWidth-=15;
+            }
+            // 1/2 lines
             if (this.current.side.text.includes('\n')) {
                 var splitedText = this.current.side.text.split('\n');
                 var dimsTop = this.bitmapTextDims(splitedText[0], this.current.side.font);
                 var dimsBottom = this.bitmapTextDims(splitedText[1], this.current.side.fontb);
                 margin = this.setMarginText(dimsTop.height, dimsBottom.height)
-                this.fillBitmapTextDraw(this.ctx, splitedText[0], Math.round(145-(dimsTop.width/2)), 32 + dimsTop.height + margin, this.current.side.font, this.current.side.color, ()=>{});
-                this.fillBitmapTextDraw(this.ctx, splitedText[1], Math.round(145-(dimsBottom.width/2)), 64 - margin, this.current.side.fontb, this.current.side.color, ()=>{});
+                this.fillBitmapTextDraw(this.ctx, splitedText[0], Math.round(textWidth-(dimsTop.width/2)), 32 + dimsTop.height + margin, this.current.side.font, this.current.side.color, ()=>{});
+                this.fillBitmapTextDraw(this.ctx, splitedText[1], Math.round(textWidth-(dimsBottom.width/2)), 64 - margin, this.current.side.fontb, this.current.side.color, ()=>{});
             } else {
                 var dims = this.bitmapTextDims(this.current.side.text, this.current.side.font);
-                this.fillBitmapTextDraw(this.ctx, this.current.side.text, Math.round(145-(dims.width/2)), Math.round(48+(dims.height/2)), this.current.side.font, this.current.side.color, ()=>{});
+                this.fillBitmapTextDraw(this.ctx, this.current.side.text, Math.round(textWidth-(dims.width/2)), Math.round(48+(dims.height/2)), this.current.side.font, this.current.side.color, ()=>{});
                 this.renderCanvas(this.ctx, this.previewCtx);
             }
         },
@@ -571,7 +587,8 @@ var vm = new Vue({
                 this.current.front.color = '#FF4400';
             }
             this.refreshMatrix();
-            document.title = this.current.code + ' - ' + this.current.name;
+            document.title = this.current.code + ' → ' + this.current.name;
+            this.$theme.secondary = (this.current.line.back) ? this.current.line.back : '#26c6da';
         },
         saveCurrentIntoDests: function() {
             this.dests.splice(this.current.index, 1, this.current);

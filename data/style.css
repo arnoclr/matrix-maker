@@ -120,6 +120,9 @@ body {
 input[type=color] {
     cursor: pointer;
 }
+i.align {
+    vertical-align: -25%;
+}
 
 /* detect mobile device */
 @media only screen and (max-width: 760px) {

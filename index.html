@@ -140,7 +140,7 @@
         <div class="demo-container" v-show="!isMobile">
             <!-- App bar -->
             <ui-top-app-bar v-shadow="4" class="demo-app-bar" content-selector=".demo-content" :nav-icon="false">
-                kpp maker
+                Kpp Maker
                 <template #toolbar="{ toolbarItemClass }">
                     <ui-icon-button :class="toolbarItemClass" v-tooltip="'Save all destinations in device storage'" aria-describedby="save in storage" icon="save" @click="saveDestsInLocalStorage()"></ui-icon-button>
                     
@@ -172,9 +172,9 @@
                         <ui-nav>
                             <ui-nav-item href="#" id="destsList" v-for="(dest, index) in dests" :key="index" @click="selectCurrent(index)" :active="index == current.index">
                                 <ui-item-first-content>
-                                    <ui-icon>flag</ui-icon>
+                                    <ui-icon v-bind:style="{ color: dest.line.back }">flag</ui-icon>
                                 </ui-item-first-content>
-                                <ui-item-text-content>{{dest.code}}.{{dest.name}}</ui-item-text-content>
+                                <ui-item-text-content>{{dest.code}} <ui-icon class="align">arrow_forward</ui-icon> {{dest.name}}</ui-item-text-content>
                             </ui-nav-item>
                             <ui-nav-item href="https://forms.gle/DcYYG9u63hQnE8e67" target="_blank">
                                 <ui-item-first-content>
@@ -219,15 +219,21 @@
                                 <ui-list>
                                     <ui-item>
                                         <ui-item-first-content>
-                                            <ui-switch v-model="current.front.line" @change="refreshMatrix()"></ui-switch>
+                                            <ui-icon>label_off</ui-icon>
                                         </ui-item-first-content>
                                         <ui-item-text-content>Show line on front</ui-item-text-content>
+                                        <ui-item-last-content>
+                                            <ui-switch v-model="current.front.line" @change="refreshMatrix()"></ui-switch>
+                                        </ui-item-last-content>
                                     </ui-item>
                                     <ui-item>
                                         <ui-item-first-content>
-                                            <ui-switch v-model="autosave" @change="autosavePersist()"></ui-switch>
+                                            <ui-icon>save</ui-icon>
                                         </ui-item-first-content>
                                         <ui-item-text-content>Auto-save</ui-item-text-content>
+                                        <ui-item-last-content>
+                                            <ui-switch v-model="autosave" @change="autosavePersist()"></ui-switch>
+                                        </ui-item-last-content>
                                     </ui-item>
                                 </ui-list>
                                 <p>Edit dest code</p>
