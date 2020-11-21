@@ -134,7 +134,7 @@
         <!-- mobile disclaimer -->
         <section v-show="isMobile" class="empty-state">
             <ui-icon>desktop_access_disabled</ui-icon>
-            <p>Your screen is too small</p>
+            <p>Your screen is too small, please open app in new device or zoom out.</p>
         </section>
 
         <div class="demo-container" v-show="!isMobile">
@@ -176,13 +176,13 @@
                                 </ui-item-first-content>
                                 <ui-item-text-content>{{dest.code}} <ui-icon class="align">arrow_forward</ui-icon> {{dest.name}}</ui-item-text-content>
                             </ui-nav-item>
-                            <ui-nav-item href="https://forms.gle/DcYYG9u63hQnE8e67" target="_blank">
+                            <ui-nav-item href="https://forms.gle/yax9W7PoiHCeBKH18" target="_blank">
                                 <ui-item-first-content>
                                     <ui-icon>feedback</ui-icon>
                                 </ui-item-first-content>
-                                <ui-item-text-content>Feedback</ui-item-text-content>
+                                <ui-item-text-content>Bug report</ui-item-text-content>
                             </ui-nav-item>
-                            <ui-textfield style="width:239px;height:48px;margin-left:8px;" input-type="number" v-model="addDestCode" v-on:keyup.enter="addDest(addDestCode)">
+                            <ui-textfield style="width:239px;height:48px;margin-left:8px;" input-type="number" v-model="addDestCode" v-on:keyup.enter="addDest(addDestCode)" id="add-dest">
                                 add dest
                                 <template #before>
                                     <ui-textfield-icon>create</ui-textfield-icon>
@@ -373,6 +373,7 @@
                     <section v-show="!current.code" class="empty-state">
                         <ui-icon>touch_app</ui-icon>
                         <p>Start by select a destination ou create it in the side nav.</p>
+                        <ui-button raised @click="addDestFocus()">add destination</ui-button>
                     </section>
 
                 </div>

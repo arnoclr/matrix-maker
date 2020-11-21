@@ -2,6 +2,8 @@
     width: 100%;
     height: 100%;
     overflow: auto;
+    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
 }
 
 .main-content {

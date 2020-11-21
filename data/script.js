@@ -223,8 +223,6 @@ var vm = new Vue({
             this.iconCtx.fillRect(0, 0, 32, 32);
             var img = new Image();
             img.onload = function() {
-                var evt = new CustomEvent("iconLoaded");
-                window.dispatchEvent(evt);
                 function drawIconPX(x, y, matrix, hex) {
                     var canvas = document.getElementById("canvas");
                     var ctx = canvas.getContext('2d');
@@ -243,6 +241,7 @@ var vm = new Vue({
                         }
                     }
                 }
+                window.dispatchEvent(new CustomEvent("icon:loaded"));
             }
             img.src = iconCode;
         },
@@ -494,6 +493,10 @@ var vm = new Vue({
                 return 'black';
             }
         },
+
+        addDestFocus: function() {
+            document.querySelector('#add-dest').focus();
+        },
         
         // dest logic
         addDest: function(code) {
@@ -660,9 +663,14 @@ var vm = new Vue({
             codeBook.setHeading("CODE", "NAME", "LINE TEXT", "FRONT TEXT", "SIDE TEXT");
             for (dest in this.dests) {
                 curCode = this.dests[dest].code;
+                // to fix : wait icon loading to add img in zip
                 this.selectCurrent(dest);
-                img.file(dest + ".png", $("#canvas").getCanvasImage().substr(22), {base64: true});
-                codeBook.addRow(dest, this.dests[dest].name, this.dests[dest].line.text, this.dests[dest].front.text.replace(/\n+/g, '-'), this.dests[dest].side.text.replace(/\n+/g, '-'));
+                console.log('current selected')
+                window.addEventListener('icon:loaded', () => {
+                    console.log('icon loaded event')
+                    img.file(dest + ".png", $("#canvas").getCanvasImage().substr(22), {base64: true});
+                })
+                codeBook.addRow(dest, this.dests[dest].name, this.dests[dest].line.text, this.dests[dest].front.text.replace(/\n+/g, '↵'), this.dests[dest].side.text.replace(/\n+/g, '↵'));
             }
             zip.file("codebook.txt", codeBook.toString());
             curCode = lastCode;
@@ -790,7 +798,16 @@ var vm = new Vue({
         this.ctx.bitmapTextDims = this.bitmapTextDims;
         this.drawRedPattern();
 
-        $('#preloader').fadeOut();
+        $(window).bind('load', () => {
+            $('#preloader').fadeOut();
+        });
+
+        // beta disclaimer
+        var subdomain =  window.location.host.split('.')[1] ? window.location.host.split('.')[0] : false;
+        if(subdomain == 'beta') {
+            this.$alert('This is a beta version of the site, which may contain bugs. Please report any malfunctions you encounter. This preview contain a small selection of usable fonts.')
+        }
+
     }
 })
 //Vue.config.devtools = true
@@ -833,9 +850,7 @@ function pause(milliseconds) {
 }
 
 // icons preview rerender after loading
-window.addEventListener("iconLoaded", function() {
-    setTimeout(() => {
-        previewCtx.drawImage(canvas, 0, 0, 1024, 256);
-        previewCtx.drawImage(overlayImage, 0, 0, 1024, 256);
-    }, 100);
+window.addEventListener("icon:loaded", function() {
+    previewCtx.drawImage(canvas, 0, 0, 1024, 256);
+    previewCtx.drawImage(overlayImage, 0, 0, 1024, 256);
 }, false);
