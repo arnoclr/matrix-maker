@@ -642,6 +642,9 @@ var vm = new Vue({
         },
 
         // generate hof
+        generateHofImages: function() {
+
+        },
         generateHof: function() {
             if(!this.hofName) {
                 return this.$toast('Name is empty');
@@ -663,14 +666,9 @@ var vm = new Vue({
             codeBook.setHeading("CODE", "NAME", "LINE TEXT", "FRONT TEXT", "SIDE TEXT");
             for (dest in this.dests) {
                 curCode = this.dests[dest].code;
-                // to fix : wait icon loading to add img in zip
                 this.selectCurrent(dest);
-                console.log('current selected')
-                window.addEventListener('icon:loaded', () => {
-                    console.log('icon loaded event')
-                    img.file(dest + ".png", $("#canvas").getCanvasImage().substr(22), {base64: true});
-                })
                 codeBook.addRow(dest, this.dests[dest].name, this.dests[dest].line.text, this.dests[dest].front.text.replace(/\n+/g, '↵'), this.dests[dest].side.text.replace(/\n+/g, '↵'));
+                img.file(dest + ".png", $("#canvas").getCanvasImage().substr(22), {base64: true});
             }
             zip.file("codebook.txt", codeBook.toString());
             curCode = lastCode;
@@ -769,11 +767,7 @@ var vm = new Vue({
         var url_string = window.location.href;
         var url = new URL(url_string);
         var s = url.searchParams.get("share");
-        if(s) {
-            this.dests.push(JSON.parse(base64_url_decode(s)));
-            this.$toast(`${this.dests[0].code} imported`);
-        }
-        else if(localStorage.data) {
+        if(localStorage.data) {
             this.dests = JSON.parse(localStorage.data)
             // retro compatibility for data of v1.x
             if (this.dests.constructor === ({}).constructor) {
@@ -783,6 +777,12 @@ var vm = new Vue({
                     arrayBuffer.push(this.dests[i]);
                 this.dests = arrayBuffer;
             }
+        }
+        if(s) {
+            jsonImport = JSON.parse(base64_url_decode(s));
+            this.dests.push(jsonImport);
+            this.$toast(`${jsonImport.code} → ${jsonImport.name} imported`);
+            history.pushState("", document.title, window.location.pathname);
         }
 
         this.canvas = document.getElementById("canvas");
