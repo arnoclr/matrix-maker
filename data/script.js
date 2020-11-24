@@ -120,6 +120,7 @@ var vm = new Vue({
         autosave: false,
         rot: 0,
         isMobile: window.matchMedia('only screen and (max-width: 960px)').matches,
+        lastIndex:0
     },
     methods: {
         // Matrix
@@ -214,7 +215,7 @@ var vm = new Vue({
                     Yoff+=32;
                     break;
             }
-            Xoff = (!showLine && matrix == 0) ? 0 : Xoff;
+            Xoff = (!showLine && matrix === 0) ? 0 : Xoff;
             this.iconCtx.width = 32;
             this.iconCtx.height = 32;
             this.iconCanvas.style.width = "32px";
@@ -228,7 +229,7 @@ var vm = new Vue({
                     var ctx = canvas.getContext('2d');
                     ctx.fillStyle = hex;
                     ctx.fillRect(x, y, 1, 1);
-                };
+                }
                 var iconCanvas = document.getElementById("iconLoader");
                 var iconCtx = iconCanvas.getContext('2d');
                 iconCtx.drawImage(img, 1, 1);
@@ -251,7 +252,7 @@ var vm = new Vue({
         setMarginText: function(topDims, bottomDims) {
             var middle = 32 - topDims - bottomDims;
             var margin = Math.round((middle - 2) / 2);
-            return (margin == 0) ? 1 : margin;
+            return (margin === 0) ? 1 : margin;
         },
 
         // front
@@ -348,25 +349,25 @@ var vm = new Vue({
 
                 reader.onload = () => {
                     var base64icon = 'data:image/png;base64,' + btoa(reader.result);
-                    if(event.srcElement.id == 'frontIconInputL') {
+                    if(event.srcElement.id === 'frontIconInputL') {
                         iconList.splice(iconList.length - 4, 1, {
                             label: 'custom left front',
                             value: base64icon,
                         });
                         this.current.front.iconUrlL = base64icon;
-                    } else if(event.srcElement.id == 'frontIconInputR') {
+                    } else if(event.srcElement.id === 'frontIconInputR') {
                         iconList.splice(iconList.length - 3, 1, {
                             label: 'custom right front',
                             value: base64icon,
                         });
                         this.current.front.iconUrlR = base64icon;
-                    } else if(event.srcElement.id == 'sideIconInputL') {
+                    } else if(event.srcElement.id === 'sideIconInputL') {
                         iconList.splice(iconList.length - 2, 1, {
                             label: 'custom left side',
                             value: base64icon,
                         });
                         this.current.side.iconUrlL = base64icon;
-                    } else if(event.srcElement.id == 'sideIconInputR') {
+                    } else if(event.srcElement.id === 'sideIconInputR') {
                         iconList.splice(iconList.length - 1, 1, {
                             label: 'custom right side',
                             value: base64icon,
@@ -376,7 +377,7 @@ var vm = new Vue({
                     this.refreshMatrix();
                 };
                 reader.onerror = function() {
-                    this.$toast('error encountered while sending');
+                    vm.$toast('error encountered while sending');
                 };
             } else {
                 this.$toast(`File too big (${file.size}), max size allowed : 300o`);
@@ -408,6 +409,7 @@ var vm = new Vue({
             this.ctx.fillRect(230, 0, 26, 64);
             this.ctx.fillRect(50, 32, 10, 32);
             // website url
+            // noinspection JSJQueryEfficiency
             $('canvas').drawText({
                 fillStyle: '#fff',
                 x: 220, y: 27,
@@ -472,10 +474,10 @@ var vm = new Vue({
         
         // download menu
         onSelected(data) {
-            if(data.index == 0) {
+            if(data.index === 0) {
                 this.current.code ? this.downloadCanvas() : this.$toast('No matrix selected');
             }
-            if(data.index == 1) {
+            if(data.index === 1) {
                 this.$balmUI.onOpen('downloadDialogOpen');
             }
         },
@@ -560,7 +562,7 @@ var vm = new Vue({
                         value: this.current.front.iconUrlL,
                     });
                 }
-            };
+            }
             if(this.current.front.iconUrlR) {
                 if(this.current.front.iconUrlR.match(/data:image+/)) {
                     iconList.splice(iconList.length - 3, 1, {
@@ -568,7 +570,7 @@ var vm = new Vue({
                         value: this.current.front.iconUrlR,
                     });
                 }
-            };
+            }
             if(this.current.side.iconUrlL) {
                 if(this.current.side.iconUrlL.match(/data:image+/)) {
                     iconList.splice(iconList.length - 2, 1, {
@@ -576,7 +578,7 @@ var vm = new Vue({
                         value: this.current.side.iconUrlL,
                     });
                 }
-            };
+            }
             if(this.current.side.iconUrlR) {
                 if(this.current.side.iconUrlR.match(/data:image+/)) {
                     iconList.splice(iconList.length - 1, 1, {
@@ -584,7 +586,7 @@ var vm = new Vue({
                         value: this.current.side.iconUrlR,
                     });
                 }
-            };
+            }
             this.current.index = index;
             if(this.current.front.color == null) {
                 this.current.front.color = '#FF4400';
@@ -662,32 +664,44 @@ var vm = new Vue({
             var Krueger = Anzeigen.folder("Krueger");
             var f230x32 = Krueger.folder("230x32");
             var img = f230x32.folder(folderName);
-            var lastCode = this.current ? this.current.code : 0;
             codeBook.setHeading("CODE", "NAME", "LINE TEXT", "FRONT TEXT", "SIDE TEXT");
-            for (dest in this.dests) {
-                curCode = this.dests[dest].code;
-                this.selectCurrent(dest);
+            for (let dest in this.dests) {
+                // noinspection JSUnfilteredForInLoop
                 codeBook.addRow(dest, this.dests[dest].name, this.dests[dest].line.text, this.dests[dest].front.text.replace(/\n+/g, '↵'), this.dests[dest].side.text.replace(/\n+/g, '↵'));
-                img.file(dest + ".png", $("#canvas").getCanvasImage().substr(22), {base64: true});
             }
+            this.selectCurrentForZip(0, img, zip, hofName);
             zip.file("codebook.txt", codeBook.toString());
-            curCode = lastCode;
-            zip.generateAsync({type:"blob"}).then(function(content) {
-                saveFile(`${hofName}-kpp.genav.ch.zip`, "application/zip", content);
-            });
-            this.current = null;
-            this.$toast(`${hofName}-kpp.genav.ch.zip has been downloaded`);
+        },
+        selectCurrentForZip: function (index, img, zip, hofName){
+            if (index >= this.dests.length) {
+                zip.generateAsync({type:"blob"}).then(function(content) {
+                    saveFile(`${hofName}-kpp.genav.ch.zip`, "application/zip", content);
+                });
+                this.current = null;
+                this.$toast(`${hofName}-kpp.genav.ch.zip has been downloaded`);
+                window.addEventListener("icon:loaded", function() {
+                    previewCtx.drawImage(canvas, 0, 0, 1024, 256);
+                    previewCtx.drawImage(overlayImage, 0, 0, 1024, 256);
+                }, false);
+            } else {
+                window.addEventListener("icon:loaded", function() {
+                    img.file(dest + ".png", $("#canvas").getCanvasImage().substr(22), {base64: true});
+                    vm.selectCurrentForZip(index+1, img, zip, hofName);
+                }, false);
+                this.selectCurrent(index);
+            }
         },
         uuidv4: function() {
             return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-                var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
                 return v.toString(16);
             });
         },
         generateHOF2: function(dir, name) {
             var terminus_list = "";
             for (var dest in this.dests) {
-                terminus_list += "\t" + dest + "\t" + (this.dests[dest].name != ""?this.dests[dest].name:"NO NAME") + "\t" + (this.dests[dest].name != ""?this.dests[dest].name:"NO NAME") + "\t" + this.dests[dest].front.text.replace(/\n+/g, '-') + "\t\t" + this.dests[dest].side.text.replace(/\n+/g, '-') + "\t\t" + this.dests[dest].name + "\t\t" + dir + "\\" + dest + ".png\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\r\n";
+                // noinspection JSUnfilteredForInLoop
+                terminus_list += "\t" + dest + "\t" + (this.dests[dest].name !== ""?this.dests[dest].name:"NO NAME") + "\t" + (this.dests[dest].name !== ""?this.dests[dest].name:"NO NAME") + "\t" + this.dests[dest].front.text.replace(/\n+/g, '-') + "\t\t" + this.dests[dest].side.text.replace(/\n+/g, '-') + "\t\t" + this.dests[dest].name + "\t\t" + dir + "\\" + dest + ".png\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\r\n";
             }
             var rtn = "HOF AND IMAGES GENERATED WITH SIMPLE OMSI K++ MAKER\r\n" +
                 "https://kpp.genav.ch/\r\n" +
@@ -697,7 +711,7 @@ var vm = new Vue({
                 name + "\r\n" +
                 "\r\n" +
                 "[servicetrip]\r\n" +
-                (this.dests[Object.keys(this.dests)[0]].name != ""?this.dests[Object.keys(this.dests)[0]].name:"NO NAME") + "\r\n" +
+                (this.dests[Object.keys(this.dests)[0]].name !== ""?this.dests[Object.keys(this.dests)[0]].name:"NO NAME") + "\r\n" +
                 "\r\n" +
                 "[global_strings]\r\n" +
                 "6\r\n" +
@@ -774,7 +788,9 @@ var vm = new Vue({
                 this.$toast('Old data detected, some options will be missing')
                 var arrayBuffer = [];
                 for(var i in this.dests)
-                    arrayBuffer.push(this.dests[i]);
+                    { // noinspection JSUnfilteredForInLoop
+                        arrayBuffer.push(this.dests[i]);
+                    }
                 this.dests = arrayBuffer;
             }
         }
@@ -804,7 +820,7 @@ var vm = new Vue({
 
         // beta disclaimer
         var subdomain =  window.location.host.split('.')[1] ? window.location.host.split('.')[0] : false;
-        if(subdomain == 'beta') {
+        if(subdomain === 'beta') {
             this.$alert('This is a beta version of the site, which may contain bugs. Please report any malfunctions you encounter. This preview contain a small selection of usable fonts.')
         }
 
