@@ -112,12 +112,14 @@ var vm = new Vue({
         sideDialogOpen: false,
         iconDialogOpen: false,
         downloadDialogOpen: false,
+        downloadProgressDialogOpen: false,
         destSettingsDialogOpen: false,
         licenceDrawerOpen: false,
         shurl: null,
         qrurl: null,
         hofName: null,
         autosave: false,
+        searchDest: '',
         indexdl: 0,
         rot: 0,
         isMobile: window.matchMedia('only screen and (max-width: 960px)').matches,
@@ -479,7 +481,7 @@ var vm = new Vue({
                 this.current.code ? this.downloadCanvas() : this.$toast('No matrix selected');
             }
             if(data.index === 1) {
-                this.$balmUI.onOpen('downloadDialogOpen');
+                vm.downloadDialogOpen = true;
             }
         },
 
@@ -646,6 +648,8 @@ var vm = new Vue({
 
         // generate hof
         generateHof: function() {
+            vm.downloadDialogOpen = false;
+            vm.downloadProgressDialogOpen = true;
             if(!this.hofName) {
                 return this.$toast('Name is empty');
             }
@@ -682,9 +686,9 @@ var vm = new Vue({
             } else {
                 zip.generateAsync({type:"blob"}).then(function(content) {
                     saveFile(`${hofName}-kpp.genav.ch.zip`, "application/zip", content);
+                    vm.downloadProgressDialogOpen = false;
+                    this.$toast(`${hofName}-kpp.genav.ch.zip has been downloaded`);
                 });
-                this.current = null;
-                this.$toast(`${hofName}-kpp.genav.ch.zip has been downloaded`);
             }
         },
         uuidv4: function() {
@@ -853,16 +857,12 @@ function base64_url_decode(input) {
     return atob(decodeURI(input));
 }
 
-function pause(milliseconds) {
-    const date = Date.now();
-    let currentDate = null;
-    do {
-      currentDate = Date.now();
-    } while (currentDate - date < milliseconds);
-}
-
 // icons preview rerender after loading
 window.addEventListener("icon:loaded", function() {
     previewCtx.drawImage(canvas, 0, 0, 1024, 256);
     previewCtx.drawImage(overlayImage, 0, 0, 1024, 256);
 }, false);
+
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+}
