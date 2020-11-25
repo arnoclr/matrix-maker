@@ -118,6 +118,7 @@ var vm = new Vue({
         qrurl: null,
         hofName: null,
         autosave: false,
+        indexdl: 0,
         rot: 0,
         isMobile: window.matchMedia('only screen and (max-width: 960px)').matches,
         lastIndex:0
@@ -644,9 +645,6 @@ var vm = new Vue({
         },
 
         // generate hof
-        generateHofImages: function() {
-
-        },
         generateHof: function() {
             if(!this.hofName) {
                 return this.$toast('Name is empty');
@@ -669,26 +667,24 @@ var vm = new Vue({
                 // noinspection JSUnfilteredForInLoop
                 codeBook.addRow(dest, this.dests[dest].name, this.dests[dest].line.text, this.dests[dest].front.text.replace(/\n+/g, '↵'), this.dests[dest].side.text.replace(/\n+/g, '↵'));
             }
-            this.selectCurrentForZip(0, img, zip, hofName);
+            this.indexdl = 0;
+            this.selectCurrentForZip(img, zip, hofName);
             zip.file("codebook.txt", codeBook.toString());
         },
-        selectCurrentForZip: function (index, img, zip, hofName){
-            if (index >= this.dests.length) {
+        selectCurrentForZip: function (img, zip, hofName) {
+            if(this.indexdl < this.dests.length) {
+                this.selectCurrent(this.indexdl);
+                setTimeout(() => {
+                    vm.indexdl++;
+                    img.file(vm.indexdl + ".png", $("#canvas").getCanvasImage().substr(22), {base64: true});
+                    vm.selectCurrentForZip(img, zip, hofName);
+                }, 150);
+            } else {
                 zip.generateAsync({type:"blob"}).then(function(content) {
                     saveFile(`${hofName}-kpp.genav.ch.zip`, "application/zip", content);
                 });
                 this.current = null;
                 this.$toast(`${hofName}-kpp.genav.ch.zip has been downloaded`);
-                window.addEventListener("icon:loaded", function() {
-                    previewCtx.drawImage(canvas, 0, 0, 1024, 256);
-                    previewCtx.drawImage(overlayImage, 0, 0, 1024, 256);
-                }, false);
-            } else {
-                window.addEventListener("icon:loaded", function() {
-                    img.file(dest + ".png", $("#canvas").getCanvasImage().substr(22), {base64: true});
-                    vm.selectCurrentForZip(index+1, img, zip, hofName);
-                }, false);
-                this.selectCurrent(index);
             }
         },
         uuidv4: function() {
