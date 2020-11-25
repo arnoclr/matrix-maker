@@ -1,30 +1,3 @@
-const fontList = [
-    {
-        label: '6x12',
-        value: '6x12'
-    },
-    {
-        label: 'luBS08',
-        value: 'luBS08'
-    },
-    {
-        label: 'luRS08',
-        value: 'luRS08'
-    },
-    {
-        label: 'luBS14',
-        value: 'luBS14'
-    },
-    {
-        label: 'luBS18',
-        value: 'luBS18'
-    },
-    {
-        label: 'luBS24',
-        value: 'luBS24'
-    },
-]
-
 const iconList = [
     {
         label: 'none',
@@ -103,7 +76,7 @@ var vm = new Vue({
             side: {},
         },
         fonts: {},
-        fontList,
+        fontList: {},
         iconList,
         downloadMenu: false,
         shareDialogOpen: false,
@@ -864,6 +837,10 @@ var vm = new Vue({
         this.ctx.fillBitmapTextDraw = this.fillBitmapTextDraw;
         this.ctx.bitmapTextDims = this.bitmapTextDims;
         this.drawRedPattern();
+
+        $.get('/data/fonts.json', (data)=>{
+            vm.fontList = data;
+        });
 
         $(window).bind('load', () => {
             $('#preloader').fadeOut();
