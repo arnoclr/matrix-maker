@@ -2,6 +2,8 @@
     width: 100%;
     height: 100%;
     overflow: auto;
+    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
 }
 
 .main-content {
@@ -35,6 +37,17 @@
     width: 720px;
     height: 128px;
     margin-left: 200px;
+}
+#lineOverAlt {
+    position: absolute;
+    margin-top: 128px;
+    height: 128px;
+    width: 200px;
+}
+#frontOverAlt {
+    position: absolute;
+    width: 920px;
+    height: 128px;
 }
 #sideOver {
     position: absolute;
@@ -108,6 +121,9 @@ body {
 }
 input[type=color] {
     cursor: pointer;
+}
+i.align {
+    vertical-align: -25%;
 }
 
 /* detect mobile device */

@@ -9,21 +9,27 @@ https://kpp.genav.ch
 
 * ## Text options
 
-    Edit color and font of line, front and side section. Multi line text is supported
+    Edit color and font of line, front and side section. Multi lines text is supported
 
     ![Text dialog](https://i.imgur.com/mMAPNeO.png)
 
 * ## Icons
 
-    Choose an icon or import a custom icon (black & white, .png, max 300o)
+    Choose an icon or import a custom icon (black & white, .png, max 300o). Gare, Aeroport or Tram icons are included.
 
-    ![Icon dialog](https://i.imgur.com/RXUjKvT.png)
+    ![Icon dialog](https://i.imgur.com/bsGvVyv.png)
 
 * ## Multi destinations support
 
     Use the left side drawer to add, or switch destinations. 
 
     ![left drawer](https://i.imgur.com/uWGuTR2.png)
+
+* ## Sharing
+
+    Share current matrix with unique link, or QR code. Link shortener will be added soon.
+
+    ![share menu](https://i.imgur.com/ZQVggZl.png)
 
 * ## Download
 
