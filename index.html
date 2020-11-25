@@ -96,21 +96,15 @@
         <ui-drawer type="modal" :open="licenceDrawerOpen" style="margin-left:255px;">
             <ui-drawer-header>
                 <ui-drawer-title>Infos</ui-drawer-title>
-                <ui-drawer-subtitle>Attributions</ui-drawer-subtitle>
+                <ui-drawer-subtitle>Externals links</ui-drawer-subtitle>
             </ui-drawer-header>
             <ui-drawer-content>
                 <ui-nav>
-                    <ui-nav-item href="http://www.freepik.com">
+                    <ui-nav-item href="https://omsistuff.ga">
                         <ui-item-first-content>
-                            <ui-icon>wallpaper</ui-icon>
+                            <ui-icon>palette</ui-icon>
                         </ui-item-first-content>
-                        <ui-item-text-content>Designed by macrovector / Freepik</ui-item-text-content>
-                    </ui-nav-item>
-                    <ui-nav-item href="https://fonts.google.com/specimen/Poppins">
-                        <ui-item-first-content>
-                            <ui-icon>format_size</ui-icon>
-                        </ui-item-first-content>
-                        <ui-item-text-content>Google fonts</ui-item-text-content>
+                        <ui-item-text-content>Repaint library</ui-item-text-content>
                     </ui-nav-item>
                     <ui-nav-item href="https://github.com/Aryqs-Ipsum/matrix-maker">
                         <ui-item-first-content>
@@ -135,6 +129,19 @@
                             </ui-icon>
                         </ui-item-first-content>
                         <ui-item-text-content>Instagram</ui-item-text-content>
+                    </ui-nav-item>
+                    <ui-divider>Attributions</ui-divider>
+                    <ui-nav-item href="https://fonts.google.com/specimen/Poppins">
+                        <ui-item-first-content>
+                            <ui-icon>format_size</ui-icon>
+                        </ui-item-first-content>
+                        <ui-item-text-content>Google fonts</ui-item-text-content>
+                    </ui-nav-item>
+                    <ui-nav-item href="http://www.freepik.com">
+                        <ui-item-first-content>
+                            <ui-icon>wallpaper</ui-icon>
+                        </ui-item-first-content>
+                        <ui-item-text-content>Designed by macrovector / Freepik</ui-item-text-content>
                     </ui-nav-item>
                 </ui-nav>
                 <div style="padding:8px">
@@ -196,14 +203,19 @@
                                     <ui-textfield-icon>create</ui-textfield-icon>
                                 </template>
                             </ui-textfield>
-                            <ui-nav-item 
+                            <ui-nav-item
+                                draggable="true"
+                                ondragstart="vm.destDragStart(event);"
+                                ondragover="vm.destDropOver(event);"
+                                ondrop="vm.destDropped(event);"
                                 href="#" id="destsList" @click="selectCurrent(index)" :active="index == current.index" 
                                 v-for="(dest, index) in dests" :key="index"
+                                :data-drag="index"
                                 v-show="dest.name.toLowerCase().includes(searchDest.toLowerCase()) || dest.code.includes(searchDest)">
-                                <ui-item-first-content>
+                                <ui-item-first-content style="margin-right:4px">
                                     <ui-icon v-bind:style="{ color: dest.line.back }">flag</ui-icon>
                                 </ui-item-first-content>
-                                <ui-item-text-content>{{dest.code}} <ui-icon class="align">arrow_forward</ui-icon> {{dest.name}}</ui-item-text-content>
+                                <ui-item-text-content><ui-icon class="align draggable">drag_indicator</ui-icon>{{dest.code}} <ui-icon class="align">arrow_forward</ui-icon> {{dest.name}}</ui-item-text-content>
                             </ui-nav-item>
                             <ui-nav-item href="https://github.com/Aryqs-Ipsum/matrix-maker/issues/new" target="_blank">
                                 <ui-item-first-content>
@@ -211,6 +223,7 @@
                                 </ui-item-first-content>
                                 <ui-item-text-content>Bug report</ui-item-text-content>
                             </ui-nav-item>
+                            <div style="height:80px;"></div>
                         </ui-nav>
                         <ui-icon-button v-tooltip="'Terms and attributions'" aria-describedby="details" style="position:absolute;bottom:8px;left:8px" @click="licenceDrawerOpen=!licenceDrawerOpen" :icon="licenceDrawerOpen ? 'close' : 'info'"></ui-icon-button>
                     </ui-drawer-content>
@@ -222,13 +235,42 @@
                     <section v-shadow="2" v-show="current.code" class="hof-data">
                         <ui-textfield outlined v-model="current.code" input-type="number" style="width:7rem;height:48px;" disabled>code</ui-textfield>
                         <ui-textfield outlined v-model="current.name" style="height:48px;" required>dest</ui-textfield>
-                        <div class="hof-data-btn-section">
-                            <ui-icon-button v-tooltip="'Share actual destination with qrcode'" aria-describedby="share" icon="share" @click="shareCurrent()"></ui-icon-button>
-                            <ui-icon-button v-tooltip="'Delete actual destination'" aria-describedby="delete" icon="delete" @click="deleteDest()"></ui-icon-button>
-                            <ui-icon-button v-tooltip="'Refresh matrix'" aria-describedby="refresh" icon="refresh" @click="refreshMatrix()" id="btn-spinning"></ui-icon-button>
-                            <ui-icon-button v-tooltip="'Advanced settings'" aria-describedby="settings" icon="settings" @click="$balmUI.onOpen('destSettingsDialogOpen')"></ui-icon-button>
-                        </div>
                         <ui-button @click="$balmUI.onOpen('iconDialogOpen')" outlined style="float:right;margin-top:4px;">icon options</ui-button>
+                        <ui-menu-anchor>
+                            <ui-icon-button @click="$balmUI.onOpen('toolsMenuOpen')" icon="more_vert"></ui-icon-button>
+                            <ui-menu v-model="toolsMenuOpen" @selected="onSelectedTools" @cancel="onCancel">
+                                <ui-menuitem>
+                                    <ui-menuitem-icon>
+                                        <ui-icon>share</ui-icon>
+                                    </ui-menuitem-icon>
+                                    <ui-menuitem-text>share current matrix</ui-menuitem-text>
+                                </ui-menuitem>
+                                <ui-menuitem>
+                                    <ui-menuitem-icon>
+                                        <ui-icon id="btn-spinning">refresh</ui-icon>
+                                    </ui-menuitem-icon>
+                                    <ui-menuitem-text>refresh render</ui-menuitem-text>
+                                </ui-menuitem>
+                                <ui-menuitem>
+                                    <ui-menuitem-icon>
+                                        <ui-icon>settings</ui-icon>
+                                    </ui-menuitem-icon>
+                                    <ui-menuitem-text>current matrix settings</ui-menuitem-text>
+                                </ui-menuitem>
+                                <ui-menuitem>
+                                    <ui-menuitem-icon>
+                                        <ui-icon>content_copy</ui-icon>
+                                    </ui-menuitem-icon>
+                                    <ui-menuitem-text>duplicate current</ui-menuitem-text>
+                                </ui-menuitem>
+                                <ui-menuitem>
+                                    <ui-menuitem-icon>
+                                        <ui-icon>delete</ui-icon>
+                                    </ui-menuitem-icon>
+                                    <ui-menuitem-text>delete</ui-menuitem-text>
+                                </ui-menuitem>
+                            </ui-menu>
+                        </ui-menu-anchor>
                     </section>
 
                     <!-- Edit current matrix section -->

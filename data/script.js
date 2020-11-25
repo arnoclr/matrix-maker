@@ -115,14 +115,17 @@ var vm = new Vue({
         downloadProgressDialogOpen: false,
         destSettingsDialogOpen: false,
         licenceDrawerOpen: false,
+        toolsMenuOpen: false,
         shurl: null,
         qrurl: null,
         hofName: null,
         autosave: false,
         searchDest: '',
+        dragfrom: 0,
+        dragto: 0,
         indexdl: 0,
         rot: 0,
-        isMobile: window.matchMedia('only screen and (max-width: 960px)').matches,
+        isMobile: window.matchMedia('only screen and (max-width: 835px)').matches,
         lastIndex:0
     },
     methods: {
@@ -477,11 +480,33 @@ var vm = new Vue({
         
         // download menu
         onSelected(data) {
-            if(data.index === 0) {
-                this.current.code ? this.downloadCanvas() : this.$toast('No matrix selected');
+            switch (data.index) {
+                case 0:
+                    this.current.code ? this.downloadCanvas() : this.$toast('No matrix selected');
+                    break;
+                case 1:
+                    vm.downloadDialogOpen = true;
+                    break;
             }
-            if(data.index === 1) {
-                vm.downloadDialogOpen = true;
+        },
+        // tools menu
+        onSelectedTools(data) {
+            switch (data.index) {
+                case 0:
+                    this.shareCurrent();
+                    break;
+                case 1:
+                    this.refreshMatrix();
+                    break;
+                case 2:
+                    this.$balmUI.onOpen('destSettingsDialogOpen');
+                    break;
+                case 3:
+                    this.duplicateDest();
+                    break;
+                case 4:
+                    this.deleteDest();
+                    break;
             }
         },
 
@@ -499,8 +524,29 @@ var vm = new Vue({
             }
         },
 
+        // drag and drop drawer
+        destDragStart: function(event)  {
+            console.log(event)
+            this.dragfrom = event.srcElement.dataset.drag;
+        },
+        destDropOver: function(event) {
+            event.preventDefault();
+        },
+        destDropped: function(event) {
+            this.dragto = event.srcElement.dataset.drag;
+            this.moveItem(this.dragfrom, this.dragto);
+        },
+        
         addDestFocus: function() {
             document.querySelector('#add-dest').focus();
+        },
+
+        moveItem: function(from, to) {
+            if (to === -1) {
+              this.removeItemAt(from);
+            } else {
+              this.dests.splice(to, 0, this.dests.splice(from, 1)[0]);
+            }
         },
         
         // dest logic
@@ -551,6 +597,11 @@ var vm = new Vue({
             } else {
                 this.$toast('No selected destination to delete');
             }
+        },
+        duplicateDest: function() {
+            currentBuffer = JSON.parse(JSON.stringify(this.current));
+            this.dests.push(currentBuffer);
+            this.$toast(`${this.current.code} duplicated`);
         },
         selectCurrent: function(index) {
             this.current = this.dests[index];

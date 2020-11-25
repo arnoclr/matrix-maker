@@ -19,6 +19,18 @@
     position: absolute;
 }
 
+.draggable {
+    cursor: move !important;
+    color: #bbb;
+}
+
+.relative {
+    position: relative;
+}
+.mdc-menu-surface--anchor {
+    display: inline;
+}
+
 .menu-content {
     position: relative;
 }
