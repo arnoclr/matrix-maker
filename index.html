@@ -48,6 +48,15 @@
             <ui-spinner active>loading app ...</ui-spinner>
         </div>
 
+        <!-- dropzone -->
+        <div id="dropzone" v-show="fileOnDrop" @dragover.prevent @dragleave="hofDragleave" @drop="hofDrop">
+            <section class="empty-state">
+                <ui-icon>backup</ui-icon>
+                <p>Drop hof file or kpp maker archive to import existing destinations</p>
+                <small>supported formats : .hof, .json</small>
+            </section>
+        </div>
+
         <!-- share dialog -->
         <ui-dialog v-model="shareDialogOpen">
             <ui-dialog-title>Share current matrix</ui-dialog-title>
@@ -173,7 +182,8 @@
                             v-model="downloadMenu"
                             :items="[
                                 'Current matrix',
-                                'Create hof with destinations'
+                                'Create hof with destinations',
+                                'Export as json'
                             ]"
                             ></ui-menu>
                         </ui-menu-anchor>
@@ -215,7 +225,7 @@
                                 <ui-item-first-content style="margin-right:4px">
                                     <ui-icon v-bind:style="{ color: dest.line.back }">flag</ui-icon>
                                 </ui-item-first-content>
-                                <ui-item-text-content><ui-icon class="align draggable">drag_indicator</ui-icon>{{dest.code}} <ui-icon class="align">arrow_forward</ui-icon> {{dest.name}}</ui-item-text-content>
+                                <ui-item-text-content>{{dest.code}}<ui-icon class="align">arrow_forward</ui-icon> {{dest.name}} <ui-icon class="align draggable" style="position:absolute;right:4px">drag_handle</ui-icon></ui-item-text-content>
                             </ui-nav-item>
                             <ui-nav-item href="https://github.com/Aryqs-Ipsum/matrix-maker/issues/new" target="_blank">
                                 <ui-item-first-content>
@@ -229,7 +239,7 @@
                     </ui-drawer-content>
                 </ui-drawer>
                 <!-- App content -->
-                <div class="demo-app-content">
+                <div class="demo-app-content" @dragover="hofDragover">
 
                     <!-- hof data -->
                     <section v-shadow="2" v-show="current.code" class="hof-data">
@@ -437,7 +447,7 @@
                     <!-- Empty selection section -->
                     <section v-show="!current.code" class="empty-state">
                         <ui-icon>touch_app</ui-icon>
-                        <p>Start by select a destination ou create it in the side nav.</p>
+                        <p>Start by select a destination or create it in the side nav. You can also drag and drop hof and backup files on the page.</p>
                         <ui-button raised @click="addDestFocus()">add destination</ui-button>
                     </section>
 

@@ -75,6 +75,7 @@ var vm = new Vue({
             line: {},
             side: {},
         },
+        tinycurrent: {},
         fonts: {},
         fontList: {},
         iconList,
@@ -98,6 +99,7 @@ var vm = new Vue({
         dragto: 0,
         indexdl: 0,
         rot: 0,
+        fileOnDrop: false,
         isMobile: window.matchMedia('only screen and (max-width: 835px)').matches,
         lastIndex:0
     },
@@ -379,6 +381,9 @@ var vm = new Vue({
         },
 
         // utils
+        exportAsJson: function() {
+            saveFile(new Date().toISOString().slice(0,10) + '-KPP-backup.json', 'text/json', JSON.stringify(this.dests));
+        },
         renderCanvas: function(ctx, previewCtx) {
             previewCtx.drawImage(this.canvas, 0, 0, 1024, 256);
             previewCtx.drawImage(overlayImage, 0, 0, 1024, 256);
@@ -460,6 +465,9 @@ var vm = new Vue({
                 case 1:
                     vm.downloadDialogOpen = true;
                     break;
+                case 2:
+                    this.exportAsJson();
+                    break;
             }
         },
         // tools menu
@@ -494,6 +502,66 @@ var vm = new Vue({
                 return (yiq < 40) ? 'white' : 'black';
             } else {
                 return 'black';
+            }
+        },
+
+        // hof importation
+        // this.fileOnDrop = true;
+        hofDragover: function(event) {
+            event.preventDefault();
+            this.fileOnDrop = true;
+        },
+        hofDragleave: function(event) {
+            this.fileOnDrop = false;
+        },
+        hofDrop: function(event) {
+            event.preventDefault();
+            this.fileOnDrop = false;
+            var file = event.dataTransfer.files[0],
+            readerJson = new FileReader(),
+            readerHof = new FileReader();
+            // analyze and import json backup
+            readerJson.onload = function (event) {
+                vm.dests = JSON.parse(event.target.result);
+                vm.$toast('Dests imported');
+            };
+            // open hof file
+            readerHof.onload = function (event) {
+                hofDataText = event.target.result;
+                hofDestsText = hofDataText.match(/\[addterminus_list\]([\s\S]+)\[end\]/g);
+                if(hofDestsText !== null) {
+                    hofDests = hofDestsText[0].split('\n');
+                    hofDests = hofDests.slice(1, -1);
+                    hofDests.forEach((dest, index) => {
+                        elems = dest.split(' ');
+                        group = elems[0].split('	');
+                        line = group[1];
+                        dest = (group[2] == null) ? 'undefined' : group[2];
+                        if(isNumber(line)) {
+                            vm.addDest(line);
+                            //vm.dests[index].name = dest;
+                            //console.log(index)
+                        }
+                    });
+                    vm.$alert('hof import feature is not finished, it will be improved soon')
+                } else {
+                    vm.$alert('this hof is not compatible');
+                }
+            };
+            if(file.name.match(/(.+)(.json)/)) {
+                this.$confirm('Import json data and delete actual destinations ?').then((r) => {
+                    if (r) {
+                        readerJson.readAsText(file);
+                    }
+                })
+            } else if(file.name.match(/(.+)(.hof)/)) {
+                this.$confirm('Import hof data and delete actual destinations ?').then((r) => {
+                    if (r) {
+                        readerHof.readAsText(file);
+                    }
+                })
+            } else {
+                this.$alert('Invalid file format');
             }
         },
 
@@ -658,7 +726,9 @@ var vm = new Vue({
             this.$toast(font + ' loaded');
         },
         shareCurrent: function() {
-            this.shurl = window.location.href.replace(/#+/, '') + '?share=' + base64_url_encode(JSON.stringify(this.current));
+            // this.tinycurrent.a = this.current.code;
+            // this.tinycurrent.b = this.current.name;
+            this.shurl = window.location.href.replace(/#+/, '') + '?s=' + base64_url_encode(JSON.stringify(this.current));
             this.qrurl = 'https://api.qrserver.com/v1/create-qr-code/?data=' + this.shurl;
             this.$balmUI.onOpen('shareDialogOpen');
         },
@@ -804,7 +874,7 @@ var vm = new Vue({
         // with local storage or url share parameter
         var url_string = window.location.href;
         var url = new URL(url_string);
-        var s = url.searchParams.get("share");
+        var s = (url.searchParams.get("share") || url.searchParams.get("s"));
         if(localStorage.data) {
             this.dests = JSON.parse(localStorage.data)
             // retro compatibility for data of v1.x
