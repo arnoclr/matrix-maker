@@ -99,6 +99,7 @@ var vm = new Vue({
         dragto: 0,
         indexdl: 0,
         rot: 0,
+        headerShadow: 2,
         fileOnDrop: false,
         isMobile: window.matchMedia('only screen and (max-width: 835px)').matches,
         lastIndex:0
@@ -323,32 +324,32 @@ var vm = new Vue({
             }
         },
         iconSubmitted: function(event) {
-            var file = event.srcElement.files[0];
+            var file = event.target.files[0];
             if(file.size < 300) {
                 var reader = new FileReader();
                 reader.readAsBinaryString(file);
 
                 reader.onload = () => {
                     var base64icon = 'data:image/png;base64,' + btoa(reader.result);
-                    if(event.srcElement.id === 'frontIconInputL') {
+                    if(event.target.id === 'frontIconInputL') {
                         iconList.splice(iconList.length - 4, 1, {
                             label: 'custom left front',
                             value: base64icon,
                         });
                         this.current.front.iconUrlL = base64icon;
-                    } else if(event.srcElement.id === 'frontIconInputR') {
+                    } else if(event.target.id === 'frontIconInputR') {
                         iconList.splice(iconList.length - 3, 1, {
                             label: 'custom right front',
                             value: base64icon,
                         });
                         this.current.front.iconUrlR = base64icon;
-                    } else if(event.srcElement.id === 'sideIconInputL') {
+                    } else if(event.target.id === 'sideIconInputL') {
                         iconList.splice(iconList.length - 2, 1, {
                             label: 'custom left side',
                             value: base64icon,
                         });
                         this.current.side.iconUrlL = base64icon;
-                    } else if(event.srcElement.id === 'sideIconInputR') {
+                    } else if(event.target.id === 'sideIconInputR') {
                         iconList.splice(iconList.length - 1, 1, {
                             label: 'custom right side',
                             value: base64icon,
@@ -378,6 +379,9 @@ var vm = new Vue({
             if(this.autosave) {
                 this.saveDestsInLocalStorage();
             }
+        },
+        refreshUi: function() {
+            this.headerShadow = (document.getElementById('dest-container').offsetHeight > window.innerHeight - 203) ? 2 : 0;
         },
 
         // utils
@@ -504,6 +508,13 @@ var vm = new Vue({
                 return 'black';
             }
         },
+        debugInfos: function() {
+            txt = '';
+            for (var a in localStorage) {
+                txt = txt + a + ',';
+            }
+            this.$alert(txt);
+        },
 
         // hof importation
         // this.fileOnDrop = true;
@@ -567,15 +578,17 @@ var vm = new Vue({
 
         // drag and drop drawer
         destDragStart: function(event)  {
-            console.log(event)
-            this.dragfrom = event.srcElement.dataset.drag;
+            this.dragfrom = event.target.dataset.drag;
+            $('.drag-icon-hide-class').hide();
         },
         destDropOver: function(event) {
             event.preventDefault();
+            this.dragto = event.target.dataset.drag;
         },
         destDropped: function(event) {
-            this.dragto = event.srcElement.dataset.drag;
+            this.dragto = event.target.dataset.drag;
             this.moveItem(this.dragfrom, this.dragto);
+            $('.drag-icon-hide-class').show();
         },
         
         addDestFocus: function() {
@@ -583,10 +596,9 @@ var vm = new Vue({
         },
 
         moveItem: function(from, to) {
-            if (to === -1) {
-              this.removeItemAt(from);
-            } else {
-              this.dests.splice(to, 0, this.dests.splice(from, 1)[0]);
+            console.log(from, to)
+            if(to !== undefined) {
+                this.dests.splice(to, 0, this.dests.splice(from, 1)[0]);
             }
         },
         
@@ -687,6 +699,7 @@ var vm = new Vue({
                 this.current.front.color = '#FF4400';
             }
             this.refreshMatrix();
+            this.refreshUi();
             document.title = this.current.code + ' → ' + this.current.name;
             this.$theme.secondary = (this.current.line.back) ? this.current.line.back : '#26c6da';
         },

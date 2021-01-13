@@ -155,7 +155,7 @@
                 </ui-nav>
                 <div style="padding:8px">
                     <p>Site develloped by Adam Mathieson and Arno Cellarier. Fonts copyright their respective owners</p>
-                    <small>v2.0a</small>
+                    <small>v2.0a <a href="#!" @click="debugInfos">debug infos</a></small>
                 </div>
             </ui-drawer-content>
         </ui-drawer>
@@ -194,12 +194,12 @@
             <div class="demo-content">
                 <!-- Drawer -->
                 <ui-drawer viewport-height>
-                    <ui-drawer-header v-show="current.code">
+                    <ui-drawer-header v-show="current.code" v-shadow="headerShadow" style="z-index:1">
                         <canvas width="256" height="64" style="border: solid 1px black;margin-left:-18px;" id="canvas"></canvas>
                         <ui-drawer-title>{{ current.name }}</ui-drawer-title>
                         <ui-drawer-subtitle>{{ current.code }}</ui-drawer-subtitle>
                     </ui-drawer-header>
-                    <ui-drawer-content>
+                    <ui-drawer-content id="dest-container">
                         <ui-nav>
                             <ui-textfield style="width:239px;margin-left:8px;" input-type="search" v-model="searchDest">
                                 search
@@ -225,7 +225,7 @@
                                 <ui-item-first-content style="margin-right:4px">
                                     <ui-icon v-bind:style="{ color: dest.line.back }">flag</ui-icon>
                                 </ui-item-first-content>
-                                <ui-item-text-content>{{dest.code}}<ui-icon class="align">arrow_forward</ui-icon> {{dest.name}} <ui-icon class="align draggable" style="position:absolute;right:4px">drag_handle</ui-icon></ui-item-text-content>
+                                <ui-item-text-content>{{dest.code}}<ui-icon class="align">arrow_forward</ui-icon> {{dest.name}} <ui-icon class="align draggable drag-icon-hide-class" style="position:absolute;right:4px">drag_handle</ui-icon></ui-item-text-content>
                             </ui-nav-item>
                             <ui-nav-item href="https://github.com/Aryqs-Ipsum/matrix-maker/issues/new" target="_blank">
                                 <ui-item-first-content>
