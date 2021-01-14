@@ -115,6 +115,7 @@ var vm = new Vue({
                     if (this.fonts[font][font][char] != null) {
                         cData = this.fonts[font][font][char];
                     } else {
+                        cData = this.fonts[font][font][' '];
                         this.$toast("Character '" + char + "' Not Found in font: '" + font + "'!");
                     }
                     this.bitmapDrawCharacter(ctx, curX, y, cData, fillStyle);
@@ -155,6 +156,7 @@ var vm = new Vue({
                     if (this.fonts[font][font][char] != null) {
                         cData = this.fonts[font][font][char];
                     } else {
+                        cData = this.fonts[font][font][' '];
                         this.$toast("Character '" + char + "' Not Found in font: '" + font + "'!");
                     }
                     width = width + cData.glyph[0].length + this.fonts[font][font].charSpacing;
@@ -549,9 +551,7 @@ var vm = new Vue({
                         line = group[1];
                         dest = (group[2] == null) ? 'undefined' : group[2];
                         if(isNumber(line)) {
-                            vm.addDest(line);
-                            //vm.dests[index].name = dest;
-                            //console.log(index)
+                            vm.addDest(line, dest);
                         }
                     });
                     vm.$alert('hof import feature is not finished, it will be improved soon')
@@ -603,29 +603,29 @@ var vm = new Vue({
         },
         
         // dest logic
-        addDest: function(code) {
+        addDest: function(code, name = '') {
             if(isNumber(code) && code > 0) {
                 destBuffer = {
                     code: code,
-                    name: '',
+                    name: name,
                     front: {
-                        font: '6x12',
-                        fontb: '6x12',
-                        text: 'FRONT',
+                        font: 'luRS12',
+                        fontb: 'luRS08',
+                        text: (name !== '') ? name : 'FRONT',
                         line: true,
                         color: '#FF6A00',
                         iconHex: '#FF6A00',
                     },
                     line: {
-                        font: '6x12',
+                        font: 'luRS12',
                         text: code,
                         back: '#26c6da',
                         fore: '#FFFFFF',
                         outl: '#000000',
                     },
                     side: {
-                        font: '6x12',
-                        text: 'SIDE',
+                        font: 'luRS12',
+                        text: (name !== '') ? name : 'SIDE',
                         color: '#FF6A00',
                         iconHex: '#FF6A00',
                     },
