@@ -776,18 +776,18 @@ var vm = new Vue({
             codeBook.setHeading("CODE", "NAME", "LINE TEXT", "FRONT TEXT", "SIDE TEXT");
             for (let dest in this.dests) {
                 // noinspection JSUnfilteredForInLoop
-                codeBook.addRow(dest, this.dests[dest].name, this.dests[dest].line.text, this.dests[dest].front.text.replace(/\n+/g, '↵'), this.dests[dest].side.text.replace(/\n+/g, '↵'));
+                codeBook.addRow(this.dests[dest].code, this.dests[dest].name, this.dests[dest].line.text, this.dests[dest].front.text.replace(/\n+/g, '↵'), this.dests[dest].side.text.replace(/\n+/g, '↵'));
             }
             this.indexdl = 0;
             this.selectCurrentForZip(img, zip, hofName);
             zip.file("codebook.txt", codeBook.toString());
         },
         selectCurrentForZip: function (img, zip, hofName) {
-            if(this.indexdl < this.dests.length) {
+            if(this.indexdl < this.dests.length - 1) {
                 this.selectCurrent(this.indexdl);
                 setTimeout(() => {
                     vm.indexdl++;
-                    img.file(vm.indexdl + ".png", $("#canvas").getCanvasImage().substr(22), {base64: true});
+                    img.file(vm.dests[vm.indexdl].code + ".png", $("#canvas").getCanvasImage().substr(22), {base64: true});
                     vm.selectCurrentForZip(img, zip, hofName);
                 }, 150);
             } else {
@@ -808,7 +808,7 @@ var vm = new Vue({
             var terminus_list = "";
             for (var dest in this.dests) {
                 // noinspection JSUnfilteredForInLoop
-                terminus_list += "\t" + dest + "\t" + (this.dests[dest].name !== ""?this.dests[dest].name:"NO NAME") + "\t" + (this.dests[dest].name !== ""?this.dests[dest].name:"NO NAME") + "\t" + this.dests[dest].front.text.replace(/\n+/g, '-') + "\t\t" + this.dests[dest].side.text.replace(/\n+/g, '-') + "\t\t" + this.dests[dest].name + "\t\t" + dir + "\\" + dest + ".png\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\r\n";
+                terminus_list += "\t" + this.dests[dest].code + "\t" + (this.dests[dest].name !== ""?this.dests[dest].name:"NO NAME") + "\t" + (this.dests[dest].name !== ""?this.dests[dest].name:"NO NAME") + "\t" + this.dests[dest].front.text.replace(/\n+/g, '-') + "\t\t" + this.dests[dest].side.text.replace(/\n+/g, '-') + "\t\t" + this.dests[dest].name + "\t\t" + dir + "\\" + this.dests[dest].code + ".png\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\r\n";
             }
             var rtn = "HOF AND IMAGES GENERATED WITH SIMPLE OMSI K++ MAKER\r\n" +
                 "https://kpp.genav.ch/\r\n" +
