@@ -48,6 +48,9 @@
             <ui-spinner active>loading app ...</ui-spinner>
         </div>
 
+        <!-- hover preview matrix -->
+        <div id="main-hover" style="display: none;"></div>
+
         <!-- dropzone -->
         <div id="dropzone" v-show="fileOnDrop" @dragover.prevent @dragleave="hofDragleave" @drop="hofDrop">
             <section class="empty-state">
@@ -80,7 +83,7 @@
         </ui-dialog>
 
         <!-- download hof dialog -->
-        <ui-dialog v-model="downloadDialogOpen" :mask-closable="true">
+        <ui-dialog v-model="downloadDialogOpen" :mask-closable="true" style="z-index:8">
             <ui-dialog-content>
                 <section class="illustration">
                     <ui-icon class="purple600">get_app</ui-icon>
@@ -89,12 +92,12 @@
                     <img src="./data/illustrations/package.png">
                 </section>
                 <ui-textfield v-model="hofName">hof name</ui-textfield>
-                <ui-button style="float: right;" raised @click="generateHof()">Download</ui-button>
+                <ui-button style="float: right;" raised @click="generateHof()" :disabled="hofName == ''">Download</ui-button>
             </ui-dialog-content>
         </ui-dialog>
 
         <!-- download progress hof dialog -->
-        <ui-dialog :open="downloadProgressDialogOpen">
+        <ui-dialog :open="downloadProgressDialogOpen" style="z-index:8">
             <ui-dialog-content>
                 <p>Generation ...</p>
                 <ui-spinner :progress="(indexdl + 1) / dests.length"></ui-spinner>
@@ -102,7 +105,7 @@
         </ui-dialog>
 
         <!-- licence infos -->
-        <ui-drawer type="modal" :open="licenceDrawerOpen" style="margin-left:255px;">
+        <ui-drawer type="modal" :open="licenceDrawerOpen" style="margin-left:255px;z-index:8">
             <ui-drawer-header>
                 <ui-drawer-title>Infos</ui-drawer-title>
                 <ui-drawer-subtitle>Externals links</ui-drawer-subtitle>
@@ -218,14 +221,19 @@
                                 ondragstart="vm.destDragStart(event);"
                                 ondragover="vm.destDropOver(event);"
                                 ondrop="vm.destDropped(event);"
-                                href="#" id="destsList" @click="selectCurrent(index)" :active="index == current.index" 
+                                :href="'#' + index" id="destsList" @click="selectCurrent(index)" :active="index == current.index" 
                                 v-for="(dest, index) in dests" :key="index"
                                 :data-drag="index"
-                                v-show="dest.name.toLowerCase().includes(searchDest.toLowerCase()) || dest.code.includes(searchDest)">
+                                v-show="(dest.name.toLowerCase().includes(searchDest.toLowerCase()) || dest.code.includes(searchDest)) && dest.code.length != 4">
                                 <ui-item-first-content style="margin-right:4px">
                                     <ui-icon v-bind:style="{ color: dest.line.back }">flag</ui-icon>
                                 </ui-item-first-content>
-                                <ui-item-text-content>{{dest.code}}<ui-icon class="align">arrow_forward</ui-icon> {{dest.name}} <ui-icon class="align draggable drag-icon-hide-class" style="position:absolute;right:4px">drag_handle</ui-icon></ui-item-text-content>
+                                <ui-item-text-content style="font-variant-numeric: tabular-nums;">
+                                    {{dest.code}}
+                                    <ui-icon class="align">arrow_forward</ui-icon>
+                                    {{dest.name}}
+                                    <ui-icon class="align draggable drag-icon-hide-class" style="position:absolute;right:4px">drag_handle</ui-icon>
+                                </ui-item-text-content>
                             </ui-nav-item>
                             <ui-nav-item href="https://github.com/Aryqs-Ipsum/matrix-maker/issues/new" target="_blank">
                                 <ui-item-first-content>
@@ -248,7 +256,7 @@
                         <ui-button @click="$balmUI.onOpen('iconDialogOpen')" outlined style="float:right;margin-top:4px;">icon options</ui-button>
                         <ui-menu-anchor>
                             <ui-icon-button @click="$balmUI.onOpen('toolsMenuOpen')" icon="more_vert"></ui-icon-button>
-                            <ui-menu v-model="toolsMenuOpen" @selected="onSelectedTools" @cancel="onCancel">
+                            <ui-menu v-model="toolsMenuOpen" @selected="onSelectedTools" @cancel="onCancel" style="z-index:8">
                                 <ui-menuitem>
                                     <ui-menuitem-icon>
                                         <ui-icon>share</ui-icon>
@@ -331,6 +339,33 @@
                         </div>
 
                         <small>You can edit differents parts of the matrix by clicking on it.</small>
+
+                        <!-- alternate -->
+                        <hr>
+                        <div style="position:relative">
+                            <h4>Alternating matrix</h4>
+                            <div class="btn-container" style="position:absolute;top:0;right:0">
+                                <ui-button icon="add" @click="addAlternate()" outlined>add</ui-button>
+                                <ui-button icon="preview" @click="previewAlternate()" raised>preview</ui-button>
+                            </div>
+                        </div>
+                        <ui-grid style="padding:0">
+                            <template v-for="(dest, index) in alternatesDests">
+                                <ui-grid-cell columns="3">
+                                    <a  @click="selectCurrent(dest.index)"
+                                        :href="'#' + dest.index"
+                                        style="text-decoration: none;">
+                                        <ui-card outlined
+                                                :class="(current.code == dest.code) ? 'active-card-alt' : ''">
+                                            <ui-card-content style="padding: 8px 12px;">
+                                                <h2 style="margin:0">{{ index }}<span style="color:grey;font-weight:400;"> - {{ dest.code.slice(dest.code.length - 3) }}</span></h2>
+                                                <p style="margin:0">{{ dest.front.text }}</p>
+                                            </ui-card-content>
+                                        </ui-card>
+                                    </a>
+                                </ui-grid-cell>
+                            </template>
+                        </ui-grid>
                         
                         <!-- Front text -->
                         <ui-dialog v-model="frontDialogOpen" :mask-closable="true">

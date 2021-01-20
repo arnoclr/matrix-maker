@@ -69,6 +69,7 @@ var vm = new Vue({
         iconCtx: '',
         overlayImage: '',
         dests: [],
+        alternatesDests: [],
         addDestCode: '',
         current: {
             front: {},
@@ -92,7 +93,7 @@ var vm = new Vue({
         toolsMenuOpen: false,
         shurl: null,
         qrurl: null,
-        hofName: null,
+        hofName: '',
         autosave: false,
         searchDest: '',
         dragfrom: 0,
@@ -517,6 +518,23 @@ var vm = new Vue({
             }
             this.$alert(txt);
         },
+        previewAlternate: function() {
+            $('#main-hover').fadeIn();
+            this.$toast('start of preview');
+            this.alternatesDests.forEach((d, i) => {
+                setTimeout(() => {
+                    this.selectCurrent(d.index);
+                    console.log(this.alternatesDests.length, i)
+                    if(this.alternatesDests.length - 1 == i) {
+                        setTimeout(() => {
+                            $('#main-hover').fadeOut();
+                            this.$toast('end of preview');
+                            this.selectCurrent(this.alternatesDests[0].index);
+                        }, 2200);
+                    }
+                }, 2200 * i);
+            });
+        },
 
         // hof importation
         // this.fileOnDrop = true;
@@ -541,17 +559,18 @@ var vm = new Vue({
             // open hof file
             readerHof.onload = function (event) {
                 hofDataText = event.target.result;
-                hofDestsText = hofDataText.match(/\[addterminus_list\]([\s\S]+)\[end\]/g);
+                hofDestsText = hofDataText.split('[addterminus_list]').pop().split('[end]')[0];
                 if(hofDestsText !== null) {
-                    hofDests = hofDestsText[0].split('\n');
-                    hofDests = hofDests.slice(1, -1);
+                    vm.dests = [];
+                    hofDests = hofDestsText.split('\n');
+                    hofDests.pop();
                     hofDests.forEach((dest, index) => {
-                        elems = dest.split(' ');
-                        group = elems[0].split('	');
+                        group = dest.split(/	/);
                         line = group[1];
                         dest = (group[2] == null) ? 'undefined' : group[2];
+                        text = (group[3] == null) ? 'undefined' : group[3];
                         if(isNumber(line)) {
-                            vm.addDest(line, dest);
+                            vm.addDest(line, dest, text, line, text);
                         }
                     });
                     vm.$alert('hof import feature is not finished, it will be improved soon')
@@ -603,7 +622,7 @@ var vm = new Vue({
         },
         
         // dest logic
-        addDest: function(code, name = '') {
+        addDest: function(code, name = '', front = '', line = '', side = '') {
             if(isNumber(code) && code > 0) {
                 destBuffer = {
                     code: code,
@@ -611,21 +630,22 @@ var vm = new Vue({
                     front: {
                         font: 'luRS12',
                         fontb: 'luRS08',
-                        text: (name !== '') ? name : 'FRONT',
+                        text: (front !== '') ? front : 'FRONT',
                         line: true,
                         color: '#FF6A00',
                         iconHex: '#FF6A00',
                     },
                     line: {
                         font: 'luRS12',
-                        text: code,
+                        text: (line !== '') ? line : code,
                         back: '#26c6da',
                         fore: '#FFFFFF',
                         outl: '#000000',
                     },
                     side: {
                         font: 'luRS12',
-                        text: (name !== '') ? name : 'SIDE',
+                        fontb: 'luRS08',
+                        text: (side !== '') ? side : 'SIDE',
                         color: '#FF6A00',
                         iconHex: '#FF6A00',
                     },
@@ -636,6 +656,13 @@ var vm = new Vue({
             } else {
                 this.$toast('invalid code');
             }
+        },
+        addAlternate: function() {
+            var lastAlt = this.alternatesDests.pop(),
+                code = parseInt(lastAlt.code) + 1000;
+            this.addDest(code, lastAlt.name);
+            this.moveItem(this.dests.length - 1, parseInt(lastAlt.index) + 1);
+            this.selectCurrent(parseInt(lastAlt.index) + 1);
         },
         deleteDest: function() {
             if(this.current.code) {
@@ -658,6 +685,13 @@ var vm = new Vue({
         },
         selectCurrent: function(index) {
             this.current = this.dests[index];
+            this.alternatesDests = [];
+            this.dests.forEach((dest, arrayIndex) => {
+                if(dest != undefined && parseInt(dest.code) == parseInt(vm.current.code) + 1000 * (arrayIndex - index)) {
+                    vm.dests[arrayIndex].index = arrayIndex;
+                    vm.alternatesDests.push(vm.dests[arrayIndex]);
+                }
+            });
             if(!this.current.code) {
                 this.current.code = prompt('please enter a new code');
             }
@@ -926,11 +960,20 @@ var vm = new Vue({
         });
 
         $(window).bind('load', () => {
+            // detect if matrix is selected in link
+            if (location.href.indexOf("#") != -1) {
+                anchor = location.href.split('#').pop();
+                if(anchor != undefined) {
+                    setTimeout(() => {
+                        this.selectCurrent(anchor);
+                    }, 250);
+                }
+            }
             $('#preloader').fadeOut();
         });
 
         // beta disclaimer
-        var subdomain =  window.location.host.split('.')[1] ? window.location.host.split('.')[0] : false;
+        var subdomain = window.location.host.split('.')[1] ? window.location.host.split('.')[0] : false;
         if(subdomain === 'beta') {
             this.$alert('This is a beta version of the site, which may contain bugs. Please report any malfunctions you encounter. This preview contain a small selection of usable fonts.')
         }

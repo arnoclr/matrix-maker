@@ -8,6 +8,27 @@
 
 .main-content {
     padding: 16px;
+    background-color: #f9f9f9;
+    min-height: 100%;
+}
+
+hr {
+    border: none;
+    border-top: 1px solid grey;
+    height: 1px;
+}
+
+#main-hover {
+    background-color: #00000090;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 7;
+}
+
+.active-card-alt {
+    border: 2px solid var(--mdc-theme-secondary);
+    box-sizing: border-box;
 }
 
 .hof-data {
@@ -54,6 +75,7 @@ span.mdc-list-item__text {
 /* on matrix hover elements */
 .canvasBox {
     position: relative;
+    z-index: 7;
 }
 #lineOver {
     position: absolute;
