@@ -223,10 +223,12 @@
                                 ondragstart="vm.destDragStart(event);"
                                 ondragover="vm.destDropOver(event);"
                                 ondrop="vm.destDropped(event);"
-                                :href="'#' + index" id="destsList" @click="selectCurrent(index)" :active="index == current.index" 
+                                :href="'#' + index" id="destsList" @click="selectCurrent(index)" 
+                                :active="dest.name == current.name" 
                                 v-for="(dest, index) in dests" :key="index"
                                 :data-drag="index"
-                                v-show="(dest.name.toLowerCase().includes(searchDest.toLowerCase()) || dest.code.includes(searchDest)) && dest.code.length != 4">
+                                style="padding-right:24px"
+                                v-show="(dest.name.toLowerCase().includes(searchDest.toLowerCase()) || dest.code.includes(searchDest)) && dest.code < 1000">
                                 <ui-item-first-content style="margin-right:4px">
                                     <ui-icon v-bind:style="{ color: dest.line.back }">flag</ui-icon>
                                 </ui-item-first-content>
@@ -360,8 +362,8 @@
                                         <ui-card outlined
                                                 :class="(current.code == dest.code) ? 'active-card-alt' : ''">
                                             <ui-card-content style="padding: 8px 12px;">
-                                                <h2 style="margin:0">{{ index }}<span style="color:grey;font-weight:400;"> - {{ dest.code.slice(dest.code.length - 3) }}</span></h2>
-                                                <p style="margin:0">{{ dest.front.text }}</p>
+                                                <h2 style="margin:0">{{ index }}<span style="color:grey;font-weight:400;"> - {{ dest.code >= 1000 ? dest.code.toString().substr(1) : dest.code }}</span></h2>
+                                                <p class="truncate" style="margin:0">{{ dest.front.text }}</p>
                                             </ui-card-content>
                                         </ui-card>
                                     </a>

@@ -26,6 +26,13 @@ hr {
     z-index: 7;
 }
 
+.truncate {
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .active-card-alt {
     border: 2px solid var(--mdc-theme-secondary);
     box-sizing: border-box;

@@ -712,7 +712,8 @@ var vm = new Vue({
         addAlternate: function() {
             var lastAlt = this.alternatesDests.pop(),
                 code = parseInt(lastAlt.code) + 1000;
-            this.addDest(code, lastAlt.name);
+            this.duplicateDest();
+            this.dests[this.dests.length - 1].code = code;
             this.moveItem(this.dests.length - 1, parseInt(lastAlt.index) + 1);
             this.selectCurrent(parseInt(lastAlt.index) + 1);
         },
@@ -722,8 +723,9 @@ var vm = new Vue({
                     if (r) {
                         this.dests.splice(this.current.index, 1);
                         this.$toast(this.current.code + ' deleted from dests');
-                        this.current.code = null;
-                        document.title = 'Select a destination or create it';
+                        if(this.current.index >= 0) {
+                            this.selectCurrent(this.current.index - 1);
+                        }
                     }
                 })
             } else {
@@ -871,11 +873,11 @@ var vm = new Vue({
             zip.file("codebook.txt", codeBook.toString());
         },
         selectCurrentForZip: function (img, zip, hofName) {
-            if(this.indexdl < this.dests.length - 1) {
+            if(this.indexdl < this.dests.length) {
                 this.selectCurrent(this.indexdl);
                 setTimeout(() => {
                     vm.indexdl++;
-                    img.file(vm.dests[vm.indexdl].code + ".png", $("#canvas").getCanvasImage().substr(22), {base64: true});
+                    img.file(vm.dests[vm.indexdl - 1].code + ".png", $("#canvas").getCanvasImage().substr(22), {base64: true});
                     vm.selectCurrentForZip(img, zip, hofName);
                 }, 150);
             } else {
