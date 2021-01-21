@@ -101,6 +101,7 @@ var vm = new Vue({
         indexdl: 0,
         rot: 0,
         headerShadow: 2,
+        syncStatus: true,
         fileOnDrop: false,
         isMobile: window.matchMedia('only screen and (max-width: 835px)').matches,
         lastIndex:0
@@ -369,22 +370,45 @@ var vm = new Vue({
             }
         },
 
-        refreshMatrix: function() {
+        refreshMatrix: function(textOnly = false, part = false) {
             document.querySelector('#btn-spinning').style = 'transform: rotate('+this.rot+'deg)';
             this.rot+=360;
-            this.writeLineText();
-            this.writeFrontText();
-            this.writeSideText();
+            switch (part) {
+                case 'front':
+                    this.writeFrontText();
+                    break;
+                case 'line':
+                    this.writeLineText();
+                    break;
+                case 'side':
+                    this.writeSideText();
+                    break;
+                default:
+                    this.writeLineText();
+                    this.writeFrontText();
+                    this.writeSideText();
+                    break;
+            }
             this.writeIcon();
             this.drawRedPattern();
             this.renderCanvas(this.ctx, this.previewCtx);
-            this.saveCurrentIntoDests();
-            if(this.autosave) {
-                this.saveDestsInLocalStorage();
+            if(!textOnly) {
+                this.saveCurrentIntoDests();
+                if(this.autosave) {
+                    this.saveDestsInLocalStorage();
+                }
+                this.syncStatusRefresh();
             }
         },
         refreshUi: function() {
             this.headerShadow = (document.getElementById('dest-container').offsetHeight > window.innerHeight - 203) ? 2 : 0;
+        },
+        syncStatusRefresh: function() {
+            if(localStorage.data == JSON.stringify(this.dests)) {
+                this.syncStatus = true;
+            } else {
+                this.syncStatus = false;
+            }
         },
 
         // utils
@@ -471,6 +495,7 @@ var vm = new Vue({
                     break;
                 case 1:
                     vm.downloadDialogOpen = true;
+                    this.writeUrl('download');
                     break;
                 case 2:
                     this.exportAsJson();
@@ -488,6 +513,7 @@ var vm = new Vue({
                     break;
                 case 2:
                     this.$balmUI.onOpen('destSettingsDialogOpen');
+                    this.writeUrl('destSettings');
                     break;
                 case 3:
                     this.duplicateDest();
@@ -534,6 +560,32 @@ var vm = new Vue({
                     }
                 }, 2200 * i);
             });
+        },
+        writeUrl: function(segment = false) {
+            a = $('<a style="display:none"></a>');
+            href = (this.current != undefined ? this.current.index : '') + '/' + (segment ? segment : '');
+            a.attr('href', '#' + href);
+            $('body').append(a);
+            a[0].click();
+            a.remove();
+        },
+        anchorTrigger: function(string) {
+            modals = ['front', 'line', 'side', 'icons', 'destSettings', 'download'];
+            if(modals.includes(string)) {
+                this.$balmUI.onOpen(string + 'DialogOpen');
+            }
+            switch (string) {
+                case 'preview':
+                    setTimeout(() => {
+                        this.previewAlternate();
+                    }, 1000);
+                    break;
+                case 'share':
+                    setTimeout(() => {
+                        this.shareCurrent();
+                    }, 1000);
+                    break;
+            }
         },
 
         // hof importation
@@ -651,7 +703,7 @@ var vm = new Vue({
                     },
                 }
                 this.dests.push(destBuffer);
-                this.addDestCode = null;
+                this.addDestCode = '';
                 this.$toast(code + ' added in dests');
             } else {
                 this.$toast('invalid code');
@@ -742,6 +794,7 @@ var vm = new Vue({
         },
         saveDestsInLocalStorage: function() {
             this.saveCurrentIntoDests();
+            this.syncStatusRefresh();
             localStorage.data = JSON.stringify(this.dests);
             this.$toast('Destinations saved in localStorage');
         },
@@ -778,6 +831,7 @@ var vm = new Vue({
             this.shurl = window.location.href.replace(/#+/, '') + '?s=' + base64_url_encode(JSON.stringify(this.current));
             this.qrurl = 'https://api.qrserver.com/v1/create-qr-code/?data=' + this.shurl;
             this.$balmUI.onOpen('shareDialogOpen');
+            this.writeUrl('share');
         },
         autosavePersist: function() {
             if(this.autosave) {
@@ -962,11 +1016,15 @@ var vm = new Vue({
         $(window).bind('load', () => {
             // detect if matrix is selected in link
             if (location.href.indexOf("#") != -1) {
-                anchor = location.href.split('#').pop();
-                if(anchor != undefined) {
+                anchor = location.href.split('#').pop().split('/');
+                id = anchor[0];
+                if(id != undefined) {
                     setTimeout(() => {
-                        this.selectCurrent(anchor);
+                        this.selectCurrent(id);
                     }, 250);
+                }
+                if(anchor[1] != undefined) {
+                    this.anchorTrigger(anchor[1])
                 }
             }
             $('#preloader').fadeOut();
