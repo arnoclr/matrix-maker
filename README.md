@@ -7,21 +7,24 @@ https://kpp.genav.ch
 
 ## Features
 
-* #### Text options
+* #### Edition
 
     Edit color and font of line, front and side section. Multi lines text is supported
 
     ![Text dialog](https://i.imgur.com/mMAPNeO.png)
 
-* #### Icons
-
     Choose an icon or import a custom icon (black & white, .png, max 300o). Gare, Aeroport or Tram icons are included.
 
     ![Icon dialog](https://i.imgur.com/bsGvVyv.png)
 
+    Create multiples matrix at once, and switch between all messages with a delay.
+
+    ![Alternating matrix](https://i.imgur.com/OpI33o3.png)
+
 * #### Multi destinations support
 
     Use the left side drawer to add, or switch destinations. You can drag elements to order your destinations.
+    Delete, duplicate and create destinations.
 
     ![left drawer](https://i.imgur.com/uWGuTR2.png)
 
