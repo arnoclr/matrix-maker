@@ -5,6 +5,7 @@
     font-feature-settings: "tnum";
     font-variant-numeric: tabular-nums;
     background-color: #f9f9f9;
+    transition: margin-left .2s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
 
 .main-content {
