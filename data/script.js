@@ -104,7 +104,7 @@ var vm = new Vue({
         headerShadow: 2,
         syncStatus: true,
         fileOnDrop: false,
-        isMobile: window.matchMedia('only screen and (max-width: 835px)').matches,
+        isMobile: window.matchMedia('only screen and (max-width: 618px)').matches,
         lastIndex:0
     },
     methods: {
@@ -1055,6 +1055,9 @@ var vm = new Vue({
                 if(anchor[1] != undefined) {
                     this.anchorTrigger(anchor[1])
                 }
+            }
+            if(window.matchMedia('only screen and (min-width: 1200px)').matches) {
+                $('#nav-menu').click();
             }
             $('#preloader').fadeOut();
         });

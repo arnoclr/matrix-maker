@@ -4,21 +4,38 @@
     overflow: auto;
     font-feature-settings: "tnum";
     font-variant-numeric: tabular-nums;
+    background-color: #f9f9f9;
 }
 
 .main-content {
     padding: 16px;
-    background-color: #f9f9f9;
-    min-height: 100%;
+    max-width: 1026px;
+    margin: 16px auto 72px auto;
+}
+
+.mdc-drawer {
+    margin-top: 64px;
+}
+#nav-menu {
+    margin-left: -16px;
+}
+.nav-title {
+    position: absolute;
+    top: 16px;
+    margin-left: 16px;
 }
 
 .nav-item {
     transition: padding-right .2s ease;
 }
 
+.active {
+    color: var(--mdc-theme-secondary);
+}
+
 hr {
     border: none;
-    border-top: 1px solid grey;
+    border-top: 1px solid #999;
     height: 1px;
 }
 
@@ -87,6 +104,8 @@ span.mdc-list-item__text {
 .canvasBox {
     position: relative;
     z-index: 7;
+    overflow: auto;
+    white-space: nowrap;
 }
 #lineOver {
     position: absolute;
@@ -183,8 +202,13 @@ body {
 input[type=color] {
     cursor: pointer;
 }
+
+/* icons */
 i.align {
     vertical-align: -25%;
+}
+i.rotate {
+    transform: rotate(90deg);
 }
 
 /* detect mobile device */
