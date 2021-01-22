@@ -98,6 +98,7 @@ var vm = new Vue({
         searchDest: '',
         dragfrom: 0,
         dragto: 0,
+        ondrag: false,
         indexdl: 0,
         rot: 0,
         headerShadow: 2,
@@ -650,16 +651,41 @@ var vm = new Vue({
         // drag and drop drawer
         destDragStart: function(event)  {
             this.dragfrom = event.target.dataset.drag;
-            $('.drag-icon-hide-class').hide();
+            this.ondrag = true;
         },
         destDropOver: function(event) {
             event.preventDefault();
             this.dragto = event.target.dataset.drag;
         },
+        destDropEnd: function(event) {
+            this.ondrag = false;
+        },
         destDropped: function(event) {
+            this.ondrag = false;
             this.dragto = event.target.dataset.drag;
-            this.moveItem(this.dragfrom, this.dragto);
-            $('.drag-icon-hide-class').show();
+            // if dragto multiples
+            if(this.dests[this.dragto].alternates > 1) {
+                console.log('drag on multiples')
+                this.dragto = parseInt(this.dragto) + parseInt(this.dests[this.dragto].alternates);
+            }
+            // if fragfrom multiples
+            if(this.dragto != undefined && this.dests[this.dragfrom].alternates > 1) {
+                if(this.dragto < this.current.index) {
+                    // down
+                    this.alternatesDests.forEach((d, i) => {
+                        this.moveItem(parseInt(d.index), parseInt(this.dragto) + i);
+                    });
+                } else {
+                    // up
+                    this.alternatesDests.forEach((d, i) => {
+                        this.moveItem(parseInt(d.index) - i, parseInt(this.dragto));
+                    });
+                }
+            } else {
+                console.log('regular')
+                this.moveItem(this.dragfrom, this.dragto);
+            }
+            this.selectCurrent(this.dragto);
         },
         
         addDestFocus: function() {
@@ -746,6 +772,7 @@ var vm = new Vue({
                     vm.alternatesDests.push(vm.dests[arrayIndex]);
                 }
             });
+            this.dests[index].alternates = this.alternatesDests.length;
             if(!this.current.code) {
                 this.current.code = prompt('please enter a new code');
             }

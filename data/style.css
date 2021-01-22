@@ -12,6 +12,10 @@
     min-height: 100%;
 }
 
+.nav-item {
+    transition: padding-right .2s ease;
+}
+
 hr {
     border: none;
     border-top: 1px solid grey;

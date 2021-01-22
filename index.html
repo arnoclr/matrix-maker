@@ -205,13 +205,13 @@
                     </ui-drawer-header>
                     <ui-drawer-content id="dest-container">
                         <ui-nav>
-                            <ui-textfield style="width:239px;margin-left:8px;" input-type="search" v-model="searchDest">
+                            <ui-textfield style="width:222px;margin-left:8px;" input-type="search" v-model="searchDest">
                                 search
                                 <template #before>
                                     <ui-textfield-icon>search</ui-textfield-icon>
                                 </template>
                             </ui-textfield>
-                            <ui-textfield style="width:239px;margin-left:8px;margin-top:4px;" input-type="number" max="999" v-model="addDestCode" id="add-dest">
+                            <ui-textfield style="width:222px;margin-left:8px;margin-top:4px;" input-type="number" max="999" v-model="addDestCode" id="add-dest">
                                 add dest
                                 <template #before>
                                     <ui-textfield-icon>create</ui-textfield-icon>
@@ -219,15 +219,16 @@
                             </ui-textfield>
                             <ui-button style="margin:8px" v-show="addDestCode.length > 0 && addDestCode < 1000" @click="addDest(addDestCode)" outlined>add {{ addDestCode }}</ui-button>
                             <ui-nav-item
-                                draggable="true"
+                                :draggable="dest.alternates != undefined"
                                 ondragstart="vm.destDragStart(event);"
                                 ondragover="vm.destDropOver(event);"
                                 ondrop="vm.destDropped(event);"
+                                ondragend="vm.destDropEnd(event);"
                                 :href="'#' + index" id="destsList" @click="selectCurrent(index)" 
                                 :active="dest.name == current.name" 
                                 v-for="(dest, index) in dests" :key="index"
-                                :data-drag="index"
-                                style="padding-right:24px"
+                                :data-drag="index" class="nav-item"
+                                v-bind:style="[ondrag ? {paddingRight: '120px'} : {paddingRight: '24px'}]"
                                 v-show="(dest.name.toLowerCase().includes(searchDest.toLowerCase()) || dest.code.includes(searchDest)) && dest.code < 1000">
                                 <ui-item-first-content style="margin-right:4px">
                                     <ui-icon v-bind:style="{ color: dest.line.back }">flag</ui-icon>
@@ -236,7 +237,7 @@
                                     {{dest.code}}
                                     <ui-icon class="align">arrow_forward</ui-icon>
                                     {{dest.name}}
-                                    <ui-icon class="align draggable drag-icon-hide-class" style="position:absolute;right:4px">drag_handle</ui-icon>
+                                    <ui-icon v-if="!ondrag" class="align draggable drag-icon-hide-class" style="position:absolute;right:4px">drag_handle</ui-icon>
                                 </ui-item-text-content>
                             </ui-nav-item>
                             <ui-nav-item href="https://github.com/Aryqs-Ipsum/matrix-maker/issues/new" target="_blank">
