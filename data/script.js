@@ -663,28 +663,8 @@ var vm = new Vue({
         destDropped: function(event) {
             this.ondrag = false;
             this.dragto = event.target.dataset.drag;
-            // if dragto multiples
-            if(this.dests[this.dragto].alternates > 1) {
-                console.log('drag on multiples')
-                this.dragto = parseInt(this.dragto) + parseInt(this.dests[this.dragto].alternates);
-            }
-            // if fragfrom multiples
-            if(this.dragto != undefined && this.dests[this.dragfrom].alternates > 1) {
-                if(this.dragto < this.current.index) {
-                    // down
-                    this.alternatesDests.forEach((d, i) => {
-                        this.moveItem(parseInt(d.index), parseInt(this.dragto) + i);
-                    });
-                } else {
-                    // up
-                    this.alternatesDests.forEach((d, i) => {
-                        this.moveItem(parseInt(d.index) - i, parseInt(this.dragto));
-                    });
-                }
-            } else {
-                console.log('regular')
-                this.moveItem(this.dragfrom, this.dragto);
-            }
+            this.moveItem(this.dragfrom, this.dragto);
+            this.refreshAlternates(this.dragto);
             this.selectCurrent(this.dragto);
         },
         
@@ -696,6 +676,32 @@ var vm = new Vue({
             console.log(from, to)
             if(to !== undefined) {
                 this.dests.splice(to, 0, this.dests.splice(from, 1)[0]);
+            }
+        },
+        refreshAlternates: function(id) {
+            // loop over 10 alternates possibles codes
+            id = parseInt(id); // dragto
+            dragfromcode = parseInt(this.dests[id].code);
+            for (let index = 1; index <= 9; index++) {
+                // loop over dests and find match
+                moved = false;
+                this.dests.forEach((dest, i) => {
+                    if(dest.code > 999 && dest.code == dragfromcode + 1000 * index) {
+                        console.log(i, id, index, dest.code);
+                        // if dragto is before or after actual dest
+                        if(!moved) {
+                            if(id > i) {
+                                this.moveItem(i, id);
+                                console.log('down')
+                                moved = true;
+                            } else {
+                                this.moveItem(i, id + index);
+                                console.log('up')
+                                moved = true;
+                            }
+                        }
+                    }
+                });
             }
         },
         

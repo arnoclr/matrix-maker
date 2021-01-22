@@ -231,6 +231,7 @@
                             :href="'#' + index" id="destsList" @click="selectCurrent(index)" 
                             :active="dest.name == current.name" 
                             v-for="(dest, index) in dests" :key="index"
+                            :id="index + '-nav-item'"
                             :data-drag="index" class="nav-item"
                             v-bind:style="[ondrag ? {paddingRight: '120px'} : {paddingRight: '24px'}]"
                             v-show="(dest.name.toLowerCase().includes(searchDest.toLowerCase()) || dest.code.includes(searchDest)) && dest.code < 1000">
@@ -265,7 +266,7 @@
                     <ui-button @click="$balmUI.onOpen('iconDialogOpen');writeUrl('icons')" outlined style="float:right;margin:6px 12px;">icon options</ui-button>
                     <ui-menu-anchor style="float: right;">
                         <ui-icon-button @click="$balmUI.onOpen('toolsMenuOpen')" icon="more_vert"></ui-icon-button>
-                        <ui-menu v-model="toolsMenuOpen" @selected="onSelectedTools" @cancel="onCancel" style="z-index:8">
+                        <ui-menu v-model="toolsMenuOpen" @selected="onSelectedTools" style="z-index:8">
                             <ui-menuitem>
                                 <ui-menuitem-icon>
                                     <ui-icon>share</ui-icon>

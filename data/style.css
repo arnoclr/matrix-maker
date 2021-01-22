@@ -203,6 +203,9 @@ body {
 input[type=color] {
     cursor: pointer;
 }
+.mdc-text-field--focused:not(.mdc-text-field--disabled) .mdc-floating-label {
+    color: var(--mdc-theme-primary);
+}
 
 /* icons */
 i.align {
@@ -223,6 +226,6 @@ i.rotate {
 }
 
 /* fonts */
-body, ul, h1, h2, h3, h4, h5, h6, p, a, input, span, .mdc-snackbar__label {
+body, ul, h1, h2, h3, h4, h5, h6, p, a, input, span, .mdc-snackbar__label, .mdc-floating-label {
     font-family: 'Poppins', 'Roboto', sans-serif !important;
 }
