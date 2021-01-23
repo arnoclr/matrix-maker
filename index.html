@@ -176,7 +176,7 @@
                 <ui-icon-button id="nav-menu" icon="menu"></ui-icon-button>
                 <span class="nav-title">Kpp Maker</span>
                 <template #toolbar="{ toolbarItemClass }">
-                    <!-- <ui-icon v-tooltip="syncStatus ? 'dests saved in storage' : 'dests are not saved in storage'" aria-describedby="save status" style="margin-right:12px">{{ syncStatus ? 'done' : 'sync' }}</ui-icon> -->
+                    <ui-icon v-tooltip="syncStatus ? 'dests saved in storage' : 'dests are not saved in storage'" aria-describedby="save status" style="margin-right:12px">{{ syncStatus ? 'done' : 'sync' }}</ui-icon>
                     <ui-icon-button :class="toolbarItemClass" v-tooltip="'Save all destinations in device storage'" aria-describedby="save in storage" icon="save" @click="saveDestsInLocalStorage()"></ui-icon-button>
                     
                     <div class="menu-content">
@@ -210,31 +210,25 @@
                 <ui-drawer-content id="dest-container">
                     <ui-nav>
                         <ui-textfield style="width:95%;margin-left:8px;" input-type="search" v-model="searchDest">
-                            search
+                            search or add
                             <template #before>
                                 <ui-textfield-icon>search</ui-textfield-icon>
                             </template>
                         </ui-textfield>
-                        <ui-textfield style="width:95%;margin-left:8px;margin-top:4px;" input-type="number" max="999" v-model="addDestCode" id="add-dest">
-                            add dest
-                            <template #before>
-                                <ui-textfield-icon>create</ui-textfield-icon>
-                            </template>
-                        </ui-textfield>
-                        <ui-button style="margin:8px" v-show="addDestCode.length > 0 && addDestCode < 1000" @click="addDest(addDestCode)" outlined>add {{ addDestCode }}</ui-button>
+                        <ui-button style="margin:8px" v-show="searchDest.length > 0 && searchDest < 1000" @click="addDest(searchDest)" outlined>add {{ searchDest }}</ui-button>
                         <ui-nav-item
                             :draggable="dest.alternates != undefined"
                             ondragstart="vm.destDragStart(event);"
                             ondragover="vm.destDropOver(event);"
                             ondrop="vm.destDropped(event);"
                             ondragend="vm.destDropEnd(event);"
+                            ondragleave="vm.destDropLeave(event);"
                             :href="'#' + index" id="destsList" @click="selectCurrent(index)" 
                             :active="dest.name == current.name" 
                             v-for="(dest, index) in dests" :key="index"
                             :id="index + '-nav-item'"
                             :data-drag="index" class="nav-item"
-                            v-bind:style="[ondrag ? {paddingRight: '120px'} : {paddingRight: '24px'}]"
-                            v-show="(dest.name.toLowerCase().includes(searchDest.toLowerCase()) || dest.code.includes(searchDest)) && dest.code < 1000">
+                            v-show="(dest.name.toLowerCase().includes(searchDest.toLowerCase()) || dest.code.toString().includes(searchDest)) && dest.code < 1000">
                             <ui-item-first-content style="margin-right:4px">
                                 <ui-icon v-bind:style="{ color: dest.line.back }">flag</ui-icon>
                             </ui-item-first-content>
@@ -242,8 +236,8 @@
                                 <span style="width:24px;">{{dest.code}}</span>
                                 <ui-icon class="align rotate">{{ dest.alternates > 1 ? 'call_split' : 'arrow_upward' }}</ui-icon>
                                 {{dest.name}}
-                                <ui-icon v-if="!ondrag" class="align draggable drag-icon-hide-class" style="position:absolute;right:4px">drag_handle</ui-icon>
                             </ui-item-text-content>
+                            <ui-icon v-if="!ondrag" class="align draggable drag-icon-hide-class" style="position:absolute;right:4px">drag_handle</ui-icon>
                         </ui-nav-item>
                         <ui-nav-item href="https://github.com/Aryqs-Ipsum/matrix-maker/issues/new" target="_blank">
                             <ui-item-first-content>

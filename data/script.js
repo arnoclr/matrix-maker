@@ -656,16 +656,24 @@ var vm = new Vue({
         destDropOver: function(event) {
             event.preventDefault();
             this.dragto = event.target.dataset.drag;
+            $('.nav-item').removeClass('hover');
+            $('#' + this.dragto + '-nav-item').addClass('hover');
         },
         destDropEnd: function(event) {
             this.ondrag = false;
+            $('.nav-item').removeClass('hover');
+        },
+        destDropLeave: function(event) {
+            $('.nav-item').removeClass('hover');
         },
         destDropped: function(event) {
+            $('.nav-item').removeClass('hover');
             this.ondrag = false;
             this.dragto = event.target.dataset.drag;
             this.moveItem(this.dragfrom, this.dragto);
             this.refreshAlternates(this.dragto);
             this.selectCurrent(this.dragto);
+            this.refreshAlternates(this.current.index - this.current.alternates);
         },
         
         addDestFocus: function() {
@@ -829,8 +837,8 @@ var vm = new Vue({
         },
         saveDestsInLocalStorage: function() {
             this.saveCurrentIntoDests();
-            this.syncStatusRefresh();
             localStorage.data = JSON.stringify(this.dests);
+            this.syncStatusRefresh();
             this.$toast('Destinations saved in localStorage');
         },
         loadFont: function(font) {
@@ -1112,6 +1120,13 @@ window.addEventListener("icon:loaded", function() {
     previewCtx.drawImage(canvas, 0, 0, 1024, 256);
     previewCtx.drawImage(overlayImage, 0, 0, 1024, 256);
 }, false);
+
+// before unload
+$(window).bind('beforeunload', function(){
+    if(!vm.syncStatus) {
+        return 'Exit app without save data ?';
+    }
+});
 
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js');

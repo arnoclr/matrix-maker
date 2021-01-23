@@ -69,12 +69,16 @@ hr {
     position: absolute;
 }
 
+/* drag and drop menu */
 .draggable {
     cursor: move !important;
+    pointer-events: inherit !important;
     color: #bbb;
 }
-span.mdc-list-item__text {
-    pointer-events: inherit !important;
+.nav-item.hover {
+    border: 1px dotted var(--mdc-theme-primary);
+    box-sizing: border-box;
+    transition: border .1s ease-out;
 }
 
 .relative {
