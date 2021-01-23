@@ -871,7 +871,7 @@ var vm = new Vue({
         shareCurrent: function() {
             // this.tinycurrent.a = this.current.code;
             // this.tinycurrent.b = this.current.name;
-            this.shurl = window.location.href.replace(/#+/, '') + '?s=' + base64_url_encode(JSON.stringify(this.current));
+            this.shurl = window.location.href.replace(/#.+/, '') + '?s=' + base64_url_encode(JSON.stringify(this.current));
             this.qrurl = 'https://api.qrserver.com/v1/create-qr-code/?data=' + this.shurl;
             this.$balmUI.onOpen('shareDialogOpen');
             this.writeUrl('share');

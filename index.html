@@ -206,6 +206,8 @@
                             <ui-icon class="align" v-if="current.alternates > 1 && i < alternatesDests.length - 1">arrow_forward</ui-icon>
                         </template>
                     </ui-drawer-subtitle>
+                    <ui-switch input-id="toggle-autosave" v-tooltip="'toggle autosave'" aria-describedby="toggle autosave" v-model="autosave" @change="autosavePersist()" style="color: #fff;margin-top:12px;"></ui-switch>
+                    <label for="toggle-autosave">Autosave</label>
                 </ui-drawer-header>
                 <ui-drawer-content id="dest-container">
                     <ui-nav>

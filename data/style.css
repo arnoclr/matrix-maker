@@ -17,6 +17,11 @@
 .mdc-drawer {
     margin-top: 64px;
 }
+
+/* app bar */
+.demo-app-bar {
+    z-index: 9;
+}
 #nav-menu {
     margin-left: -16px;
 }
