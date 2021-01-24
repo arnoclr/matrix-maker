@@ -122,7 +122,7 @@ var vm = new Vue({
                         this.$toast("Character '" + char + "' Not Found in font: '" + font + "'!");
                     }
                     this.bitmapDrawCharacter(ctx, curX, y, cData, fillStyle);
-                    curX = curX + cData.glyph[0].length + this.fonts[font][font].charSpacing;
+                    curX = curX + cData.glyph[0].length + parseInt(this.fonts[font][font].charSpacing);
                 }
             } else {
                 this.$toast(font + ': is not usable');
@@ -134,7 +134,7 @@ var vm = new Vue({
             cData.glyph.forEach((row)=>{
                 for (var i = 0; i < row.length; i++) {
                     var char = row.substr(i, 1);
-                    if(char==="#") {
+                    if(char == "#") {
                         var fs = ctx.fillStyle;
                         ctx.fillStyle = fillStyle;
                         ctx.fillRect(curX+i,y+offY-cData.ascent, 1, 1);
@@ -162,7 +162,7 @@ var vm = new Vue({
                         cData = this.fonts[font][font][' '];
                         this.$toast("Character '" + char + "' Not Found in font: '" + font + "'!");
                     }
-                    width = width + cData.glyph[0].length + this.fonts[font][font].charSpacing;
+                    width = width + parseInt(cData.glyph[0].length) + parseInt(this.fonts[font][font].charSpacing);
                     if (height<cData.glyph.length) {
                         height=cData.glyph.length;
                     }
