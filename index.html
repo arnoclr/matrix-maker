@@ -13,7 +13,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <meta name="apple-mobile-web-app-title" content="Material Design Lite">
-    <link rel="apple-touch-icon-precomposed" href="./data/icons/icon-192x192.png">
+    <link rel="apple-touch-icon" href="./data/icons/icon-192x192.png">
 
     <meta name="msapplication-TileImage" content="./data/icons/icon-192x192.png">
     <meta name="msapplication-TileColor" content="#26C6DA">
@@ -36,7 +36,6 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/balm-ui@next/dist/balm-ui.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins" rel="stylesheet">
-    <link rel="stylesheet" href="data/style.css">
 </head>
 
 <body>
@@ -64,20 +63,15 @@
         <ui-dialog v-model="shareDialogOpen" @close="writeUrl()" style="z-index:8">
             <ui-dialog-title>Share current matrix</ui-dialog-title>
             <ui-dialog-content>
-                <ui-grid>
-                    <ui-grid-cell>
-                        <p>Open this link in a new browser to import current matrix.</p>
-                        <ui-textfield v-model="shurl">
-                            {{ current.name }} matrix link
-                            <template #after>
-                                <ui-textfield-icon @click.native="copyToClipboard(shurl)">content_copy</ui-textfield-icon>
-                            </template>
-                        </ui-textfield>
-                    </ui-grid-cell>
-                    <ui-grid-cell>
-                        <img :src="qrurl" alt="qr code">
-                    </ui-grid-cell>
-                </ui-grid>
+                <img :src="qrurl" alt="qr code">
+                <hr>
+                <p>Open this link in a new browser to import current matrix.</p>
+                <ui-textfield outlined v-model="shurl" style="width: 100%;">
+                    {{ current.name }} matrix link
+                    <template #after>
+                        <ui-textfield-icon @click.native="copyToClipboard(shurl)">content_copy</ui-textfield-icon>
+                    </template>
+                </ui-textfield>
             </ui-dialog-content>
             <ui-dialog-actions></ui-dialog-actions>
         </ui-dialog>
@@ -104,13 +98,9 @@
             </ui-dialog-content>
         </ui-dialog>
 
-        <!-- licence infos -->
-        <ui-drawer type="modal" :open="licenceDrawerOpen" style="margin-left:0px;z-index:8">
-            <ui-drawer-header>
-                <ui-drawer-title>Infos</ui-drawer-title>
-                <ui-drawer-subtitle>Externals links</ui-drawer-subtitle>
-            </ui-drawer-header>
-            <ui-drawer-content>
+        <!-- licence dialog -->
+        <ui-dialog v-model="licenceDialogOpen" @close="writeUrl()" :mask-closable="true" style="z-index:8">
+            <ui-dialog-content>
                 <ui-nav>
                     <ui-nav-item href="https://omsistuff.ga">
                         <ui-item-first-content>
@@ -160,9 +150,8 @@
                     <p>Site develloped by Adam Mathieson and Arno Cellarier. Fonts copyright their respective owners</p>
                     <small>v2.0a <a href="#!" @click="debugInfos">debug infos</a></small>
                 </div>
-            </ui-drawer-content>
-        </ui-drawer>
-        <ui-drawer-backdrop style="margin-left:255px;"></ui-drawer-backdrop>
+            </ui-dialog-content>
+        </ui-dialog>
 
         <!-- mobile disclaimer -->
         <section v-show="isMobile" class="empty-state">
@@ -211,7 +200,7 @@
                 </ui-drawer-header>
                 <ui-drawer-content id="dest-container">
                     <ui-nav>
-                        <ui-textfield style="width:95%;margin-left:8px;" input-type="search" v-model="searchDest">
+                        <ui-textfield style="width:95%;margin-left:8px;" input-type="search" v-model="searchDest" id="search-dest">
                             search or add
                             <template #before>
                                 <ui-textfield-icon>search</ui-textfield-icon>
@@ -249,7 +238,7 @@
                         </ui-nav-item>
                         <div style="height:100px;"></div>
                     </ui-nav>
-                    <ui-icon-button v-tooltip="'Terms and attributions'" aria-describedby="details" style="position:absolute;bottom:72px;left:8px" @click="licenceDrawerOpen=!licenceDrawerOpen" :icon="licenceDrawerOpen ? 'close' : 'info'"></ui-icon-button>
+                    <ui-icon-button v-tooltip="'Terms and attributions'" aria-describedby="details" style="position:absolute;bottom:72px;left:8px" @click="$balmUI.onOpen('licenceDialogOpen');writeUrl('infos')" icon="info"></ui-icon-button>
                 </ui-drawer-content>
             </ui-drawer>
             <!-- App content -->
@@ -342,6 +331,10 @@
                         <div @click="$balmUI.onOpen('frontDialogOpen');writeUrl('front')" v-tooltip="'Front text options'" aria-describedby="frontAlt" class="matrixOver" id="frontOverAlt" v-show="!current.front.line"></div>
                         <div @click="$balmUI.onOpen('sideDialogOpen');writeUrl('side')" v-tooltip="'Side text options'" aria-describedby="side" class="matrixOver" id="sideOver"></div>
                         <canvas width="1024" height="256" style="border: solid 1px black;" id="previewCanvas"></canvas>
+                        <div class="alt-progress-hover" v-shadow="2">
+                            <ui-spinner :progress="progressAltPreview" :size="'small'"></ui-spinner>
+                            <span>{{ progressAltIndex }} / {{ alternatesDests.length }}</span>
+                        </div>
                     </div>
 
                     <small>You can edit differents parts of the matrix by clicking on it.</small>
@@ -503,6 +496,7 @@
     <script type="text/javascript">
         var _c = new Date().getTime();
         document.write('<script type="text/javascript" src="data/script.js?c='+_c+'"><\/script>');
+        document.write('<link rel="stylesheet" href="data/style.css?c='+_c+'">');
     </script>
 
 </body>

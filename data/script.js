@@ -89,7 +89,7 @@ var vm = new Vue({
         downloadDialogOpen: false,
         downloadProgressDialogOpen: false,
         destSettingsDialogOpen: false,
-        licenceDrawerOpen: false,
+        licenceDialogOpen: false,
         toolsMenuOpen: false,
         shurl: null,
         qrurl: null,
@@ -103,6 +103,8 @@ var vm = new Vue({
         rot: 0,
         headerShadow: 2,
         syncStatus: true,
+        progressAltPreview: 0,
+        progressAltIndex: 0,
         fileOnDrop: false,
         isMobile: window.matchMedia('only screen and (max-width: 618px)').matches,
         lastIndex:0
@@ -547,14 +549,18 @@ var vm = new Vue({
         },
         previewAlternate: function() {
             $('#main-hover').fadeIn();
+            $('.alt-progress-hover').fadeIn();
             this.$toast('start of preview');
             this.alternatesDests.forEach((d, i) => {
                 setTimeout(() => {
                     this.selectCurrent(d.index);
+                    this.progressAltPreview = (i + 1) / this.alternatesDests.length;
+                    this.progressAltIndex = i + 1;
                     console.log(this.alternatesDests.length, i)
                     if(this.alternatesDests.length - 1 == i) {
                         setTimeout(() => {
                             $('#main-hover').fadeOut();
+                            $('.alt-progress-hover').fadeOut();
                             this.$toast('end of preview');
                             this.selectCurrent(this.alternatesDests[0].index);
                         }, 2200);
@@ -571,7 +577,7 @@ var vm = new Vue({
             a.remove();
         },
         anchorTrigger: function(string) {
-            modals = ['front', 'line', 'side', 'icons', 'destSettings', 'download'];
+            modals = ['front', 'line', 'side', 'icons', 'destSettings', 'download', 'infos'];
             if(modals.includes(string)) {
                 this.$balmUI.onOpen(string + 'DialogOpen');
             }
@@ -677,7 +683,7 @@ var vm = new Vue({
         },
         
         addDestFocus: function() {
-            document.querySelector('#add-dest').focus();
+            $('#search-dest').focus();
         },
 
         moveItem: function(from, to) {
@@ -743,7 +749,7 @@ var vm = new Vue({
                     },
                 }
                 this.dests.push(destBuffer);
-                this.addDestCode = '';
+                this.searchDest = '';
                 this.$toast(code + ' added in dests');
             } else {
                 this.$toast('invalid code');

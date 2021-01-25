@@ -21,6 +21,10 @@
 /* app bar */
 .demo-app-bar {
     z-index: 9;
+    transition: margin-top .2s ease;
+}
+.demo-app-bar.preview {
+    margin-top: -64px;
 }
 #nav-menu {
     margin-left: -16px;
@@ -32,7 +36,7 @@
 }
 
 .nav-item {
-    transition: padding-right .2s ease;
+    padding-right: 28px !important;
 }
 
 .active {
@@ -46,7 +50,7 @@ hr {
 }
 
 #main-hover {
-    background-color: #00000090;
+    background-color: #000000bb;
     position: absolute;
     width: 100%;
     height: 100%;
@@ -157,6 +161,27 @@ hr {
     border:solid 5px #eee;
     box-sizing: border-box;
     border-radius: 5px;
+}
+
+/* alt progress hover */
+.alt-progress-hover {
+    display: none;
+    background-color: #fff;
+    height: 48px;
+    border-radius: 24px;
+    width: 110px;
+    z-index: 9;
+    position: absolute;
+    bottom: 16px;
+    left: 8px;
+}
+.alt-progress-hover .mdc-circular-progress {
+    margin: 12px;
+}
+.alt-progress-hover span {
+    display: inline-block;
+    position: absolute;
+    margin-top: 12px;
 }
 
 /* empty state icon section */
