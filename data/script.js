@@ -577,7 +577,7 @@ var vm = new Vue({
             a.remove();
         },
         anchorTrigger: function(string) {
-            modals = ['front', 'line', 'side', 'icons', 'destSettings', 'download', 'infos'];
+            modals = ['front', 'line', 'side', 'icons', 'destSettings', 'download', 'licence'];
             if(modals.includes(string)) {
                 this.$balmUI.onOpen(string + 'DialogOpen');
             }
@@ -1085,6 +1085,7 @@ var vm = new Vue({
         // beta disclaimer
         var subdomain = window.location.host.split('.')[1] ? window.location.host.split('.')[0] : false;
         if(subdomain === 'beta') {
+            $('#nav-title-text').text('Kpp Maker - Beta');
             this.$alert('This is a beta version of the site, which may contain bugs. Please report any malfunctions you encounter. This preview contain a small selection of usable fonts.')
         }
 

@@ -209,19 +209,6 @@ hr {
     height: auto;
 }
 
-/* preloader */
-#preloader {
-    width: 100vw;
-    height: 100vh;
-    background-color: #eee;
-    position: relative;
-}
-#preloader>div {
-    position: absolute;
-    top: 50%;
-    margin-left: 48vw;
-}
-
 /* colors */
 .bg-error {
     background-color: var(--mdc-theme-error) !important;
@@ -260,6 +247,6 @@ i.rotate {
 }
 
 /* fonts */
-body, ul, h1, h2, h3, h4, h5, h6, p, a, input, span, .mdc-snackbar__label, .mdc-floating-label {
+body, ul, h1, h2, h3, h4, h5, h6, p, a, small, input, span, .mdc-snackbar__label, .mdc-floating-label {
     font-family: 'Poppins', 'Roboto', sans-serif !important;
 }

@@ -36,6 +36,26 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/balm-ui@next/dist/balm-ui.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins" rel="stylesheet">
+
+    <style>
+    #preloader {
+        width: 100%;
+        height: 100%;
+        background-color: #eee;
+        position: fixed;
+        z-index: 10;
+        top: 0;
+        left: 0;
+        text-align: center;
+        overflow: none;
+    }
+    #preloader>div, #preloader span {
+        position: absolute;
+        top: 50%;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 1.2rem;
+    }
+    </style>
 </head>
 
 <body>
@@ -44,7 +64,7 @@
 
         <!-- preloader -->
         <div id="preloader">
-            <ui-spinner active>loading app ...</ui-spinner>
+            <ui-spinner active><span>loading app ...</span></ui-spinner>
         </div>
 
         <!-- hover preview matrix -->
@@ -102,7 +122,7 @@
         <ui-dialog v-model="licenceDialogOpen" @close="writeUrl()" :mask-closable="true" style="z-index:8">
             <ui-dialog-content>
                 <ui-nav>
-                    <ui-nav-item href="https://omsistuff.ga">
+                    <ui-nav-item href="https://omsistuff.ga/?utm_source=kpp_maker&utm_medium=link&utm_campaign=beta">
                         <ui-item-first-content>
                             <ui-icon>palette</ui-icon>
                         </ui-item-first-content>
@@ -163,7 +183,7 @@
             <!-- App bar -->
             <ui-top-app-bar v-shadow="4" class="demo-app-bar" content-selector=".demo-app-content" nav-id="nav-menu" :nav-icon="false">
                 <ui-icon-button id="nav-menu" icon="menu"></ui-icon-button>
-                <span class="nav-title">Kpp Maker</span>
+                <span class="nav-title" id="nav-title-text">Kpp Maker</span>
                 <template #toolbar="{ toolbarItemClass }">
                     <ui-icon v-tooltip="syncStatus ? 'dests saved in storage' : 'dests are not saved in storage'" aria-describedby="save status" style="margin-right:12px">{{ syncStatus ? 'done' : 'sync' }}</ui-icon>
                     <ui-icon-button :class="toolbarItemClass" v-tooltip="'Save all destinations in device storage'" aria-describedby="save in storage" icon="save" @click="saveDestsInLocalStorage()"></ui-icon-button>
@@ -236,9 +256,11 @@
                             </ui-item-first-content>
                             <ui-item-text-content>Bug report</ui-item-text-content>
                         </ui-nav-item>
-                        <div style="height:100px;"></div>
+                        <div style="margin:16px;margin-bottom:120px;">
+                            <small>matrix codes must be unique, the hof will not work correctly otherwise.</small>
+                        </div>
                     </ui-nav>
-                    <ui-icon-button v-tooltip="'Terms and attributions'" aria-describedby="details" style="position:absolute;bottom:72px;left:8px" @click="$balmUI.onOpen('licenceDialogOpen');writeUrl('infos')" icon="info"></ui-icon-button>
+                    <ui-icon-button v-tooltip="'Terms and attributions'" aria-describedby="details" style="position:absolute;bottom:72px;left:8px" @click="$balmUI.onOpen('licenceDialogOpen');writeUrl('licence')" icon="info"></ui-icon-button>
                 </ui-drawer-content>
             </ui-drawer>
             <!-- App content -->
@@ -346,7 +368,7 @@
                         <p style="margin-top:0">loop over all frames with 2 seconds of delay</p>
                         <div class="btn-container" style="position:absolute;top:0;right:0">
                             <ui-button icon="add" @click="addAlternate()" outlined>add</ui-button>
-                            <ui-button icon="play_arrow" @click="previewAlternate();writeUrl('preview')" raised>preview</ui-button>
+                            <ui-button icon="play_arrow" @click="previewAlternate();writeUrl('preview')" :disabled="current.alternates < 2" raised>preview</ui-button>
                         </div>
                     </div>
                     <ui-grid style="padding:0">
