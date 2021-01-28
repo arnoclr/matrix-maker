@@ -93,6 +93,7 @@ var vm = new Vue({
         toolsMenuOpen: false,
         shurl: null,
         qrurl: null,
+        qrLoading: true,
         hofName: '',
         autosave: false,
         searchDest: '',
@@ -441,6 +442,7 @@ var vm = new Vue({
             }
         },
         refreshUi: function() {
+            this.qrLoading = true;
             this.headerShadow = (document.getElementById('dest-container').offsetHeight > window.innerHeight - 203) ? 2 : 0;
         },
         syncStatusRefresh: function() {

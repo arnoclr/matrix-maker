@@ -101,6 +101,11 @@ hr {
     position: relative;
 }
 
+.mdc-skeleton-avatar--large {
+    height: 250px !important;
+    width: 250px !important;
+}
+
 /* dropzone */
 #dropzone {
     background-color: var(--mdc-theme-secondary);

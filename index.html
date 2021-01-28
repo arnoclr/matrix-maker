@@ -37,6 +37,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/balm-ui@next/dist/balm-ui.css" />
     <link href="https://fonts.googleapis.com/css2?family=Poppins" rel="stylesheet">
 
+    <!-- preloader style html -->
     <style>
     #preloader {
         width: 100%;
@@ -49,11 +50,32 @@
         text-align: center;
         overflow: none;
     }
-    #preloader>div, #preloader span {
+    #preloader svg {
         position: absolute;
         top: 50%;
         font-family: Arial, Helvetica, sans-serif;
         font-size: 1.2rem;
+    }
+    .loader ellipse {
+        stroke-dasharray:10, 9999;
+        -webkit-animation:load 2s cubic-bezier(0.8,0.25,0.25,0.9) infinite, spin 2s linear infinite;
+        -webkit-transform-origin:center;
+    }
+    @-webkit-keyframes load {
+        50% {
+            stroke-dasharray:140;
+            stroke-dashoffset:0;
+            -webkit-transform:rotateZ(0deg);
+        }
+        100% {
+            stroke-dasharray:146;
+            stroke-dashoffset:-156;
+        }
+    }
+    @-webkit-keyframes spin {
+        to {
+            -webkit-transform:rotateZ(360deg);
+        }
     }
     </style>
 </head>
@@ -64,7 +86,7 @@
 
         <!-- preloader -->
         <div id="preloader">
-            <ui-spinner active><span>loading app ...</span></ui-spinner>
+            <svg class="loader" width="60" height="60" xmlns="http://www.w3.org/2000/svg"><g><ellipse ry="25" rx="25" cy="30" cx="30" stroke-width="5" stroke="#607d8b" fill="none"/></g></svg>
         </div>
 
         <!-- hover preview matrix -->
@@ -83,7 +105,8 @@
         <ui-dialog v-model="shareDialogOpen" @close="writeUrl()" style="z-index:8">
             <ui-dialog-title>Share current matrix</ui-dialog-title>
             <ui-dialog-content>
-                <img :src="qrurl" alt="qr code">
+                <img :src="qrurl" alt="qr code" onload="vm.qrLoading = false">
+                <ui-skeleton style="max-width: 250px;" :loading="qrLoading" active :avatar="{ size: 'large', shape: 'square' }"></ui-skeleton>
                 <hr>
                 <p>Open this link in a new browser to import current matrix.</p>
                 <ui-textfield outlined v-model="shurl" style="width: 100%;">
