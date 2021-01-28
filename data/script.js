@@ -89,6 +89,7 @@ var vm = new Vue({
         downloadDialogOpen: false,
         downloadProgressDialogOpen: false,
         destSettingsDialogOpen: false,
+        statusDialogOpen: false,
         licenceDialogOpen: false,
         toolsMenuOpen: false,
         shurl: null,
@@ -618,7 +619,7 @@ var vm = new Vue({
             a.remove();
         },
         anchorTrigger: function(string) {
-            modals = ['front', 'line', 'side', 'icons', 'destSettings', 'download', 'licence'];
+            modals = ['front', 'line', 'side', 'icons', 'destSettings', 'download', 'licence', 'status'];
             if(modals.includes(string)) {
                 this.$balmUI.onOpen(string + 'DialogOpen');
             }

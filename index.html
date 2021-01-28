@@ -102,7 +102,7 @@
         </div>
 
         <!-- share dialog -->
-        <ui-dialog v-model="shareDialogOpen" @close="writeUrl()" style="z-index:8">
+        <ui-dialog v-model="shareDialogOpen" @close="writeUrl()">
             <ui-dialog-title>Share current matrix</ui-dialog-title>
             <ui-dialog-content>
                 <img :src="qrurl" alt="qr code" onload="vm.qrLoading = false">
@@ -120,7 +120,7 @@
         </ui-dialog>
 
         <!-- download hof dialog -->
-        <ui-dialog v-model="downloadDialogOpen" @close="writeUrl()" :mask-closable="true" style="z-index:8">
+        <ui-dialog v-model="downloadDialogOpen" @close="writeUrl()" mask-closable>
             <ui-dialog-content>
                 <section class="illustration">
                     <ui-icon class="purple600">get_app</ui-icon>
@@ -134,15 +134,31 @@
         </ui-dialog>
 
         <!-- download progress hof dialog -->
-        <ui-dialog :open="downloadProgressDialogOpen" style="z-index:8">
+        <ui-dialog :open="downloadProgressDialogOpen">
             <ui-dialog-content>
                 <p>Generation ...</p>
                 <ui-spinner :progress="(indexdl + 1) / dests.length"></ui-spinner>
             </ui-dialog-content>
         </ui-dialog>
 
+        <!-- sync dialog -->
+        <ui-dialog v-model="statusDialogOpen" @close="writeUrl()" mask-closable>
+            <ui-dialog-title style="margin-top:16px;padding-bottom:0">
+                <ui-icon :size="48" dark inactive>{{ syncStatus ? 'done' : 'settings_backup_restore' }}</ui-icon>
+            </ui-dialog-title>
+            <ui-dialog-content>
+                <p v-show="syncStatus">Great ! All your dests are saved in this device. You can quit this website and reopen later without loose your data.</p>
+                <span v-show="!syncStatus">
+                    <p>Caution ! Don't quit this website without save data, or you will loose your actual work.</p>
+                    <ui-switch input-id="toggle-autosave-status-modal" v-tooltip="'toggle autosave'" aria-describedby="toggle autosave" v-model="autosave" @change="autosavePersist()"></ui-switch>
+                    <label for="toggle-autosave-status-modal">Autosave</label>
+                    <br><small>We recommend that you enable automatic backup</small>
+                </span>
+            </ui-dialog-content>
+        </ui-dialog>
+
         <!-- licence dialog -->
-        <ui-dialog v-model="licenceDialogOpen" @close="writeUrl()" :mask-closable="true" style="z-index:8">
+        <ui-dialog v-model="licenceDialogOpen" @close="writeUrl()" mask-closable>
             <ui-dialog-content>
                 <ui-nav>
                     <ui-nav-item href="https://omsistuff.ga/?utm_source=kpp_maker&utm_medium=link&utm_campaign=beta">
@@ -208,7 +224,7 @@
                 <ui-icon-button id="nav-menu" icon="menu"></ui-icon-button>
                 <span class="nav-title" id="nav-title-text">Kpp Maker</span>
                 <template #toolbar="{ toolbarItemClass }">
-                    <ui-icon v-tooltip="syncStatus ? 'dests saved in storage' : 'dests are not saved in storage'" aria-describedby="save status" style="margin-right:12px">{{ syncStatus ? 'done' : 'sync' }}</ui-icon>
+                    <ui-icon-button @click="$balmUI.onOpen('statusDialogOpen');writeUrl('status')" v-tooltip="'show save status'" aria-describedby="save status" :icon="syncStatus ? 'done' : 'sync'"></ui-icon-button>
                     <ui-icon-button :class="toolbarItemClass" v-tooltip="'Save all destinations in device storage'" aria-describedby="save in storage" icon="save" @click="saveDestsInLocalStorage()"></ui-icon-button>
                     
                     <div class="menu-content">
@@ -273,11 +289,18 @@
                             </ui-item-text-content>
                             <ui-icon v-if="!ondrag" class="align draggable drag-icon-hide-class" style="position:absolute;right:4px">drag_handle</ui-icon>
                         </ui-nav-item>
+                        <hr>
                         <ui-nav-item draggable="false" href="https://github.com/Aryqs-Ipsum/matrix-maker/issues/new" target="_blank">
                             <ui-item-first-content>
                                 <ui-icon>feedback</ui-icon>
                             </ui-item-first-content>
                             <ui-item-text-content>Bug report</ui-item-text-content>
+                        </ui-nav-item>
+                        <ui-nav-item draggable="false" href="https://forms.gle/DcYYG9u63hQnE8e67" target="_blank">
+                            <ui-item-first-content>
+                                <ui-icon>cloud_upload</ui-icon>
+                            </ui-item-first-content>
+                            <ui-item-text-content>Submit icons</ui-item-text-content>
                         </ui-nav-item>
                         <div style="margin:16px;margin-bottom:120px;">
                             <small>matrix codes must be unique, the hof will not work correctly otherwise.</small>
@@ -296,7 +319,7 @@
                     <ui-button @click="$balmUI.onOpen('iconDialogOpen');writeUrl('icons')" outlined style="float:right;margin:6px 12px;">icon options</ui-button>
                     <ui-menu-anchor style="float: right;">
                         <ui-icon-button @click="$balmUI.onOpen('toolsMenuOpen')" icon="more_vert"></ui-icon-button>
-                        <ui-menu v-model="toolsMenuOpen" @selected="onSelectedTools" style="z-index:8">
+                        <ui-menu v-model="toolsMenuOpen" @selected="onSelectedTools">
                             <ui-menuitem>
                                 <ui-menuitem-icon>
                                     <ui-icon>share</ui-icon>
@@ -335,7 +358,7 @@
                 <section v-show="current.code" class="main-content">
 
                     <!-- dest settings dialog -->
-                    <ui-dialog v-model="destSettingsDialogOpen" @close="writeUrl()" :mask-closable="true" style="z-index:8">
+                    <ui-dialog v-model="destSettingsDialogOpen" @close="writeUrl()" mask-closable>
                         <ui-dialog-title>Settings for {{ current.code }}</ui-dialog-title>
                         <ui-dialog-content>
                             <small>unique id : {{current.index}}</small><br>
@@ -413,7 +436,7 @@
                     </ui-grid>
                     
                     <!-- Front text -->
-                    <ui-dialog v-model="frontDialogOpen" @close="writeUrl()" :mask-closable="true">
+                    <ui-dialog v-model="frontDialogOpen" @close="writeUrl()" mask-closable>
                         <ui-dialog-title>Front text options</ui-dialog-title>
                         <ui-dialog-content>
                             <template v-if="current.front.text">
@@ -429,14 +452,14 @@
                             </div>
                             <ui-form-field>
                                 <ui-checkbox v-model="current.front.invert" input-id="checkbox-front-invert" @change="refreshMatrix()"></ui-checkbox>
-                                <label for="checkbox-front-invert">invert colors</label>
+                                <label for="checkbox-front-invert">Invert colors</label>
                             </ui-form-field>
                         </ui-dialog-content>
                         <ui-dialog-actions></ui-dialog-actions>
                     </ui-dialog>
 
                     <!-- Line -->
-                    <ui-dialog v-model="lineDialogOpen" @close="writeUrl()" :mask-closable="true">
+                    <ui-dialog v-model="lineDialogOpen" @close="writeUrl()" mask-closable>
                         <ui-dialog-title>Line options</ui-dialog-title>
                         <ui-dialog-content>
                             <section>
@@ -462,14 +485,14 @@
                             </section>
                             <ui-form-field>
                                 <ui-checkbox v-model="current.line.partial" input-id="checkbox-partial-line" @change="refreshMatrix()"></ui-checkbox>
-                                <label for="checkbox-partial-line">partial line background</label>
+                                <label for="checkbox-partial-line">Partial line background</label>
                             </ui-form-field>
                         </ui-dialog-content>
                         <ui-dialog-actions></ui-dialog-actions>
                     </ui-dialog>
 
                     <!-- Side text -->
-                    <ui-dialog v-model="sideDialogOpen" @close="writeUrl()" :mask-closable="true">
+                    <ui-dialog v-model="sideDialogOpen" @close="writeUrl()" mask-closable>
                         <ui-dialog-title>Side text options</ui-dialog-title>
                         <ui-dialog-content>
                             <template v-if="current.side.text">
@@ -485,14 +508,14 @@
                             </div>
                             <ui-form-field>
                                 <ui-checkbox v-model="current.side.invert" input-id="checkbox-side-invert" @change="refreshMatrix()"></ui-checkbox>
-                                <label for="checkbox-side-invert">invert colors</label>
+                                <label for="checkbox-side-invert">Invert colors</label>
                             </ui-form-field>
                         </ui-dialog-content>
                         <ui-dialog-actions></ui-dialog-actions>
                     </ui-dialog>
 
                     <!-- icons options -->
-                    <ui-dialog v-model="iconDialogOpen" @close="writeUrl()" :mask-closable="true">
+                    <ui-dialog v-model="iconDialogOpen" @close="writeUrl()" mask-closable>
                         <ui-dialog-title>Icon options</ui-dialog-title>
                         <ui-dialog-content>
                             <ui-grid style="padding:0">
