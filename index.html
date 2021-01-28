@@ -250,7 +250,7 @@
                             </ui-item-text-content>
                             <ui-icon v-if="!ondrag" class="align draggable drag-icon-hide-class" style="position:absolute;right:4px">drag_handle</ui-icon>
                         </ui-nav-item>
-                        <ui-nav-item href="https://github.com/Aryqs-Ipsum/matrix-maker/issues/new" target="_blank">
+                        <ui-nav-item draggable="false" href="https://github.com/Aryqs-Ipsum/matrix-maker/issues/new" target="_blank">
                             <ui-item-first-content>
                                 <ui-icon>feedback</ui-icon>
                             </ui-item-first-content>
@@ -433,6 +433,10 @@
                                     <input type="color" v-model="current.line.back" @change="refreshMatrix()" style="opacity:0; position:absolute; left:0;top:0;width:100%"/>
                                 </div>
                             </section>
+                            <ui-form-field>
+                                <ui-checkbox v-model="current.line.partial" input-id="checkbox-partial-line" @change="refreshMatrix()"></ui-checkbox>
+                                <label for="checkbox-partial-line">partial line background</label>
+                            </ui-form-field>
                         </ui-dialog-content>
                         <ui-dialog-actions></ui-dialog-actions>
                     </ui-dialog>
@@ -505,7 +509,13 @@
                 <section v-show="!current.code" class="empty-state">
                     <ui-icon>touch_app</ui-icon>
                     <p>Start by select a destination or create it in the side nav. You can also drag and drop hof and backup files on the page.</p>
-                    <ui-button raised @click="addDestFocus()">add destination</ui-button>
+                    <ui-textfield input-type="search" v-model="searchDest" id="search-dest">
+                        add destination
+                        <template #before>
+                            <ui-textfield-icon>add</ui-textfield-icon>
+                        </template>
+                    </ui-textfield>
+                    <ui-button v-show="searchDest.length > 0 && searchDest < 1000" @click="addDest(searchDest)" raised>add {{ searchDest }}</ui-button>
                 </section>
 
             </ui-drawer-app-content>

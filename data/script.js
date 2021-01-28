@@ -302,8 +302,31 @@ var vm = new Vue({
         // line
         writeLineText: function() {
             // background
-            this.ctx.fillStyle = this.current.line.back;
+            // black
+            this.ctx.fillStyle = '#000000';
             this.ctx.fillRect(0, 0, 50, 64);
+            // color
+            this.ctx.fillStyle = this.current.line.back;
+            if(this.current.line.partial) {
+                this.ctx.beginPath();
+                this.ctx.moveTo(0, 0);
+                this.ctx.lineTo(50, 0);
+                this.ctx.lineTo(0, 32);
+                this.ctx.lineTo(50, 32);
+                this.ctx.lineTo(0, 64);
+                this.ctx.fill();
+                // remove anti-aliasing
+                for (let x = 0; x <= 50; x++) {
+                    for (let y = 0; y <= 64; y++) {
+                        color = this.ctx.getImageData(x, y, 1, 1).data;
+                        if(color[0] != 0 && color[1] != 0 && color[2] != 0) {
+                            this.ctx.fillRect(x, y, 1, 1);
+                        }
+                    }
+                }
+            } else {
+                this.ctx.fillRect(0, 0, 50, 64);
+            }
             var dims = this.bitmapTextDims(this.current.line.text, this.current.line.font);
             // outline
             var pxpy = [[24, 16], [25, 15], [26, 16], [25, 17], [24, 48], [25, 47], [26, 48], [25, 49]]
@@ -550,6 +573,7 @@ var vm = new Vue({
         previewAlternate: function() {
             $('#main-hover').fadeIn();
             $('.alt-progress-hover').fadeIn();
+            $('.demo-app-bar').addClass('preview');
             this.$toast('start of preview');
             this.alternatesDests.forEach((d, i) => {
                 setTimeout(() => {
@@ -561,6 +585,7 @@ var vm = new Vue({
                         setTimeout(() => {
                             $('#main-hover').fadeOut();
                             $('.alt-progress-hover').fadeOut();
+                            $('.demo-app-bar').removeClass('preview');
                             this.$toast('end of preview');
                             this.selectCurrent(this.alternatesDests[0].index);
                         }, 2200);
