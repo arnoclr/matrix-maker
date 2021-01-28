@@ -241,7 +241,7 @@
                             :data-drag="index" class="nav-item"
                             v-show="(dest.name.toLowerCase().includes(searchDest.toLowerCase()) || dest.code.toString().includes(searchDest)) && dest.code < 1000">
                             <ui-item-first-content style="margin-right:4px">
-                                <ui-icon v-bind:style="{ color: dest.line.back }">flag</ui-icon>
+                                <ui-icon v-bind:style="{ color: dest.line.back != '#ffffff' ? dest.line.back : '#bbbbbb' }">flag</ui-icon>
                             </ui-item-first-content>
                             <ui-item-text-content>
                                 <span style="width:24px;">{{dest.code}}</span>
@@ -404,6 +404,10 @@
                                 <ui-button raised type="button" v-bind:style="{ backgroundColor: current.front.color, color: pickerTextColor(current.front.color) }">front text color</ui-button raised>
                                 <input type="color" v-model="current.front.color" @change="refreshMatrix()" style="opacity:0; position:absolute; left:0;top:0;width:100%"/>
                             </div>
+                            <ui-form-field>
+                                <ui-checkbox v-model="current.front.invert" input-id="checkbox-front-invert" @change="refreshMatrix()"></ui-checkbox>
+                                <label for="checkbox-front-invert">invert colors</label>
+                            </ui-form-field>
                         </ui-dialog-content>
                         <ui-dialog-actions></ui-dialog-actions>
                     </ui-dialog>
@@ -456,6 +460,10 @@
                                 <ui-button raised type="button" v-bind:style="{ backgroundColor: current.side.color, color: pickerTextColor(current.side.color) }">side text color</ui-button raised>
                                 <input type="color" v-model="current.side.color" @change="refreshMatrix()" style="opacity:0; position:absolute; left:0;top:0;width:100%"/>
                             </div>
+                            <ui-form-field>
+                                <ui-checkbox v-model="current.side.invert" input-id="checkbox-side-invert" @change="refreshMatrix()"></ui-checkbox>
+                                <label for="checkbox-side-invert">invert colors</label>
+                            </ui-form-field>
                         </ui-dialog-content>
                         <ui-dialog-actions></ui-dialog-actions>
                     </ui-dialog>
