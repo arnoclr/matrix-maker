@@ -108,8 +108,8 @@
                 <img :src="qrurl" alt="qr code" onload="vm.qrLoading = false">
                 <ui-skeleton v-bind:style="qrLoading ? {marginTop: '-16px'} : {}" :loading="qrLoading" active :avatar="{ size: 'large', shape: 'square' }" class="mdc-skeleton-img"></ui-skeleton>
                 <hr>
-                <p>Open this link in a new browser to import current matrix.</p>
-                <ui-textfield outlined v-model="shurl" style="width: 100%;">
+                <p style="max-width:250px;">Open this link in a new browser to import current matrix.</p>
+                <ui-textfield outlined v-model="shurl" style="width:100%;margin-bottom:16px;">
                     {{ current.name }} matrix link
                     <template #after>
                         <ui-textfield-icon @click.native="copyToClipboard(shurl)">content_copy</ui-textfield-icon>
@@ -142,8 +142,8 @@
 
         <!-- sync dialog -->
         <ui-dialog v-model="statusDialogOpen" @close="writeUrl()" mask-closable>
-            <ui-dialog-title style="margin-top:16px;padding-bottom:0">
-                <ui-icon :size="48" dark inactive>{{ syncStatus ? 'done' : 'settings_backup_restore' }}</ui-icon>
+            <ui-dialog-title>
+                <ui-icon>{{ syncStatus ? 'done' : 'settings_backup_restore' }}</ui-icon>
             </ui-dialog-title>
             <ui-dialog-content>
                 <p v-show="syncStatus">Great ! All your dests are saved in this device. You can quit this website and reopen later without loose your data.</p>

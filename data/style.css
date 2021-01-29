@@ -101,6 +101,13 @@ hr {
     position: relative;
 }
 
+.mdc-dialog__title {
+    background: var(--mdc-theme-primary);
+    color: #fff !important;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+}
+
 /* skeleton */
 .mdc-skeleton-avatar--large {
     height: 250px !important;
@@ -110,9 +117,12 @@ hr {
     max-width: 250px !important;
 }
 
-/* modals */
+/* z-index */
 .mdc-dialog {
     z-index: 10 !important;
+}
+.mdc-snackbar {
+    z-index: 11 !important;
 }
 
 /* dropzone */

@@ -444,6 +444,7 @@ var vm = new Vue({
         },
         refreshUi: function() {
             this.qrLoading = true;
+            this.qrurl = '';
             this.headerShadow = (document.getElementById('dest-container').offsetHeight > window.innerHeight - 203) ? 2 : 0;
         },
         syncStatusRefresh: function() {
@@ -920,30 +921,37 @@ var vm = new Vue({
             // this.tinycurrent.a = this.current.code;
             // this.tinycurrent.b = this.current.name;
             var long_url = window.location.href.replace(/#.+/, '') + '?s=' + base64_url_encode(JSON.stringify(this.current));
+            this.$balmUI.onOpen('shareDialogOpen');
             fetch('https://api-ssl.bitly.com/v4/shorten', {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ec384d637e6ab5b8b79ed024790d157cceb23ca2',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ "long_url": long_url})
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ec384d637e6ab5b8b79ed024790d157cceb23ca2',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({"long_url": long_url})
             })
             .then((response) => response.json())
             //Then with the data from the response in JSON...
             .then((data) => {
-                this.shurl = data.link;
-                this.openShareDialog();
+                if(data.errors) {
+                    this.$toast(data.description);
+                    this.shurl = long_url;
+                    this.writeShareUrl();
+                } else {
+                    this.shurl = data.link;
+                    this.writeShareUrl();
+                }
             })
             //Then with the error genereted...
             .catch((error) => {
-                this.$toast(error.error);
+                console.log(error);
+                this.$toast(error);
                 this.shurl = long_url;
-                this.openShareDialog();
+                this.writeShareUrl();
             });
         },
-        openShareDialog: function() {
+        writeShareUrl: function() {
             this.qrurl = 'https://api.qrserver.com/v1/create-qr-code/?data=' + this.shurl;
-            this.$balmUI.onOpen('shareDialogOpen');
             this.writeUrl('share');
         },
         autosavePersist: function() {
