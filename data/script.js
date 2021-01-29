@@ -1,6 +1,6 @@
 const iconList = [
     {
-        label: 'none',
+        label: '',
         value: null,
     },
     {

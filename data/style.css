@@ -7,13 +7,11 @@
     background-color: #f9f9f9;
     transition: margin-left .2s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
-
 .main-content {
     padding: 16px;
     max-width: 1026px;
     margin: 16px auto 72px auto;
 }
-
 .mdc-drawer {
     margin-top: 64px;
 }
@@ -29,26 +27,26 @@
 #nav-menu {
     margin-left: -16px;
 }
+
+/* nav items drawer */
 .nav-title {
     position: absolute;
     top: 16px;
     margin-left: 16px;
 }
-
 .nav-item {
     padding-right: 28px !important;
 }
-
 .active {
     color: var(--mdc-theme-secondary);
 }
 
+/* helpers */
 hr {
     border: none;
     border-top: 1px solid #999;
     height: 1px;
 }
-
 #main-hover {
     background-color: #000000bb;
     position: absolute;
@@ -56,19 +54,23 @@ hr {
     height: 100%;
     z-index: 7;
 }
+.mtb {
+    margin: 16px 0;
+}
 
+/* alternates cards */
 .truncate {
     width: 100%;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
 .active-card-alt {
     border: 2px solid var(--mdc-theme-secondary);
     box-sizing: border-box;
 }
 
+/* hof data */
 .hof-data {
     padding: 16px;
     position: relative;
@@ -90,22 +92,15 @@ hr {
     transition: border .1s ease-out;
 }
 
+/* menus */
 .relative {
     position: relative;
 }
 .mdc-menu-surface--anchor {
     display: inline;
 }
-
 .menu-content {
     position: relative;
-}
-
-.mdc-dialog__title {
-    background: var(--mdc-theme-primary);
-    color: #fff !important;
-    margin-bottom: 16px;
-    padding-bottom: 16px;
 }
 
 /* skeleton */
@@ -123,6 +118,17 @@ hr {
 }
 .mdc-snackbar {
     z-index: 11 !important;
+}
+
+/* icon selection */
+.icon-select-grid img {
+    position: absolute;
+    z-index: 1;
+    top: 20px;
+    left: 20px;
+}
+.icon-select-grid .mdc-select {
+    margin: 8px;
 }
 
 /* dropzone */
@@ -248,7 +254,7 @@ body {
 input[type=color] {
     cursor: pointer;
 }
-.mdc-text-field--focused:not(.mdc-text-field--disabled) .mdc-floating-label {
+.mdc-text-field--focused:not(.mdc-text-field--disabled) .mdc-floating-label, .mdc-select:not(.mdc-select--disabled).mdc-select--focused .mdc-floating-label {
     color: var(--mdc-theme-primary);
 }
 
@@ -273,4 +279,24 @@ i.rotate {
 /* fonts */
 body, ul, h1, h2, h3, h4, h5, h6, p, a, small, input, span, .mdc-snackbar__label, .mdc-floating-label {
     font-family: 'Poppins', 'Roboto', sans-serif !important;
+}
+
+/* collapse */
+.mdc-collapse__header {
+    border-radius: 8px;
+}
+
+/* dialog */
+.mdc-dialog__surface {
+    border-radius: 16px !important;
+}
+.mdc-dialog__content {
+    background: #fafafa;
+    padding-top: 16px !important;
+}
+.mdc-dialog__title {
+    background: var(--mdc-theme-primary);
+    color: #fff !important;
+    padding-bottom: 24px;
+    padding-top: 8px;
 }
