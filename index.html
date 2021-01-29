@@ -102,11 +102,11 @@
         </div>
 
         <!-- share dialog -->
-        <ui-dialog v-model="shareDialogOpen" @close="writeUrl()">
+        <ui-dialog v-model="shareDialogOpen" @close="writeUrl()" mask-closable>
             <ui-dialog-title>Share current matrix</ui-dialog-title>
             <ui-dialog-content>
                 <img :src="qrurl" alt="qr code" onload="vm.qrLoading = false">
-                <ui-skeleton style="max-width: 250px;" :loading="qrLoading" active :avatar="{ size: 'large', shape: 'square' }"></ui-skeleton>
+                <ui-skeleton v-bind:style="qrLoading ? {marginTop: '-16px'} : {}" :loading="qrLoading" active :avatar="{ size: 'large', shape: 'square' }" class="mdc-skeleton-img"></ui-skeleton>
                 <hr>
                 <p>Open this link in a new browser to import current matrix.</p>
                 <ui-textfield outlined v-model="shurl" style="width: 100%;">
@@ -116,7 +116,6 @@
                     </template>
                 </ui-textfield>
             </ui-dialog-content>
-            <ui-dialog-actions></ui-dialog-actions>
         </ui-dialog>
 
         <!-- download hof dialog -->

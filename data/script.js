@@ -919,7 +919,29 @@ var vm = new Vue({
         shareCurrent: function() {
             // this.tinycurrent.a = this.current.code;
             // this.tinycurrent.b = this.current.name;
-            this.shurl = window.location.href.replace(/#.+/, '') + '?s=' + base64_url_encode(JSON.stringify(this.current));
+            var long_url = window.location.href.replace(/#.+/, '') + '?s=' + base64_url_encode(JSON.stringify(this.current));
+            fetch('https://api-ssl.bitly.com/v4/shorten', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ec384d637e6ab5b8b79ed024790d157cceb23ca2',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ "long_url": long_url})
+            })
+            .then((response) => response.json())
+            //Then with the data from the response in JSON...
+            .then((data) => {
+                this.shurl = data.link;
+                this.openShareDialog();
+            })
+            //Then with the error genereted...
+            .catch((error) => {
+                this.$toast(error.error);
+                this.shurl = long_url;
+                this.openShareDialog();
+            });
+        },
+        openShareDialog: function() {
             this.qrurl = 'https://api.qrserver.com/v1/create-qr-code/?data=' + this.shurl;
             this.$balmUI.onOpen('shareDialogOpen');
             this.writeUrl('share');

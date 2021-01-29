@@ -101,9 +101,13 @@ hr {
     position: relative;
 }
 
+/* skeleton */
 .mdc-skeleton-avatar--large {
     height: 250px !important;
     width: 250px !important;
+}
+.mdc-skeleton-img {
+    max-width: 250px !important;
 }
 
 /* modals */
