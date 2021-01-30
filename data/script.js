@@ -75,6 +75,7 @@ var vm = new Vue({
             front: {},
             line: {},
             side: {},
+            scroll: {},
         },
         tinycurrent: {},
         fonts: {},
@@ -86,6 +87,7 @@ var vm = new Vue({
         lineDialogOpen: false,
         sideDialogOpen: false,
         iconDialogOpen: false,
+        scrollDialogOpen: false,
         downloadDialogOpen: false,
         downloadProgressDialogOpen: false,
         destSettingsDialogOpen: false,
@@ -97,6 +99,8 @@ var vm = new Vue({
         qrLoading: true,
         hofName: '',
         autosave: false,
+        isScrolling: false,
+        scrollingOffset: 0,
         searchDest: '',
         dragfrom: 0,
         dragto: 0,
@@ -315,6 +319,39 @@ var vm = new Vue({
             }
         },
 
+        // scroll
+        writeScrollText: function() {
+            // clear canvas
+            this.scrollCtx.clearRect(0, 0, 512, 32);
+            this.scrollPreviewCtx.fillStyle = '#000000';
+            this.scrollPreviewCtx.fillRect(0, 0, 4096, 256);
+            // write
+            textColor = this.current.front.color;
+            var dims = this.bitmapTextDims(this.current.scroll.text, this.current.scroll.font);
+            this.fillBitmapTextDraw(this.scrollCtx, this.current.scroll.text, 0, parseInt(this.current.scroll.mt) + dims.height, this.current.scroll.font, textColor, ()=>{});
+            // render big canvas
+            this.scrollPreviewCtx.drawImage(this.scrollCanvas, 0, 0, 4096, 256);
+            // remove black margin
+            var heights = [];
+            for (let y = 0; y <= 32; y++) {
+                for (let x = 0; x <= dims.width; x++) {
+                    color = this.scrollCtx.getImageData(x, y, 1, 1).data;
+                    if(color[3] == 255) {
+                        heights.push(y);
+                        break;
+                    }
+                }
+            }
+            this.scrollPreviewCtx.drawImage(this.overlayScroll, 0, 0, 4096, 256);
+            this.scrollPreviewCtx.clearRect(0, 0, 4096, heights[0] * 8);
+            this.scrollPreviewCtx.clearRect(0, (heights[heights.length-1] + 1) * 8, 4096, (256 - heights[heights.length-1]) * 8);
+            this.scrollPreviewCtxOver.drawImage(this.scrollPreviewCanvas, 0, 0, 2048, 128);
+            this.scrollPreviewCtxOver.drawImage(this.scrollPreviewCanvas, 2048, 0, 2048, 128);
+            setTimeout(() => {
+                this.renderScroll();
+            }, 250);
+        },
+
         // line
         writeLineText: function() {
             // background
@@ -434,6 +471,9 @@ var vm = new Vue({
             this.writeIcon();
             this.drawRedPattern();
             this.renderCanvas(this.ctx, this.previewCtx);
+            if(this.current.scroll) {
+                this.writeScrollText();
+            }
             if(!textOnly) {
                 this.saveCurrentIntoDests();
                 if(this.autosave) {
@@ -454,6 +494,50 @@ var vm = new Vue({
                 this.syncStatus = false;
             }
         },
+        renderScroll: function() {
+            if(this.isScrolling && this.previewCanvasCopy) {
+                setTimeout(() => {
+                    if(this.scrollingOffset <= 2048) {
+                        this.scrollingOffset += 4;
+                    } else {
+                        this.scrollingOffset = 0;
+                    }
+                    // duplicate current preview
+                    this.previewCtx.drawImage(this.previewCanvasCopy, 0, 0);
+                    this.writeScrollTextOnPreview(this.scrollingOffset);
+                    this.renderScroll();
+                }, 10);
+            } else {
+                this.writeScrollTextOnPreview(0);
+            }
+        },
+        writeScrollTextOnPreview: function(off) {
+            // crop part of scrolling band and paste into sections of preview
+            // 920x if line + front, 720x front only
+            if(this.current.scroll.index.includes('11')) {
+                frontWidth = this.current.scroll.index.includes('12') ? 920 : 720;
+                frontScrollPos = cropCanvas(this.scrollPreviewCanvasOver, off, 0, frontWidth, 128);
+                this.previewCtx.drawImage(frontScrollPos, 920 - frontWidth, 0);
+            }
+            if(this.current.scroll.index.includes('13')) {
+                sideWidth = this.current.scroll.index.includes('12') ? 920 : 680;
+                sideScrollPos = cropCanvas(this.scrollPreviewCanvasOver, off, 0, sideWidth, 128);
+                this.previewCtx.drawImage(sideScrollPos, 920 - sideWidth, 128);
+            }
+        },
+        copyPreview: function() {
+            this.previewCanvasCopy = cloneCanvas(this.previewCanvas);
+        },
+        scrollButton: function() {
+            if(this.isScrolling) {
+                this.isScrolling = false;
+                this.refreshMatrix();
+            } else {
+                this.isScrolling = true;
+                this.copyPreview();
+                this.renderScroll();
+            }
+        },
 
         // utils
         exportAsJson: function() {
@@ -469,7 +553,7 @@ var vm = new Vue({
             this.ctx.fillRect(50, 32, 10, 32);
             // website url
             // noinspection JSJQueryEfficiency
-            $('canvas').drawText({
+            $('#canvas').drawText({
                 fillStyle: '#fff',
                 x: 220, y: 27,
                 fontSize: '7pt',
@@ -480,7 +564,7 @@ var vm = new Vue({
             });
             // dest code
             if(this.current.code) {
-                $('canvas').drawText({
+                $('#canvas').drawText({
                     fillStyle: '#fff',
                     x: 230, y: 52,
                     fontSize: '7pt',
@@ -620,7 +704,7 @@ var vm = new Vue({
             a.remove();
         },
         anchorTrigger: function(string) {
-            modals = ['front', 'line', 'side', 'icons', 'destSettings', 'download', 'licence', 'status'];
+            modals = ['front', 'line', 'side', 'icons', 'destSettings', 'download', 'licence', 'status', 'scroll'];
             if(modals.includes(string)) {
                 this.$balmUI.onOpen(string + 'DialogOpen');
             }
@@ -797,6 +881,22 @@ var vm = new Vue({
             } else {
                 this.$toast('invalid code');
             }
+        },
+        addScroll: function() {
+            var scroll = {
+                font: 'luRS12',
+                text: '',
+                mt: 0,
+                index: ['11', '13'],
+            };
+            this.current = { ...this.current, scroll};
+        },
+        removeScroll: function() {
+            this.$confirm('Remove scrolling matrix ?').then((r) => {
+                if(r) {
+                    delete this.current.scroll;
+                }
+            });
         },
         addAlternate: function() {
             var lastAlt = this.alternatesDests.pop(),
@@ -1117,15 +1217,29 @@ var vm = new Vue({
             history.pushState("", document.title, window.location.pathname);
         }
 
+        // define canvas
         this.canvas = document.getElementById("canvas");
         this.previewCanvas = document.getElementById("previewCanvas");
+        this.scrollCanvas = document.getElementById("scrollCanvas");
+        this.scrollPreviewCanvas = document.getElementById("scrollPreviewCanvas");
+        this.scrollPreviewCanvasOver = document.getElementById("scrollPreviewCanvasOver");
+        this.iconCanvas = document.getElementById("iconLoader");
+
+        // contexts
         this.ctx = this.canvas.getContext('2d');
         this.previewCtx = this.previewCanvas.getContext('2d');
-        this.overlayImage = document.getElementById('overlayImage');
-        this.iconCanvas = document.getElementById("iconLoader");
+        this.scrollCtx = this.scrollCanvas.getContext('2d');
         this.iconCtx = this.iconCanvas.getContext('2d');
+        this.scrollPreviewCtx = this.scrollPreviewCanvas.getContext('2d');
+        this.scrollPreviewCtxOver = this.scrollPreviewCanvasOver.getContext('2d');
+
+        // overlays
+        this.overlayImage = document.getElementById('overlayImage');
+        this.overlayScroll = document.getElementById('overlayScroll');
 
         this.previewCtx.imageSmoothingEnabled = false;
+        this.scrollPreviewCtx.imageSmoothingEnabled = false;
+        this.scrollPreviewCtxOver.imageSmoothingEnabled = false;
         this.ctx.fillBitmapTextDraw = this.fillBitmapTextDraw;
         this.ctx.bitmapTextDims = this.bitmapTextDims;
         this.drawRedPattern();
@@ -1192,6 +1306,36 @@ function base64_url_encode(input) {
 }
 function base64_url_decode(input) {
     return atob(decodeURI(input));
+}
+
+// ref: https://stackoverflow.com/a/8306028/11651419
+function cloneCanvas(oldCanvas) {
+
+    //create a new canvas
+    var newCanvas = document.createElement('canvas');
+    var context = newCanvas.getContext('2d');
+
+    //set dimensions
+    newCanvas.width = oldCanvas.width;
+    newCanvas.height = oldCanvas.height;
+
+    //apply the old canvas to the new one
+    context.drawImage(oldCanvas, 0, 0);
+
+    //return the new canvas
+    return newCanvas;
+}
+
+// ref: https://stackoverflow.com/a/54555834/11651419
+const cropCanvas = (sourceCanvas,left,top,width,height) => {
+    let destCanvas = document.createElement('canvas');
+    destCanvas.width = width;
+    destCanvas.height = height;
+    destCanvas.getContext("2d").drawImage(
+        sourceCanvas,
+        left,top,width,height,  // source rect with content to crop
+        0,0,width,height);      // newCanvas, same size as source rect
+    return destCanvas;
 }
 
 // icons preview rerender after loading

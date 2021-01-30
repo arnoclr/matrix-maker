@@ -193,6 +193,12 @@ hr {
     border-radius: 5px;
 }
 
+/* scroll */
+.scroll-preview-box {
+    overflow: auto;
+    white-space: nowrap;
+}
+
 /* alt progress hover */
 .alt-progress-hover {
     display: none;

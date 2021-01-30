@@ -316,7 +316,9 @@
                 <section v-shadow="2" v-show="current.code" class="hof-data">
                     <ui-textfield outlined v-model="current.code" input-type="number" style="width:7rem;height:48px;" disabled>code</ui-textfield>
                     <ui-textfield outlined v-model="current.name" style="height:48px;" required>dest</ui-textfield>
-                    <ui-button @click="$balmUI.onOpen('iconDialogOpen');writeUrl('icons')" outlined style="float:right;margin:6px 12px;">icon options</ui-button>
+                    <ui-button v-show="current.scroll" @click="$balmUI.onOpen('scrollDialogOpen');writeUrl('scroll')" outlined style="float:right;margin:6px 4px;">scroll</ui-button>
+                    <ui-button @click="$balmUI.onOpen('iconDialogOpen');writeUrl('icons')" outlined style="float:right;margin:6px 4px;">icon options</ui-button>
+                    <ui-icon-button title="play / pause scrolling preview" @click="scrollButton" v-show="current.scroll" :icon="isScrolling ? 'pause' : 'play_arrow'" style="float:right;margin:0px 4px;"></ui-icon-button>
                     <ui-menu-anchor style="float: right;">
                         <ui-icon-button @click="$balmUI.onOpen('toolsMenuOpen')" icon="more_vert"></ui-icon-button>
                         <ui-menu v-model="toolsMenuOpen" @selected="onSelectedTools">
@@ -433,10 +435,46 @@
                             </ui-grid-cell>
                         </template>
                     </ui-grid>
+
+                    <!-- scrolling matrix -->
+                    <ui-dialog v-model="scrollDialogOpen" @close="writeUrl()" mask-closable>
+                        <ui-dialog-title>Scrolling options</ui-dialog-title>
+                        <ui-dialog-content>
+                            <img src="data/overlayScroll.png" id="overlayScroll" style="display: none;">
+                            <canvas id="scrollCanvas" height="32" width="512" style="display:none;"></canvas>
+                            <canvas id="scrollPreviewCanvasOver" height="128" width="4096" style="display:none;"></canvas>
+                            <div class="scroll-preview-box">
+                                <canvas id="scrollPreviewCanvas" height="256" width="4096" style="border: 1px solid black;"></canvas>
+                            </div>
+                            <template v-if="current.scroll">
+                                <p>Text options.</p>
+                                <ui-textfield outlined v-model="current.scroll.text" style="width:100%;margin-bottom:8px;">scroll text</ui-textfield>
+                                <ui-textfield outlined input-type="number" min="-16" max="16" v-model="current.scroll.mt" @change="refreshMatrix">height</ui-textfield>
+                                <ui-select outlined v-model="current.scroll.font" :options="fontList" @change="loadFont(current.scroll.font)">font</ui-select>
+                                <p>Select the sections where the text will scroll.</p>
+                                <ui-form-field>
+                                    <ui-checkbox @change="refreshMatrix" v-model="current.scroll.index" input-id="checkbox-scroll-front" value="11"></ui-checkbox>
+                                    <label for="checkbox-scroll-front">front</label>
+                                </ui-form-field>
+                                <ui-form-field>
+                                    <ui-checkbox @change="refreshMatrix" v-model="current.scroll.index" input-id="checkbox-scroll-line" value="12"></ui-checkbox>
+                                    <label for="checkbox-scroll-line">line</label>
+                                </ui-form-field>
+                                <ui-form-field>
+                                    <ui-checkbox @change="refreshMatrix" v-model="current.scroll.index" input-id="checkbox-scroll-side" value="13"></ui-checkbox>
+                                    <label for="checkbox-scroll-side">side</label>
+                                </ui-form-field>
+                            </template>
+                        </ui-dialog-content>
+                    </ui-dialog>
                     
                     <!-- Front text -->
                     <ui-dialog v-model="frontDialogOpen" @close="writeUrl()" mask-closable>
-                        <ui-dialog-title>Front text options</ui-dialog-title>
+                        <ui-dialog-title>
+                            Front text options
+                            <ui-button v-show="!current.scroll" @click="addScroll" style="background:#bbbbbb50;float:right;margin-top:16px;" unelevated>add scroll</ui-button>
+                            <ui-button v-show="current.scroll" @click="removeScroll" style="background:#bbbbbb50;float:right;margin-top:16px;" unelevated>remove scroll</ui-button>
+                        </ui-dialog-title>
                         <ui-dialog-content>
                             <template v-if="current.front.text">
                                 <p>Font(s) selection.</p>
