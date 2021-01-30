@@ -195,8 +195,33 @@ hr {
 
 /* scroll */
 .scroll-preview-box {
+    position: relative;
     overflow: auto;
     white-space: nowrap;
+    background: #dfdfdf;
+    border-radius: 8px;
+}
+#scrollPreviewCanvasOver {
+    margin-left: 68px;
+}
+#scroll-up-btn {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+}
+#scroll-down-btn {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+}
+#scrollButton {
+    transition: transform .2s ease;
+}
+
+/* icons */
+.icon-select-grid {
+    background: #dfdfdf;
+    border-radius: 8px;
 }
 
 /* alt progress hover */
@@ -305,4 +330,9 @@ body, ul, h1, h2, h3, h4, h5, h6, p, a, small, input, span, .mdc-snackbar__label
     color: #fff !important;
     padding-bottom: 24px;
     padding-top: 8px;
+}
+.dialog-header-btn {
+    background: #bbbbbb30 !important;
+    float: right;
+    margin-top: 16px;
 }

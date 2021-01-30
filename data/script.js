@@ -323,6 +323,7 @@ var vm = new Vue({
         writeScrollText: function() {
             // clear canvas
             this.scrollCtx.clearRect(0, 0, 512, 32);
+            this.scrollPreviewCtxOver.clearRect(0, 0, 4096, 128);
             this.scrollPreviewCtx.fillStyle = '#000000';
             this.scrollPreviewCtx.fillRect(0, 0, 4096, 256);
             // write
@@ -372,7 +373,9 @@ var vm = new Vue({
                 for (let x = 0; x <= 50; x++) {
                     for (let y = 0; y <= 64; y++) {
                         color = this.ctx.getImageData(x, y, 1, 1).data;
-                        if(color[0] != 0 && color[1] != 0 && color[2] != 0) {
+                        if(color[0] == 0 && color[1] == 0 && color[2] == 0) {
+                            
+                        } else {
                             this.ctx.fillRect(x, y, 1, 1);
                         }
                     }
@@ -449,7 +452,7 @@ var vm = new Vue({
             }
         },
 
-        refreshMatrix: function(textOnly = false, part = false) {
+        refreshMatrix: function(textOnly = false, part = false, universalPreview = false) {
             document.querySelector('#btn-spinning').style = 'transform: rotate('+this.rot+'deg)';
             this.rot+=360;
             switch (part) {
@@ -471,7 +474,7 @@ var vm = new Vue({
             this.writeIcon();
             this.drawRedPattern();
             this.renderCanvas(this.ctx, this.previewCtx);
-            if(this.current.scroll) {
+            if(this.current.scroll && !universalPreview) {
                 this.writeScrollText();
             }
             if(!textOnly) {
@@ -495,7 +498,7 @@ var vm = new Vue({
             }
         },
         renderScroll: function() {
-            if(this.isScrolling && this.previewCanvasCopy) {
+            if(this.isScrolling) {
                 setTimeout(() => {
                     if(this.scrollingOffset <= 2048) {
                         this.scrollingOffset += 4;
@@ -503,7 +506,6 @@ var vm = new Vue({
                         this.scrollingOffset = 0;
                     }
                     // duplicate current preview
-                    this.previewCtx.drawImage(this.previewCanvasCopy, 0, 0);
                     this.writeScrollTextOnPreview(this.scrollingOffset);
                     this.renderScroll();
                 }, 10);
@@ -525,17 +527,15 @@ var vm = new Vue({
                 this.previewCtx.drawImage(sideScrollPos, 920 - sideWidth, 128);
             }
         },
-        copyPreview: function() {
-            this.previewCanvasCopy = cloneCanvas(this.previewCanvas);
-        },
         scrollButton: function() {
             if(this.isScrolling) {
                 this.isScrolling = false;
                 this.refreshMatrix();
+                $('#scrollButton').css({'transform' : 'rotate(360deg)'});
             } else {
                 this.isScrolling = true;
-                this.copyPreview();
                 this.renderScroll();
+                $('#scrollButton').css({'transform' : 'rotate(180deg)'});
             }
         },
 
@@ -648,6 +648,9 @@ var vm = new Vue({
                     break;
                 case 4:
                     this.deleteDest();
+                    break;
+                case 5:
+                    this.refreshMatrix(false, false, true);
                     break;
             }
         },
@@ -923,6 +926,7 @@ var vm = new Vue({
         },
         duplicateDest: function() {
             currentBuffer = JSON.parse(JSON.stringify(this.current));
+            currentBuffer.code = parseInt(currentBuffer.code) + 1;
             this.dests.push(currentBuffer);
             this.$toast(`${this.current.code} duplicated`);
         },
@@ -1020,8 +1024,13 @@ var vm = new Vue({
         shareCurrent: function() {
             // this.tinycurrent.a = this.current.code;
             // this.tinycurrent.b = this.current.name;
-            var long_url = window.location.href.replace(/#.+/, '') + '?s=' + base64_url_encode(JSON.stringify(this.current));
+            this.shurl = window.location.href.replace(/#.+/, '') + '?s=' + base64_url_encode(JSON.stringify(this.current));
             this.$balmUI.onOpen('shareDialogOpen');
+            this.writeShareUrl();
+            this.writeUrl('share');
+        },
+        reduceShareUrl: function() {
+            long_url = this.shurl;
             fetch('https://api-ssl.bitly.com/v4/shorten', {
                 method: 'POST',
                 headers: {
@@ -1052,7 +1061,6 @@ var vm = new Vue({
         },
         writeShareUrl: function() {
             this.qrurl = 'https://api.qrserver.com/v1/create-qr-code/?data=' + this.shurl;
-            this.writeUrl('share');
         },
         autosavePersist: function() {
             if(this.autosave) {

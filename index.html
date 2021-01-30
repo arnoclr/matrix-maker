@@ -102,13 +102,13 @@
         </div>
 
         <!-- share dialog -->
-        <ui-dialog v-model="shareDialogOpen" @close="writeUrl()" mask-closable>
+        <ui-dialog v-model="shareDialogOpen" @close="writeUrl();" mask-closable>
             <ui-dialog-title>Share current matrix</ui-dialog-title>
-            <ui-dialog-content>
+            <ui-dialog-content style="max-width:298px;">
                 <img v-bind:style="qrLoading ? {visibility: 'hidden'} : {}" :src="qrurl" alt="qr code" onload="vm.qrLoading = false">
                 <ui-skeleton v-bind:style="qrLoading ? {marginTop: '-16px'} : {}" :loading="qrLoading" active :avatar="{ size: 'large', shape: 'square' }" class="mdc-skeleton-img"></ui-skeleton>
                 <hr>
-                <p style="max-width:250px;">Open this link in a new browser to import current matrix.</p>
+                <p>Open this link in a new browser to import current matrix.</p>
                 <ui-textfield outlined v-model="shurl" style="width:100%;margin-bottom:16px;">
                     {{ current.name }} matrix link
                     <template #after>
@@ -116,6 +116,10 @@
                             @click.native="copyToClipboard(shurl)">content_copy</ui-textfield-icon>
                     </template>
                 </ui-textfield>
+                <ui-form-field v-if="shurl" v-show="!shurl.includes('bit.ly')">
+                    <ui-checkbox onclick="vm.reduceShareUrl();" input-id="checkbox-reduce-link"></ui-checkbox>
+                    <label for="checkbox-reduce-link">Generate reduced link</label>
+                </ui-form-field>
             </ui-dialog-content>
         </ui-dialog>
 
@@ -318,7 +322,7 @@
                     <ui-textfield outlined v-model="current.name" style="height:48px;" required>dest</ui-textfield>
                     <ui-button v-show="current.scroll" @click="$balmUI.onOpen('scrollDialogOpen');writeUrl('scroll')" outlined style="float:right;margin:6px 4px;">scroll</ui-button>
                     <ui-button @click="$balmUI.onOpen('iconDialogOpen');writeUrl('icons')" outlined style="float:right;margin:6px 4px;">icon options</ui-button>
-                    <ui-icon-button title="play / pause scrolling preview" @click="scrollButton" v-show="current.scroll" :icon="isScrolling ? 'pause' : 'play_arrow'" style="float:right;margin:0px 4px;"></ui-icon-button>
+                    <ui-icon-button title="play / pause scrolling preview" id="scrollButton" @click="scrollButton" v-show="current.scroll" :icon="isScrolling ? 'pause' : 'play_arrow'" style="float:right;margin:0px 4px;"></ui-icon-button>
                     <ui-menu-anchor style="float: right;">
                         <ui-icon-button @click="$balmUI.onOpen('toolsMenuOpen')" icon="more_vert"></ui-icon-button>
                         <ui-menu v-model="toolsMenuOpen" @selected="onSelectedTools">
@@ -351,6 +355,12 @@
                                     <ui-icon>delete</ui-icon>
                                 </ui-menuitem-icon>
                                 <ui-menuitem-text>delete</ui-menuitem-text>
+                            </ui-menuitem>
+                            <ui-menuitem v-show="current.scroll">
+                                <ui-menuitem-icon>
+                                    <ui-icon>motion_photos_off</ui-icon>
+                                </ui-menuitem-icon>
+                                <ui-menuitem-text>non scroll preview</ui-menuitem-text>
                             </ui-menuitem>
                         </ui-menu>
                     </ui-menu-anchor>
@@ -438,20 +448,25 @@
 
                     <!-- scrolling matrix -->
                     <ui-dialog v-model="scrollDialogOpen" @close="writeUrl()" mask-closable>
-                        <ui-dialog-title>Scrolling options</ui-dialog-title>
+                        <ui-dialog-title>
+                            Scrolling options
+                            <ui-button v-show="current.scroll" @click="removeScroll" class="dialog-header-btn" icon="delete" unelevated>remove</ui-button>
+                        </ui-dialog-title>
                         <ui-dialog-content>
                             <img src="data/overlayScroll.png" id="overlayScroll" style="display: none;">
+                            <!-- canvas used for writing / download -->
                             <canvas id="scrollCanvas" height="32" width="512" style="display:none;"></canvas>
-                            <canvas id="scrollPreviewCanvasOver" height="128" width="4096" style="display:none;"></canvas>
+                            <canvas id="scrollPreviewCanvas" height="256" width="4096" style="display:none;"></canvas>
                             <div class="scroll-preview-box">
-                                <canvas id="scrollPreviewCanvas" height="256" width="4096" style="border: 1px solid black;"></canvas>
+                                <canvas id="scrollPreviewCanvasOver" height="128" width="4096"></canvas>
+                                <ui-icon-button title="ajust text height" @click="current.scroll.mt-=1;refreshMatrix()" id="scroll-up-btn" icon="keyboard_arrow_up"></ui-icon-button>
+                                <ui-icon-button title="ajust text height" @click="current.scroll.mt+=1;refreshMatrix()" id="scroll-down-btn" icon="keyboard_arrow_down"></ui-icon-button>
                             </div>
                             <template v-if="current.scroll">
                                 <p>Text options.</p>
                                 <ui-textfield outlined v-model="current.scroll.text" style="width:100%;margin-bottom:8px;">scroll text</ui-textfield>
-                                <ui-textfield outlined input-type="number" min="-16" max="16" v-model="current.scroll.mt" @change="refreshMatrix">height</ui-textfield>
-                                <ui-select outlined v-model="current.scroll.font" :options="fontList" @change="loadFont(current.scroll.font)">font</ui-select>
                                 <p>Select the sections where the text will scroll.</p>
+                                <ui-select outlined v-model="current.scroll.font" :options="fontList" @change="loadFont(current.scroll.font)">font</ui-select>
                                 <ui-form-field>
                                     <ui-checkbox @change="refreshMatrix" v-model="current.scroll.index" input-id="checkbox-scroll-front" value="11"></ui-checkbox>
                                     <label for="checkbox-scroll-front">front</label>
@@ -472,8 +487,8 @@
                     <ui-dialog v-model="frontDialogOpen" @close="writeUrl()" mask-closable>
                         <ui-dialog-title>
                             Front text options
-                            <ui-button v-show="!current.scroll" @click="addScroll" style="background:#bbbbbb50;float:right;margin-top:16px;" unelevated>add scroll</ui-button>
-                            <ui-button v-show="current.scroll" @click="removeScroll" style="background:#bbbbbb50;float:right;margin-top:16px;" unelevated>remove scroll</ui-button>
+                            <ui-button v-show="!current.scroll" @click="addScroll" class="dialog-header-btn" unelevated>add scroll</ui-button>
+                            <ui-button v-show="current.scroll" @click="removeScroll" class="dialog-header-btn" unelevated>remove scroll</ui-button>
                         </ui-dialog-title>
                         <ui-dialog-content>
                             <template v-if="current.front.text">
@@ -564,24 +579,24 @@
                                 <input type="color" v-model="current.side.iconHex" @change="refreshMatrix()" style="opacity:0; position:absolute; left:0;top:0;width:100%"/>
                             </div>
                             <p></p>
-                            <ui-grid class="icon-select-grid" style="padding:0;border:1px solid #ccc;border-radius:8px;">
+                            <ui-grid class="icon-select-grid">
                                 <ui-grid-cell columns="6">
                                     <div class="relative">
-                                        <ui-select v-model="current.front.iconUrlL" :options="iconList" @change="refreshMatrix()" icon="add" withLeadingIcon>Front left</ui-select>
+                                        <ui-select outlined v-model="current.front.iconUrlL" :options="iconList" @change="refreshMatrix()" icon="add" withLeadingIcon>Front left</ui-select>
                                         <img :src="current.front.iconUrlL" alt="">
                                     </div>
                                     <div class="relative">
-                                        <ui-select v-model="current.side.iconUrlL" :options="iconList" @change="refreshMatrix()" icon="add" withLeadingIcon>Side left</ui-select>
+                                        <ui-select outlined v-model="current.side.iconUrlL" :options="iconList" @change="refreshMatrix()" icon="add" withLeadingIcon>Side left</ui-select>
                                         <img :src="current.side.iconUrlL" alt="">
                                     </div>
                                 </ui-grid-cell>
                                 <ui-grid-cell columns="6">
                                     <div class="relative">
-                                        <ui-select v-model="current.front.iconUrlR" :options="iconList" @change="refreshMatrix()" icon="add" withLeadingIcon>Front right</ui-select>
+                                        <ui-select outlined v-model="current.front.iconUrlR" :options="iconList" @change="refreshMatrix()" icon="add" withLeadingIcon>Front right</ui-select>
                                         <img :src="current.front.iconUrlR" alt="">
                                     </div>
                                     <div class="relative">
-                                        <ui-select v-model="current.side.iconUrlR" :options="iconList" @change="refreshMatrix()" icon="add" withLeadingIcon>Side right</ui-select>
+                                        <ui-select outlined v-model="current.side.iconUrlR" :options="iconList" @change="refreshMatrix()" icon="add" withLeadingIcon>Side right</ui-select>
                                         <img :src="current.side.iconUrlR" alt="">
                                     </div>
                                 </ui-grid-cell>
