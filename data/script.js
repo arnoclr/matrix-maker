@@ -165,11 +165,12 @@ var vm = new Vue({
                         this.loadFont(font);
                     }
                     // if (char !== " ") {
-                    if (this.fonts[font][font][char] != null) {
-                        cData = this.fonts[font][font][char];
-                    } else {
+                    console.log(this.fonts[font][font][char].glyph.length)
+                    if (this.fonts[font][font][char] == null || this.fonts[font][font][char].glyph.length == 0) {
                         cData = this.fonts[font][font][' '];
                         this.$toast("Character '" + char + "' Not Found in font: '" + font + "'!");
+                    } else {
+                        cData = this.fonts[font][font][char];
                     }
                     width = width + parseInt(cData.glyph[0].length) + parseInt(this.fonts[font][font].charSpacing);
                     if (height<cData.glyph.length) {

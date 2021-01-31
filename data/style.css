@@ -247,7 +247,7 @@ hr {
     left: 8px;
 }
 #scrollButton {
-    transition: transform .2s ease;
+    transition: transform .2s ease-out;
 }
 
 /* icons */
