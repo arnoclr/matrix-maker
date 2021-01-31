@@ -1148,9 +1148,9 @@ var vm = new Vue({
                 // add scroll index
                 if(this.dests[dest].scroll) {
                     terminus_list +=    "\t" + this.dests[dest].code + "\t\t" +
-                                        "\t" + (this.dests[dest].scroll.index.includes('11') ? "scrollMatrix\\" + dir + "\\" + this.dests[dest].code + ".png" : "") +
-                                        "\t" + (this.dests[dest].scroll.index.includes('12') ? "scrollMatrix\\" + dir + "\\" + this.dests[dest].code + ".png" : "") +
-                                        "\t" + (this.dests[dest].scroll.index.includes('13') ? "scrollMatrix\\" + dir + "\\" + this.dests[dest].code + ".png" : "");
+                                        "\t" + (this.dests[dest].scroll.index.includes('11') ? dir + "\\" + this.dests[dest].code + ".png" : "") +
+                                        "\t" + (this.dests[dest].scroll.index.includes('12') ? dir + "\\" + this.dests[dest].code + ".png" : "") +
+                                        "\t" + (this.dests[dest].scroll.index.includes('13') ? dir + "\\" + this.dests[dest].code + ".png" : "");
                 }
                 terminus_list += "\r\n";
             }
