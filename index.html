@@ -354,7 +354,7 @@
                     <ui-menu-anchor style="float: right;">
                         <ui-icon-button @click="$balmUI.onOpen('toolsMenuOpen')" icon="more_vert"></ui-icon-button>
                         <ui-menu v-model="toolsMenuOpen" @selected="onSelectedTools">
-                            <ui-menuitem>
+                            <ui-menuitem :disabled="current.code > 999">
                                 <ui-menuitem-icon>
                                     <ui-icon>share</ui-icon>
                                 </ui-menuitem-icon>
