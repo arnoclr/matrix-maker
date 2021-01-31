@@ -154,6 +154,9 @@ hr {
     overflow: auto;
     white-space: nowrap;
 }
+#previewCanvas {
+    border: 1px solid black;
+}
 #lineOver {
     position: absolute;
     height: 256px;
@@ -187,8 +190,7 @@ hr {
     background-color: transparent;
     border: none;
     cursor: pointer;
-    transition: 0.1s;
-    transition-timing-function: ease;
+    transition: border .1s ease;
 }
 .matrixOver:hover {
     border:solid 5px #eee;
@@ -248,6 +250,18 @@ hr {
 }
 #scrollButton {
     transition: transform .2s ease-out;
+}
+
+/* slider */
+.slider .next-btn {
+    float: right;
+}
+.slider .slide img {
+    object-fit: cover;
+    width: 100%;
+    height: 250px;
+    filter: brightness(0.8);
+    border-radius: 8px;
 }
 
 /* icons */

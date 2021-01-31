@@ -34,9 +34,6 @@
     <meta property="og:description" content="Create colored matrix for omsi 2 and generate hof easily." />
     <meta property="og:image" content="http://kpp.genav.ch/data/illustrations/banner.jpg" />
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/balm-ui@next/dist/balm-ui.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-
     <!-- preloader style html -->
     <style>
     #preloader {
@@ -78,6 +75,7 @@
         }
     }
     </style>
+
 </head>
 
 <body>
@@ -100,6 +98,31 @@
                 <small>supported formats : .hof, .json</small>
             </section>
         </div>
+
+        <!-- presentation dialog -->
+        <ui-dialog v-model="presentationDialogOpen" mask-closable>
+            <ui-dialog-content>
+                <div class="slider">
+                    <div class="slide" v-show="actualSlide == 0">
+                        <img src="https://i.imgur.com/szRCIZm.png" alt="main interface">
+                        <h1>Welcome</h1>
+                        <p>Welcome to simple kpp maker. Make beautiful matrix for omsi 2 in few minutes, without developer knowledge.</p>
+                    </div>
+                    <div class="slide" v-show="actualSlide == 1">
+                        <img src="https://i.imgur.com/guqnbeH.png" alt="scrolling options">
+                        <h1>Rich editor</h1>
+                        <p>Use multiples fonts, create scrolling animations and add icons. Edit colors and more with simple UI.</p>
+                    </div>
+                    <div class="slide" v-show="actualSlide == 2">
+                        <img src="https://i.imgur.com/o6GPmou.png" alt="download modal">
+                        <h1>Download</h1>
+                        <p>Instant download your destinations and use it in OMSI2, without prior configuration.</p>
+                    </div>
+                    <ui-icon-button class="prev-btn" v-show="actualSlide != 0" @click="actualSlide-=1" icon="arrow_backward"></ui-icon-button>
+                    <ui-icon-button class="next-btn" v-show="actualSlide < 2" @click="actualSlide+=1" icon="arrow_forward"></ui-icon-button>
+                </div>
+            </ui-dialog-content>
+        </ui-dialog>
 
         <!-- share dialog -->
         <ui-dialog v-model="shareDialogOpen" @close="writeUrl();" mask-closable>
@@ -229,6 +252,7 @@
                 <span class="nav-title" id="nav-title-text">Kpp Maker</span>
                 <template #toolbar="{ toolbarItemClass }">
                     <ui-icon-button @click="$balmUI.onOpen('statusDialogOpen');writeUrl('status')" v-tooltip="'show save status'" aria-describedby="save status" :icon="syncStatus ? 'done' : 'sync'"></ui-icon-button>
+                    <ui-icon-button icon="info" @click="$balmUI.onOpen('presentationDialogOpen')"></ui-icon-button>
                     <ui-icon-button :class="toolbarItemClass" v-tooltip="'Save all destinations in device storage'" aria-describedby="save in storage" icon="save" @click="saveDestsInLocalStorage()"></ui-icon-button>
                     
                     <div class="menu-content">
@@ -391,12 +415,12 @@
                     <img src="data/overlayImage.png" id="overlayImage" style="display: none;">
 
                     <div class="canvasBox">
-                        <div @click="$balmUI.onOpen('lineDialogOpen');writeUrl('line')" v-tooltip="'Line options'" aria-describedby="line" class="matrixOver" id="lineOver" v-show="current.front.line"></div>
-                        <div @click="$balmUI.onOpen('lineDialogOpen');writeUrl('line')" v-tooltip="'Line options'" aria-describedby="lineAlt" class="matrixOver" id="lineOverAlt" v-show="!current.front.line"></div>
-                        <div @click="$balmUI.onOpen('frontDialogOpen');writeUrl('front')" v-tooltip="'Front text options'" aria-describedby="front" class="matrixOver" id="frontOver" v-show="current.front.line"></div>
-                        <div @click="$balmUI.onOpen('frontDialogOpen');writeUrl('front')" v-tooltip="'Front text options'" aria-describedby="frontAlt" class="matrixOver" id="frontOverAlt" v-show="!current.front.line"></div>
-                        <div @click="$balmUI.onOpen('sideDialogOpen');writeUrl('side')" v-tooltip="'Side text options'" aria-describedby="side" class="matrixOver" id="sideOver"></div>
-                        <canvas width="1024" height="256" style="border: solid 1px black;" id="previewCanvas"></canvas>
+                        <div v-ripple @click="$balmUI.onOpen('lineDialogOpen');writeUrl('line')" v-tooltip="'Line options'" aria-describedby="line" class="matrixOver" id="lineOver" v-show="current.front.line"></div>
+                        <div v-ripple @click="$balmUI.onOpen('lineDialogOpen');writeUrl('line')" v-tooltip="'Line options'" aria-describedby="lineAlt" class="matrixOver" id="lineOverAlt" v-show="!current.front.line"></div>
+                        <div v-ripple @click="$balmUI.onOpen('frontDialogOpen');writeUrl('front')" v-tooltip="'Front text options'" aria-describedby="front" class="matrixOver" id="frontOver" v-show="current.front.line"></div>
+                        <div v-ripple @click="$balmUI.onOpen('frontDialogOpen');writeUrl('front')" v-tooltip="'Front text options'" aria-describedby="frontAlt" class="matrixOver" id="frontOverAlt" v-show="!current.front.line"></div>
+                        <div v-ripple @click="$balmUI.onOpen('sideDialogOpen');writeUrl('side')" v-tooltip="'Side text options'" aria-describedby="side" class="matrixOver" id="sideOver"></div>
+                        <canvas width="1024" height="256" id="previewCanvas"></canvas>
                         <div class="alt-progress-hover" v-shadow="2">
                             <ui-spinner :progress="progressAltPreview" :size="'small'"></ui-spinner>
                             <span>{{ progressAltIndex }} / {{ alternatesDests.length }}</span>
@@ -642,7 +666,9 @@
         </div>
     </div>
 
-    <!-- scripts -->
+    <!-- assets -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/balm-ui@next/dist/balm-ui.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/combine/npm/vue@2.6.12/dist/vue.js,npm/balm-ui@8.16.1,npm/balm-ui@8.16.1/dist/balm-ui-plus.js,npm/canvas2image@1.0.5/canvas2image.min.js,npm/jszip@3.5.0/dist/jszip.min.js,npm/jquery@3.5.1/dist/jquery.min.js,npm/jcanvas@21.0.1/dist/min/jcanvas.min.js"></script>
     <script src="./data/ascii-table.min.js"></script>
     <script type="text/javascript">

@@ -93,6 +93,8 @@ var vm = new Vue({
         destSettingsDialogOpen: false,
         statusDialogOpen: false,
         licenceDialogOpen: false,
+        presentationDialogOpen: false,
+        actualSlide: 0,
         toolsMenuOpen: false,
         shurl: null,
         qrurl: null,
@@ -1286,6 +1288,12 @@ var vm = new Vue({
             }
             $('#preloader').fadeOut();
         });
+
+        // presentation modal
+        if(localStorage.presentation == null) {
+            this.$balmUI.onOpen('presentationDialogOpen');
+            localStorage.presentation = true;
+        }
 
         // beta disclaimer
         var subdomain = window.location.host.split('.')[1] ? window.location.host.split('.')[0] : false;
