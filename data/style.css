@@ -57,6 +57,9 @@ hr {
 .mtb {
     margin: 16px 0;
 }
+.mt {
+    margin-top: 8px;
+}
 
 /* alternates cards */
 .truncate {
@@ -191,6 +194,35 @@ hr {
     border:solid 5px #eee;
     box-sizing: border-box;
     border-radius: 5px;
+}
+
+/* inputs */
+#frontText .mdc-text-field__resizer, #sideText .mdc-text-field__resizer {
+    resize: none;
+}
+#frontText textarea, #sideText textarea {
+    resize: horizontal;
+    max-width: 500px;
+    min-width: 369px;
+}
+
+/* disclaimer */
+.disclaimer {
+    position: relative;
+    background: #FDF4E7;
+    border-radius: 8px;
+    padding: 8px;
+    margin-bottom: 8px;
+}
+.disclaimer p {
+    color: #613E11;
+    margin: 8px 8px 8px 48px;
+}
+.disclaimer i {
+    color: #F3A54A;
+    position: absolute;
+    top: 16px;
+    left: 16px;
 }
 
 /* scroll */

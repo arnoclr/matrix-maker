@@ -260,6 +260,10 @@
                     </ui-drawer-subtitle>
                     <ui-switch input-id="toggle-autosave" v-tooltip="'toggle autosave'" aria-describedby="toggle autosave" v-model="autosave" @change="autosavePersist()" style="color: #fff;margin-top:12px;"></ui-switch>
                     <label for="toggle-autosave">Autosave</label>
+                    <div v-if="multiplesDestWithSameName" class="disclaimer mt">
+                        <ui-icon>error</ui-icon>
+                        <p>2 or more dests have the same code</p>
+                    </div>
                 </ui-drawer-header>
                 <ui-drawer-content id="dest-container">
                     <ui-nav>
@@ -277,7 +281,7 @@
                             ondrop="vm.destDropped(event);"
                             ondragend="vm.destDropEnd(event);"
                             ondragleave="vm.destDropLeave(event);"
-                            :href="'#' + index" id="destsList" @click="selectCurrent(index)" 
+                            @click="selectCurrent(index);writeUrl()" 
                             :active="dest.name == current.name" 
                             v-for="(dest, index) in dests" :key="index"
                             :id="index + '-nav-item'"
@@ -372,31 +376,14 @@
                     <!-- dest settings dialog -->
                     <ui-dialog v-model="destSettingsDialogOpen" @close="writeUrl()" mask-closable>
                         <ui-dialog-title>Settings for {{ current.code }}</ui-dialog-title>
-                        <ui-dialog-content>
+                        <ui-dialog-content style="max-width: 350px;">
                             <small>unique id : {{current.index}}</small><br>
-                            <ui-list>
-                                <ui-item>
-                                    <ui-item-first-content>
-                                        <ui-icon>label_off</ui-icon>
-                                    </ui-item-first-content>
-                                    <ui-item-text-content>Show line on front</ui-item-text-content>
-                                    <ui-item-last-content>
-                                        <ui-switch v-model="current.front.line" @change="refreshMatrix()"></ui-switch>
-                                    </ui-item-last-content>
-                                </ui-item>
-                                <ui-item>
-                                    <ui-item-first-content>
-                                        <ui-icon>save</ui-icon>
-                                    </ui-item-first-content>
-                                    <ui-item-text-content>Auto-save</ui-item-text-content>
-                                    <ui-item-last-content>
-                                        <ui-switch v-model="autosave" @change="autosavePersist()"></ui-switch>
-                                    </ui-item-last-content>
-                                </ui-item>
-                            </ui-list>
                             <p>Edit dest code</p>
                             <ui-textfield outlined v-model="current.code" input-type="number" style="width:7rem;">code</ui-textfield>
-                            <br><small>Caution: do not delete the code entirely</small>
+                            <div class="disclaimer mt">
+                                <ui-icon>info</ui-icon>
+                                <p>Do not delete the code entirely. Also, edit code can cause bugs with alternating matrix.</p>
+                            </div>
                         </ui-dialog-content>
                     </ui-dialog>
 
@@ -498,6 +485,10 @@
                             </template>
                             <hr>
                             <p>Skip a line to write on 2 levels, you can edit the fonts for each level individually.</p>
+                            <div v-if="current.scroll" class="disclaimer">
+                                <ui-icon>info</ui-icon>
+                                <p>The current matrix is scrolling. Consider writing a classic version for non-compatible buses. You can view the compatibility rendering by clicking on the 3 dots, then "non scroll preview".</p>
+                            </div>
                             <ui-textfield outlined maxlength="150" v-model="current.front.text" id="frontText" input-type="textarea" rows="2" cols="40" @keyup="refreshMatrix(true, 'front')" @change="refreshMatrix()">front text</ui-textfield>
                             <div class="mtb">
                                 <div style="position:relative; display:inline-block">
@@ -520,6 +511,10 @@
                                 <p>Select line font. Fonts have differents size. Note that you can't edit size of a font.</p>
                                 <ui-select outlined v-model="current.line.font" :options="fontList" @change="loadFont(current.line.font)" id="fontSelector"></ui-select>
                                 <p>Line number (you can use letters and the text can be different of the hof code).</p>
+                                <div v-if="current.scroll" class="disclaimer">
+                                    <ui-icon>info</ui-icon>
+                                    <p>The current matrix is scrolling. Consider writing a classic version for non-compatible buses. You can view the compatibility rendering by clicking on the 3 dots, then "non scroll preview".</p>
+                                </div>
                                 <ui-textfield outlined v-model="current.line.text" @keyup="refreshMatrix(true, 'line')" @change="refreshMatrix()">front line number</ui-textfield>
                                 <p></p>
                                 <div style="position:relative; display:inline-block">
@@ -539,6 +534,10 @@
                                 <ui-checkbox v-model="current.line.partial" input-id="checkbox-partial-line" @change="refreshMatrix()"></ui-checkbox>
                                 <label for="checkbox-partial-line">Partial line background</label>
                             </ui-form-field>
+                            <br><ui-form-field>
+                                <ui-checkbox v-model="current.front.line" input-id="checkbox-show-line-front" @change="refreshMatrix()"></ui-checkbox>
+                                <label for="checkbox-show-line-front">Show line on front</label>
+                            </ui-form-field>
                         </ui-dialog-content>
                     </ui-dialog>
 
@@ -552,6 +551,10 @@
                                 <ui-select outlined v-model="current.side.fontb" :options="fontList" @change="loadFont(current.side.font)" id="fontSelector" v-show="current.side.text.includes('\n')">Bottom font</ui-select>
                             </template>
                             <p>Skip a line to write on 2 levels, you can edit the fonts for each level individually.</p>
+                            <div v-if="current.scroll" class="disclaimer">
+                                <ui-icon>info</ui-icon>
+                                <p>The current matrix is scrolling. Consider writing a classic version for non-compatible buses. You can view the compatibility rendering by clicking on the 3 dots, then "non scroll preview".</p>
+                            </div>
                             <ui-textfield outlined maxlength="150" v-model="current.side.text" id="frontText" input-type="textarea" rows="2" cols="40" @keyup="refreshMatrix(true, 'side')" @change="refreshMatrix()">front text</ui-textfield>
                             <div class="mtb">
                                 <div style="position:relative; display:inline-block">

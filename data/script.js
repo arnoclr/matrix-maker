@@ -107,6 +107,7 @@ var vm = new Vue({
         ondrag: false,
         indexdl: 0,
         rot: 0,
+        multiplesDestWithSameName: false,
         headerShadow: 2,
         syncStatus: true,
         progressAltPreview: 0,
@@ -931,14 +932,18 @@ var vm = new Vue({
             this.$toast(`${this.current.code} duplicated`);
         },
         selectCurrent: function(index) {
+            this.isScrolling = false;
             this.current = this.dests[index];
             this.alternatesDests = [];
+            var codes = [];
             this.dests.forEach((dest, arrayIndex) => {
                 if(dest != undefined && parseInt(dest.code) == parseInt(vm.current.code) + 1000 * (arrayIndex - index)) {
                     vm.dests[arrayIndex].index = arrayIndex;
                     vm.alternatesDests.push(vm.dests[arrayIndex]);
                 }
+                codes.push(dest.code);
             });
+            this.multiplesDestWithSameName = codes.some((val, i) => codes.indexOf(val) !== i);
             this.dests[index].alternates = this.alternatesDests.length;
             if(!this.current.code) {
                 this.current.code = prompt('please enter a new code');
@@ -1090,28 +1095,33 @@ var vm = new Vue({
             var Krueger = Anzeigen.folder("Krueger");
             var f230x32 = Krueger.folder("230x32");
             var img = f230x32.folder(folderName);
+            var scrollMatrix = f230x32.folder('scrollMatrix');
+            var scrollImg = scrollMatrix.folder(folderName);
             codeBook.setHeading("CODE", "NAME", "LINE TEXT", "FRONT TEXT", "SIDE TEXT");
             for (let dest in this.dests) {
                 // noinspection JSUnfilteredForInLoop
                 codeBook.addRow(this.dests[dest].code, this.dests[dest].name, this.dests[dest].line.text, this.dests[dest].front.text.replace(/\n+/g, '↵'), this.dests[dest].side.text.replace(/\n+/g, '↵'));
             }
             this.indexdl = 0;
-            this.selectCurrentForZip(img, zip, hofName);
+            this.selectCurrentForZip(img, scrollImg, zip, hofName);
             zip.file("codebook.txt", codeBook.toString());
         },
-        selectCurrentForZip: function (img, zip, hofName) {
+        selectCurrentForZip: function (img, scrollImg, zip, hofName) {
             if(this.indexdl < this.dests.length) {
                 this.selectCurrent(this.indexdl);
                 setTimeout(() => {
                     vm.indexdl++;
                     img.file(vm.dests[vm.indexdl - 1].code + ".png", $("#canvas").getCanvasImage().substr(22), {base64: true});
-                    vm.selectCurrentForZip(img, zip, hofName);
+                    if(vm.current.scroll) {
+                        scrollImg.file(vm.dests[vm.indexdl - 1].code + ".png", $("#scrollPreviewCanvas").getCanvasImage().substr(22), {base64: true});
+                    }
+                    vm.selectCurrentForZip(img, scrollImg, zip, hofName);
                 }, 150);
             } else {
                 zip.generateAsync({type:"blob"}).then(function(content) {
                     saveFile(`${hofName}-kpp.genav.ch.zip`, "application/zip", content);
                     vm.downloadProgressDialogOpen = false;
-                    this.$toast(`${hofName}-kpp.genav.ch.zip has been downloaded`);
+                    vm.$toast(`${hofName}-kpp.genav.ch.zip has been downloaded`);
                 });
             }
         },
@@ -1125,44 +1135,44 @@ var vm = new Vue({
             var terminus_list = "";
             for (var dest in this.dests) {
                 // noinspection JSUnfilteredForInLoop
-                terminus_list += "\t" + this.dests[dest].code + "\t" + (this.dests[dest].name !== ""?this.dests[dest].name:"NO NAME") + "\t" + (this.dests[dest].name !== ""?this.dests[dest].name:"NO NAME") + "\t" + this.dests[dest].front.text.replace(/\n+/g, '-') + "\t\t" + this.dests[dest].side.text.replace(/\n+/g, '-') + "\t\t" + this.dests[dest].name + "\t\t" + dir + "\\" + this.dests[dest].code + ".png\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\r\n";
+                terminus_list +=    "\t" + this.dests[dest].code + 
+                                    "\t" + (this.dests[dest].name !== ""?this.dests[dest].name:"NO NAME") + 
+                                    "\t" + (this.dests[dest].name !== ""?this.dests[dest].name:"NO NAME") + 
+                                    "\t" + this.dests[dest].front.text.replace(/\n+/g, '-') + 
+                                    "\t\t" + this.dests[dest].side.text.replace(/\n+/g, '-') + 
+                                    "\t\t" + this.dests[dest].name + 
+                                    "\t\t" + dir + "\\" + this.dests[dest].code + ".png";
+                // add scroll index
+                if(this.dests[dest].scroll) {
+                    terminus_list +=    "\t" + this.dests[dest].code + "\t\t" +
+                                        "\t" + (this.dests[dest].scroll.index.includes('11') ? "scrollMatrix\\" + dir + "\\" + this.dests[dest].code + ".png" : "") +
+                                        "\t" + (this.dests[dest].scroll.index.includes('12') ? "scrollMatrix\\" + dir + "\\" + this.dests[dest].code + ".png" : "") +
+                                        "\t" + (this.dests[dest].scroll.index.includes('13') ? "scrollMatrix\\" + dir + "\\" + this.dests[dest].code + ".png" : "");
+                }
+                terminus_list += "\r\n";
             }
             var rtn = "HOF AND IMAGES GENERATED WITH SIMPLE OMSI K++ MAKER\r\n" +
                 "https://kpp.genav.ch/\r\n" +
                 "\r\n" +
-                "\r\n" +
                 "[name]\r\n" +
                 name + "\r\n" +
-                "\r\n" +
                 "[servicetrip]\r\n" +
                 (this.dests[Object.keys(this.dests)[0]].name !== ""?this.dests[Object.keys(this.dests)[0]].name:"NO NAME") + "\r\n" +
-                "\r\n" +
                 "[global_strings]\r\n" +
                 "6\r\n" +
                 name + "\r\n" +
                 name + "\r\n" +
                 name + "\r\n" +
-                "\r\n" +
-                "\r\n" +
-                "\r\n" +
-                "\r\n" +
                 "stringcount_terminus\r\n" +
                 "26\r\n" +
-                "\r\n" +
                 "stringcount_busstop\r\n" +
                 "9\r\n" +
-                "\r\n" +
-                "\r\n" +
                 "[addterminus_list]\r\n" +
                 terminus_list +
                 "[end]\r\n" +
-                "\r\n" +
-                "\r\n" +
                 "[addbusstop_list]\r\n" +
                 "STOP List\t\t\t\t\t\t\t\t\r\n" +
-                "[end]\r\n" +
-                "\r\n" +
-                "\n";
+                "[end]\r\n";
             return this.downloadUtf16(rtn);
         },
         downloadUtf16: function(str) {
