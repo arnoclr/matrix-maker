@@ -1,14 +1,6 @@
 <?php
 
-$hash = sha1(time());
-
-// clear static folder
-$files = glob($_SERVER['DOCUMENT_ROOT'] . 'data/static/*');
-foreach ($files as $file) {
-    if (is_file($file)) {
-        unlink($file);
-    }
-}
+$hash = substr(sha1(time()), 0, 8);
 
 // genarate assets and push into static folder
 $scripts_dir = $_SERVER['DOCUMENT_ROOT'] . "/data/*.js";
@@ -33,6 +25,24 @@ foreach ($scripts as $script) {
 $css_str = '';
 foreach ($styles as $style) {
     $css_str = $css_str . $style . PHP_EOL;
+}
+
+// verify if js or css are not modified
+$last_js_dir = glob($_SERVER['DOCUMENT_ROOT'] . '/data/static/*.js')[0];
+$last_js = file_get_contents($last_js_dir);
+
+$last_css_dir = glob($_SERVER['DOCUMENT_ROOT'] . '/data/static/*.css')[0];
+$last_css = file_get_contents($last_css_dir);
+
+if ($last_js == $js_str && $last_css == $css_str)
+    die('not modified');
+
+// clear static folder
+$files = glob($_SERVER['DOCUMENT_ROOT'] . 'data/static/*');
+foreach ($files as $file) {
+    if (is_file($file)) {
+        unlink($file);
+    }
 }
 
 file_put_contents($_SERVER['DOCUMENT_ROOT'] . "/data/static/$hash.js", $js_str);
