@@ -122,17 +122,17 @@
             <ui-dialog-content>
                 <div class="slider">
                     <div class="slide" v-show="actualSlide == 0">
-                        <img src="https://i.imgur.com/szRCIZm.png" alt="main interface">
+                        <img class="loading" loading="lazy" width="512" height="250" src="https://i.imgur.com/szRCIZm.webp" alt="main interface">
                         <h1>Welcome</h1>
                         <p>Welcome to simple kpp maker. Make beautiful matrix for omsi 2 in few minutes, without developer knowledge.</p>
                     </div>
                     <div class="slide" v-show="actualSlide == 1">
-                        <img src="https://i.imgur.com/guqnbeH.png" alt="scrolling options">
+                        <img class="loading" loading="lazy" width="512" height="250" src="https://i.imgur.com/guqnbeH.webp" alt="scrolling options">
                         <h1>Rich editor</h1>
                         <p>Use multiples fonts, create scrolling animations and add icons. Edit colors and more with simple UI.</p>
                     </div>
                     <div class="slide" v-show="actualSlide == 2">
-                        <img src="https://i.imgur.com/o6GPmou.png" alt="download modal">
+                        <img class="loading" loading="lazy" width="512" height="250" src="https://i.imgur.com/o6GPmou.webp" alt="download modal">
                         <h1>Download</h1>
                         <p>Instant download your destinations and use it in OMSI2, without prior configuration.</p>
                     </div>
@@ -146,8 +146,7 @@
         <ui-dialog v-model="shareDialogOpen" @close="writeUrl();" mask-closable>
             <ui-dialog-title>Share current matrix</ui-dialog-title>
             <ui-dialog-content style="max-width:298px;">
-                <img v-bind:style="qrLoading ? {visibility: 'hidden'} : {}" :src="qrurl" alt="qr code" onload="vm.qrLoading = false">
-                <ui-skeleton v-bind:style="qrLoading ? {marginTop: '-16px'} : {}" :loading="qrLoading" active :avatar="{ size: 'large', shape: 'square' }" class="mdc-skeleton-img"></ui-skeleton>
+                <img height="250" width="250" class="loading" :src="qrurl" alt="qr code">
                 <hr>
                 <p>Open this link in a new browser to import current matrix.</p>
                 <ui-textfield outlined v-model="shurl" style="width:100%;margin-bottom:16px;">
@@ -171,7 +170,7 @@
                     <ui-icon class="purple600">get_app</ui-icon>
                     <h4>Last step</h4>
                     <p>Select a hof name file</p>
-                    <img src="./data/illustrations/package.png">
+                    <img loading="lazy" height="363" width="335" src="./data/illustrations/package.png">
                 </section>
                 <ui-textfield outlined v-model="hofName">hof name</ui-textfield>
                 <ui-button style="float: right;" raised @click="generateHof()" :disabled="hofName == ''">Download</ui-button>
@@ -430,7 +429,7 @@
                     </ui-dialog>
 
                     <!-- preview canvas -->
-                    <img src="data/overlayImage.png" id="overlayImage" style="display: none;">
+                    <img width="2048" height="512" src="data/overlayImage.png" id="overlayImage" style="display: none;">
 
                     <div class="canvasBox">
                         <div v-ripple @click="$balmUI.onOpen('lineDialogOpen');writeUrl('line')" v-tooltip="'Line options'" aria-describedby="line" class="matrixOver" id="lineOver" v-show="current.front.line"></div>
@@ -482,7 +481,7 @@
                             <ui-button v-show="current.scroll" @click="removeScroll" class="dialog-header-btn" icon="delete" unelevated>remove</ui-button>
                         </ui-dialog-title>
                         <ui-dialog-content>
-                            <img src="data/overlayScroll.png" id="overlayScroll" style="display: none;">
+                            <img width="4096" height="256" src="data/overlayScroll.png" id="overlayScroll" style="display: none;">
                             <!-- canvas used for writing / download -->
                             <canvas id="scrollCanvas" height="32" width="512" style="display:none;"></canvas>
                             <canvas id="scrollPreviewCanvas" height="256" width="4096" style="display:none;"></canvas>
@@ -671,7 +670,7 @@
                 <section v-show="!current.code" class="empty-state">
                     <ui-icon>touch_app</ui-icon>
                     <p>Start by select a destination or create it in the side nav. You can also drag and drop hof and backup files on the page.</p>
-                    <ui-textfield input-type="search" v-model="searchDest" id="search-dest">
+                    <ui-textfield input-type="number" max="999" v-model="searchDest" id="search-dest">
                         add destination
                         <template #before>
                             <ui-textfield-icon>add</ui-textfield-icon>
@@ -717,8 +716,8 @@
     </script>
 
     <!-- start_assets -->
-<link rel="stylesheet" href="data/static/a9397175be66012524f0f98a57fb95de9ed4be78.css">
-<script defer src="data/static/a9397175be66012524f0f98a57fb95de9ed4be78.js"></script>
+<link rel="stylesheet" href="data/static/d004f4e0e64ad3ebe39fafd4abb79c017e37fb1b.css">
+<script defer src="data/static/d004f4e0e64ad3ebe39fafd4abb79c017e37fb1b.js"></script>
 <!-- end_assets -->
 
 </body>

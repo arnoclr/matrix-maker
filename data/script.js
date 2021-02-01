@@ -98,7 +98,6 @@ var vm = new Vue({
         toolsMenuOpen: false,
         shurl: null,
         qrurl: null,
-        qrLoading: true,
         hofName: '',
         autosave: false,
         isScrolling: false,
@@ -490,7 +489,6 @@ var vm = new Vue({
             }
         },
         refreshUi: function() {
-            this.qrLoading = true;
             this.qrurl = '';
             this.headerShadow = (document.getElementById('dest-container').offsetHeight > window.innerHeight - 203) ? 2 : 0;
         },
@@ -704,7 +702,7 @@ var vm = new Vue({
         },
         writeUrl: function(segment = false) {
             a = $('<a style="display:none"></a>');
-            href = (this.current != undefined ? this.current.index : '') + '/' + (segment ? segment : '');
+            href = (this.current.index == undefined ? '' : this.current.index) + '/' + (segment ? segment : '');
             a.attr('href', '#' + href);
             $('body').append(a);
             a[0].click();
