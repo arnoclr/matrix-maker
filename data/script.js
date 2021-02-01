@@ -519,12 +519,12 @@ var vm = new Vue({
             // crop part of scrolling band and paste into sections of preview
             // 920x if line + front, 720x front only
             if(this.current.scroll.index.includes('11')) {
-                frontWidth = this.current.scroll.index.includes('12') ? 920 : 720;
+                frontWidth = this.current.scroll.index.includes('13') ? 920 : 720;
                 frontScrollPos = cropCanvas(this.scrollPreviewCanvasOver, off, 0, frontWidth, 128);
                 this.previewCtx.drawImage(frontScrollPos, 920 - frontWidth, 0);
             }
-            if(this.current.scroll.index.includes('13')) {
-                sideWidth = this.current.scroll.index.includes('12') ? 920 : 680;
+            if(this.current.scroll.index.includes('12')) {
+                sideWidth = this.current.scroll.index.includes('13') ? 920 : 680;
                 sideScrollPos = cropCanvas(this.scrollPreviewCanvasOver, off, 0, sideWidth, 128);
                 this.previewCtx.drawImage(sideScrollPos, 920 - sideWidth, 128);
             }
@@ -892,7 +892,7 @@ var vm = new Vue({
                 font: 'luRS12',
                 text: '',
                 mt: 0,
-                index: ['11', '13'],
+                index: ['11'],
             };
             this.current = { ...this.current, scroll};
         },
@@ -1145,7 +1145,7 @@ var vm = new Vue({
                                     "\t\t" + dir + "\\" + this.dests[dest].code + ".png";
                 // add scroll index
                 if(this.dests[dest].scroll) {
-                    terminus_list +=    "\t" + this.dests[dest].code + "\t\t" +
+                    terminus_list +=    "\t\t\t" +
                                         "\t" + (this.dests[dest].scroll.index.includes('11') ? dir + "\\" + this.dests[dest].code + ".png" : "") +
                                         "\t" + (this.dests[dest].scroll.index.includes('12') ? dir + "\\" + this.dests[dest].code + ".png" : "") +
                                         "\t" + (this.dests[dest].scroll.index.includes('13') ? dir + "\\" + this.dests[dest].code + ".png" : "");
