@@ -41,7 +41,7 @@
         height: 100%;
         background-color: #eee;
         position: fixed;
-        z-index: 10;
+        z-index: 11;
         top: 0;
         left: 0;
         text-align: center;
@@ -50,8 +50,17 @@
     #preloader svg {
         position: absolute;
         top: 50%;
+    }
+    #preloader a {
         font-family: Arial, Helvetica, sans-serif;
-        font-size: 1.2rem;
+        position: absolute;
+        bottom: 8px;
+        left: 8px;
+        text-decoration: none;
+        color: grey;
+        animation: 3s fadeIn;
+        animation-fill-mode: forwards;
+        visibility: hidden;
     }
     .loader ellipse {
         stroke-dasharray:10, 9999;
@@ -74,6 +83,14 @@
             -webkit-transform:rotateZ(360deg);
         }
     }
+    @keyframes fadeIn {
+        99% {
+            visibility: hidden;
+        }
+        100% {
+            visibility: visible;
+        }
+    }
     </style>
 
 </head>
@@ -85,6 +102,7 @@
         <!-- preloader -->
         <div id="preloader">
             <svg class="loader" width="60" height="60" xmlns="http://www.w3.org/2000/svg"><g><ellipse ry="25" rx="25" cy="30" cx="30" stroke-width="5" stroke="#607d8b" fill="none"/></g></svg>
+            <a href="#" onclick="loadAssets();">not working ?</a>
         </div>
 
         <!-- hover preview matrix -->
@@ -666,16 +684,42 @@
         </div>
     </div>
 
-    <!-- assets -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/balm-ui@next/dist/balm-ui.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/combine/npm/vue@2.6.12/dist/vue.js,npm/balm-ui@8.16.1,npm/balm-ui@8.16.1/dist/balm-ui-plus.js,npm/canvas2image@1.0.5/canvas2image.min.js,npm/jszip@3.5.0/dist/jszip.min.js,npm/jquery@3.5.1/dist/jquery.min.js,npm/jcanvas@21.0.1/dist/min/jcanvas.min.js"></script>
-    <script src="./data/ascii-table.min.js"></script>
-    <script type="text/javascript">
-        var _c = new Date().toISOString().slice(0,16);
-        document.write('<script type="text/javascript" src="data/script.js?c='+_c+'"><\/script>');
-        document.write('<link rel="stylesheet" href="data/style.css?c='+_c+'">');
+    <script>
+        function loadAssets() {
+            var _c = new Date().toISOString().slice(0,16);
+            var scripts = [
+                'https://cdn.jsdelivr.net/combine/npm/vue@2.6.12/dist/vue.js,npm/balm-ui@8.16.1,npm/balm-ui@8.16.1/dist/balm-ui-plus.js,npm/canvas2image@1.0.5/canvas2image.min.js,npm/jszip@3.5.0/dist/jszip.min.js,npm/jquery@3.5.1/dist/jquery.min.js,npm/jcanvas@21.0.1/dist/min/jcanvas.min.js',
+                './data/ascii-table.min.js',
+                'data/script.js?c='+_c,
+            ];
+            var styles = [
+                'https://cdn.jsdelivr.net/npm/balm-ui@next/dist/balm-ui.css',
+                'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Material+Icons&display=swap',
+                'data/style.css?c='+_c,
+            ]
+            scripts.forEach((url, i) => {
+                setTimeout(() => {
+                    var script = document.createElement('script');
+                    script.src = url;
+                    document.head.appendChild(script);
+                }, 100 * i);
+            });
+            styles.forEach(url => {
+                var head = document.head;
+                var link = document.createElement("link");
+                link.type = "text/css";
+                link.rel = "stylesheet";
+                link.href = url;
+                head.appendChild(link);
+            });
+            document.getElementById('preloader').style.display = 'none';
+        }
     </script>
+
+    <!-- start_assets -->
+<link rel="stylesheet" href="data/static/a9397175be66012524f0f98a57fb95de9ed4be78.css">
+<script defer src="data/static/a9397175be66012524f0f98a57fb95de9ed4be78.js"></script>
+<!-- end_assets -->
 
 </body>
 
