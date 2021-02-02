@@ -1,6 +1,6 @@
 <?php
 
-$hash = substr(sha1(time()), 0, 8);
+$hash = strtolower(substr(base64_encode(time()), 0, 8));
 
 // genarate assets and push into static folder
 $scripts_dir = $_SERVER['DOCUMENT_ROOT'] . "/data/*.js";
