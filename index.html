@@ -256,17 +256,10 @@
             </ui-dialog-content>
         </ui-dialog>
 
-        <!-- mobile disclaimer -->
-        <section v-show="isMobile" class="empty-state">
-            <ui-icon>desktop_access_disabled</ui-icon>
-            <p>Your screen is too small, please open app in new device or zoom out.</p>
-        </section>
-
-        <div class="demo-container" v-show="!isMobile">
+        <div class="demo-container">
             <!-- App bar -->
-            <ui-top-app-bar v-shadow="4" class="demo-app-bar" content-selector=".demo-app-content" nav-id="nav-menu" :nav-icon="false">
-                <ui-icon-button id="nav-menu" icon="menu"></ui-icon-button>
-                <span class="nav-title" id="nav-title-text">Kpp Maker</span>
+            <ui-top-app-bar v-shadow="4" class="demo-app-bar" content-selector=".demo-app-content" nav-id="nav-menu">
+                Kpp Maker
                 <template #toolbar="{ toolbarItemClass }">
                     <ui-icon-button @click="$balmUI.onOpen('statusDialogOpen');writeUrl('status')" v-tooltip="'show save status'" aria-describedby="save status" :icon="syncStatus ? 'done' : 'sync'"></ui-icon-button>
                     <ui-icon-button icon="info" @click="$balmUI.onOpen('presentationDialogOpen')"></ui-icon-button>
@@ -289,7 +282,7 @@
                 </template>
             </ui-top-app-bar>
             <!-- Drawer -->
-            <ui-drawer type="dismissible" nav-id="nav-menu" viewport-height>
+            <ui-drawer :type="isMobile ? 'modal' : 'dismissible'" nav-id="nav-menu" viewport-height>
                 <ui-drawer-header v-show="current.code" v-shadow="headerShadow" style="z-index:1;padding-bottom:16px;">
                     <canvas width="256" height="64" style="border: solid 1px black;margin-left:-18px;" id="canvas"></canvas>
                     <ui-drawer-title>{{ current.name }}</ui-drawer-title>
@@ -358,12 +351,13 @@
                     <ui-icon-button v-tooltip="'Terms and attributions'" aria-describedby="details" style="position:absolute;bottom:72px;left:8px" @click="$balmUI.onOpen('licenceDialogOpen');writeUrl('licence')" icon="info"></ui-icon-button>
                 </ui-drawer-content>
             </ui-drawer>
+            <ui-drawer-backdrop v-if="isMobile"></ui-drawer-backdrop>
             <!-- App content -->
             <ui-drawer-app-content class="demo-app-content" ondragover="vm.hofDragover(event);">
 
                 <!-- hof data -->
                 <section v-shadow="2" v-show="current.code" class="hof-data">
-                    <ui-textfield outlined v-model="current.code" input-type="number" style="width:7rem;height:48px;" disabled>code</ui-textfield>
+                    <ui-textfield outlined v-model="current.code" input-type="number" style="width:7rem;height:48px;" v-show="!isMobile" disabled>code</ui-textfield>
                     <ui-textfield outlined v-model="current.name" style="height:48px;" required>dest</ui-textfield>
                     <ui-button v-show="current.scroll" @click="$balmUI.onOpen('scrollDialogOpen');writeUrl('scroll')" outlined style="float:right;margin:6px 4px;">scroll</ui-button>
                     <ui-button @click="$balmUI.onOpen('iconDialogOpen');writeUrl('icons')" outlined style="float:right;margin:6px 4px;">icon options</ui-button>
@@ -716,8 +710,8 @@
     </script>
 
     <!-- start_assets -->
-<link rel="stylesheet" href="data/static/1aabaad4.css">
-<script defer src="data/static/1aabaad4.js"></script>
+<link rel="stylesheet" href="data/static/mtyxmji5.css">
+<script defer src="data/static/mtyxmji5.js"></script>
 <!-- end_assets -->
 
 </body>

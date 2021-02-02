@@ -523,21 +523,24 @@ var vm = new Vue({
                 frontScrollPos = cropCanvas(this.scrollPreviewCanvasOver, off, 0, frontWidth, 128);
                 this.previewCtx.drawImage(frontScrollPos, 920 - frontWidth, 0);
             }
+            // side
             if(this.current.scroll.index.includes('12')) {
                 sideWidth = this.current.scroll.index.includes('13') ? 920 : 680;
                 sideScrollPos = cropCanvas(this.scrollPreviewCanvasOver, off, 0, sideWidth, 128);
                 this.previewCtx.drawImage(sideScrollPos, 920 - sideWidth, 128);
+                this.previewCtx.fillStyle = "#800000";
+                this.previewCtx.fillRect(200, 128, 40, 128);
             }
         },
         scrollButton: function() {
             if(this.isScrolling) {
                 this.isScrolling = false;
                 this.refreshMatrix();
-                $('#scrollButton').css({'transform' : 'rotate(360deg)'});
+                $('#scrollButton').css({'transform' : 'rotate(-360deg)'});
             } else {
                 this.isScrolling = true;
                 this.renderScroll();
-                $('#scrollButton').css({'transform' : 'rotate(180deg)'});
+                $('#scrollButton').css({'transform' : 'rotate(-180deg)'});
             }
         },
 
@@ -1299,6 +1302,12 @@ var vm = new Vue({
             $('#nav-title-text').text('Kpp Maker - Beta');
             this.$alert('This is a beta version of the site, which may contain bugs. Please report any malfunctions you encounter. This preview contain a small selection of usable fonts.')
         }
+
+        //listen for window resize event
+        window.addEventListener('resize', function(event) {
+            console.log('test')
+            vm.isMobile = window.matchMedia('only screen and (max-width: 618px)').matches;
+        });
 
     }
 })

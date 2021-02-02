@@ -12,8 +12,19 @@
     max-width: 1026px;
     margin: 16px auto 72px auto;
 }
-.mdc-drawer {
+
+/* drawer */
+.mdc-drawer.mdc-drawer--dismissible {
     margin-top: 64px;
+}
+.mdc-drawer.mdc-drawer--modal {
+    z-index: 10;
+}
+.mdc-drawer-scrim {
+    z-index: 9;
+}
+.mdc-drawer.mdc-drawer--modal.mdc-drawer--open+.mdc-drawer-app-content {
+    margin-left: 0;
 }
 
 /* app bar */
@@ -23,9 +34,6 @@
 }
 .demo-app-bar.preview {
     margin-top: -64px;
-}
-#nav-menu {
-    margin-left: -16px;
 }
 
 /* nav items drawer */
@@ -117,10 +125,10 @@ hr {
 
 /* z-index */
 .mdc-dialog {
-    z-index: 10 !important;
+    z-index: 11 !important;
 }
 .mdc-snackbar {
-    z-index: 11 !important;
+    z-index: 12 !important;
 }
 
 /* icon selection */
