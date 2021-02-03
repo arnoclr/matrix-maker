@@ -1,6 +1,7 @@
 <?php
 
-$hash = strtolower(substr(base64_encode(time()), 0, 8));
+$hash = substr(str_shuffle(str_repeat("0123456789abcdefghijklmnopqrstuvwxyz", 8)), 0, 8);
+$static_dir = 'static/';
 
 // genarate assets and push into static folder
 $scripts_dir = $_SERVER['DOCUMENT_ROOT'] . "/data/*.js";
@@ -28,34 +29,37 @@ foreach ($styles as $style) {
 }
 
 // verify if js or css are not modified
-$last_js_dir = glob($_SERVER['DOCUMENT_ROOT'] . '/data/static/*.js')[0];
-$last_js = file_get_contents($last_js_dir);
+$last_js_dir = glob($_SERVER['DOCUMENT_ROOT'] . $static_dir . '*.js');
+if(isset($last_js_dir[0]))
+    $last_js = file_get_contents($last_js_dir[0]);
 
-$last_css_dir = glob($_SERVER['DOCUMENT_ROOT'] . '/data/static/*.css')[0];
-$last_css = file_get_contents($last_css_dir);
+$last_css_dir = glob($_SERVER['DOCUMENT_ROOT'] . $static_dir . '*.css');
+if(isset($last_css_dir[0]))
+    $last_css = file_get_contents($last_css_dir[0]);
 
-if ($last_js == $js_str && $last_css == $css_str)
-    die('not modified');
+if(isset($last_js) && isset($last_css))
+    if ($last_js == $js_str && $last_css == $css_str)
+        die('not modified');
 
 // clear static folder
-$files = glob($_SERVER['DOCUMENT_ROOT'] . 'data/static/*');
+$files = glob($_SERVER['DOCUMENT_ROOT'] . $static_dir . '*');
 foreach ($files as $file) {
     if (is_file($file)) {
         unlink($file);
     }
 }
 
-file_put_contents($_SERVER['DOCUMENT_ROOT'] . "/data/static/$hash.js", $js_str);
-file_put_contents($_SERVER['DOCUMENT_ROOT'] . "/data/static/$hash.css", $css_str);
+file_put_contents($_SERVER['DOCUMENT_ROOT'] . "$static_dir$hash.js", $js_str);
+file_put_contents($_SERVER['DOCUMENT_ROOT'] . "$static_dir$hash.css", $css_str);
 
 // write script and style tag in html
 $delimiter = "<!-- start_assets -->";
 $delimiter_end = "<!-- end_assets -->";
-$tags = '<link rel="stylesheet" href="data/static/'.$hash.'.css">' . PHP_EOL . '<script defer src="data/static/'.$hash.'.js"></script>';
+$tags = '<link rel="stylesheet" href="/'.$static_dir.$hash.'.css"><script defer src="/'.$static_dir.$hash.'.js"></script>';
 
 $html = file_get_contents($_SERVER['DOCUMENT_ROOT'] . "/index.html");
-$html = preg_replace("/" . $delimiter ."[\s\S]+?" . $delimiter_end . "/", $delimiter . PHP_EOL . $delimiter_end, $html);
-$html = str_replace($delimiter, $delimiter . PHP_EOL . $tags, $html);
+$html = preg_replace("/" . $delimiter ."[\s\S]+?" . $delimiter_end . "/", $delimiter . $delimiter_end, $html);
+$html = str_replace($delimiter, $delimiter . $tags, $html);
 
 file_put_contents($_SERVER['DOCUMENT_ROOT'] . "index.html", $html);
 
