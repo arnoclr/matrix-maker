@@ -61,6 +61,11 @@ $html = file_get_contents($_SERVER['DOCUMENT_ROOT'] . "/index.html");
 $html = preg_replace("/" . $delimiter ."[\s\S]+?" . $delimiter_end . "/", $delimiter . $delimiter_end, $html);
 $html = str_replace($delimiter, $delimiter . $tags, $html);
 
+// write in service worker
+$sw = file($_SERVER['DOCUMENT_ROOT'] . "/sw.js");
+$sw[0] = 'const PRECACHE = "precache-'.$hash.'";const PRECACHE_URLS = ["index.html", "/data/", "/static/'.$hash.'.css", "/static/'.$hash.'.js"];' . PHP_EOL;
+
 file_put_contents($_SERVER['DOCUMENT_ROOT'] . "index.html", $html);
+file_put_contents($_SERVER['DOCUMENT_ROOT'] . "sw.js", implode($sw));
 
 echo htmlspecialchars($tags);
