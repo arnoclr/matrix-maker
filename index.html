@@ -44,12 +44,12 @@
         z-index: 11;
         top: 0;
         left: 0;
-        text-align: center;
         overflow: none;
     }
     #preloader svg {
         position: absolute;
         top: 50%;
+        left: calc(50% - 30px);
     }
     #preloader a {
         font-family: Arial, Helvetica, sans-serif;
@@ -173,7 +173,7 @@
                     <img loading="lazy" height="363" width="335" src="./data/illustrations/package.png">
                 </section>
                 <ui-textfield outlined v-model="hofName">hof name</ui-textfield>
-                <ui-button style="float: right;" raised @click="generateHof()" :disabled="hofName == ''">Download</ui-button>
+                <ui-button raised class="modal-float-right" @click="generateHof()" :disabled="hofName == ''">Download</ui-button>
             </ui-dialog-content>
         </ui-dialog>
 
@@ -259,10 +259,9 @@
         <div class="demo-container">
             <!-- App bar -->
             <ui-top-app-bar v-shadow="4" class="demo-app-bar" content-selector=".demo-app-content" nav-id="nav-menu">
-                Kpp Maker
+                <span id="nav-title-text">Kpp Maker</span>
                 <template #toolbar="{ toolbarItemClass }">
                     <ui-icon-button @click="$balmUI.onOpen('statusDialogOpen');writeUrl('status')" v-tooltip="'show save status'" aria-describedby="save status" :icon="syncStatus ? 'done' : 'sync'"></ui-icon-button>
-                    <ui-icon-button icon="info" @click="$balmUI.onOpen('presentationDialogOpen')"></ui-icon-button>
                     <ui-icon-button :class="toolbarItemClass" v-tooltip="'Save all destinations in device storage'" aria-describedby="save in storage" icon="save" @click="saveDestsInLocalStorage()"></ui-icon-button>
                     
                     <div class="menu-content">
@@ -359,8 +358,6 @@
                 <section v-shadow="2" v-show="current.code" class="hof-data">
                     <ui-textfield outlined v-model="current.code" input-type="number" style="width:7rem;height:48px;" v-show="!isMobile" disabled>code</ui-textfield>
                     <ui-textfield outlined v-model="current.name" style="height:48px;" required>dest</ui-textfield>
-                    <ui-button v-show="current.scroll" @click="$balmUI.onOpen('scrollDialogOpen');writeUrl('scroll')" outlined style="float:right;margin:6px 4px;">scroll</ui-button>
-                    <ui-button @click="$balmUI.onOpen('iconDialogOpen');writeUrl('icons')" outlined style="float:right;margin:6px 4px;">icon options</ui-button>
                     <ui-icon-button title="play / pause scrolling preview" id="scrollButton" @click="scrollButton" v-show="current.scroll" :icon="isScrolling ? 'pause' : 'play_arrow'" style="float:right;margin:0px 4px;"></ui-icon-button>
                     <ui-menu-anchor style="float: right;">
                         <ui-icon-button @click="$balmUI.onOpen('toolsMenuOpen')" icon="more_vert"></ui-icon-button>
@@ -382,6 +379,18 @@
                                     <ui-icon>settings</ui-icon>
                                 </ui-menuitem-icon>
                                 <ui-menuitem-text>current matrix settings</ui-menuitem-text>
+                            </ui-menuitem>
+                            <ui-menuitem>
+                                <ui-menuitem-icon>
+                                    <ui-icon>dashboard_customize</ui-icon>
+                                </ui-menuitem-icon>
+                                <ui-menuitem-text>edit icons</ui-menuitem-text>
+                            </ui-menuitem>
+                            <ui-menuitem>
+                                <ui-menuitem-icon>
+                                    <ui-icon>animation</ui-icon>
+                                </ui-menuitem-icon>
+                                <ui-menuitem-text>{{ current.scroll ? 'scrolling settings' : 'add scrolling'}}</ui-menuitem-text>
                             </ui-menuitem>
                             <ui-menuitem>
                                 <ui-menuitem-icon>
@@ -522,7 +531,8 @@
                             <p>Skip a line to write on 2 levels, you can edit the fonts for each level individually.</p>
                             <div v-if="current.scroll" class="disclaimer">
                                 <ui-icon>info</ui-icon>
-                                <p>The current matrix is scrolling. Consider writing a classic version for non-compatible buses. You can view the compatibility rendering by clicking on the 3 dots, then "non scroll preview".</p>
+                                <p>The current matrix is scrolling. Consider writing a classic version for non-compatible buses.</p>
+                                <ui-button unelevated @click="refreshMatrix(false, false, true)">view compatibility rendering</ui-button>
                             </div>
                             <ui-textfield outlined maxlength="150" v-model="current.front.text" id="frontText" input-type="textarea" rows="2" cols="40" @keyup="refreshMatrix(true, 'front')" @change="refreshMatrix()">front text</ui-textfield>
                             <div class="mtb">
@@ -548,7 +558,8 @@
                                 <p>Line number (you can use letters and the text can be different of the hof code).</p>
                                 <div v-if="current.scroll" class="disclaimer">
                                     <ui-icon>info</ui-icon>
-                                    <p>The current matrix is scrolling. Consider writing a classic version for non-compatible buses. You can view the compatibility rendering by clicking on the 3 dots, then "non scroll preview".</p>
+                                    <p>The current matrix is scrolling. Consider writing a classic version for non-compatible buses.</p>
+                                    <ui-button unelevated @click="refreshMatrix(false, false, true)">view compatibility rendering</ui-button>
                                 </div>
                                 <ui-textfield outlined v-model="current.line.text" @keyup="refreshMatrix(true, 'line')" @change="refreshMatrix()">front line number</ui-textfield>
                                 <p></p>
@@ -588,7 +599,8 @@
                             <p>Skip a line to write on 2 levels, you can edit the fonts for each level individually.</p>
                             <div v-if="current.scroll" class="disclaimer">
                                 <ui-icon>info</ui-icon>
-                                <p>The current matrix is scrolling. Consider writing a classic version for non-compatible buses. You can view the compatibility rendering by clicking on the 3 dots, then "non scroll preview".</p>
+                                <p>The current matrix is scrolling. Consider writing a classic version for non-compatible buses.</p>
+                                <ui-button unelevated @click="refreshMatrix(false, false, true)">view compatibility rendering</ui-button>
                             </div>
                             <ui-textfield outlined maxlength="150" v-model="current.side.text" id="frontText" input-type="textarea" rows="2" cols="40" @keyup="refreshMatrix(true, 'side')" @change="refreshMatrix()">front text</ui-textfield>
                             <div class="mtb">
@@ -605,7 +617,7 @@
                     </ui-dialog>
 
                     <!-- icons options -->
-                    <ui-dialog v-model="iconDialogOpen" @close="writeUrl()" mask-closable>
+                    <ui-dialog v-model="iconsDialogOpen" @close="writeUrl()" mask-closable>
                         <ui-dialog-title>Icon options</ui-dialog-title>
                         <ui-dialog-content>
                             <div style="position:relative; display:inline-block">
@@ -709,10 +721,7 @@
         }
     </script>
 
-    <!-- start_assets -->
-<link rel="stylesheet" href="data/static/mtyxmji5.css">
-<script defer src="data/static/mtyxmji5.js"></script>
-<!-- end_assets -->
+    <!-- start_assets --><link rel="stylesheet" href="/static/xz5gtner.css"><script defer src="/static/xz5gtner.js"></script><!-- end_assets -->
 
 </body>
 

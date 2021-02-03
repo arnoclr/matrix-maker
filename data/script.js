@@ -86,7 +86,7 @@ var vm = new Vue({
         frontDialogOpen: false,
         lineDialogOpen: false,
         sideDialogOpen: false,
-        iconDialogOpen: false,
+        iconsDialogOpen: false,
         scrollDialogOpen: false,
         downloadDialogOpen: false,
         downloadProgressDialogOpen: false,
@@ -534,14 +534,22 @@ var vm = new Vue({
         },
         scrollButton: function() {
             if(this.isScrolling) {
+                this.scrollButtonAnimation();
                 this.isScrolling = false;
                 this.refreshMatrix();
-                $('#scrollButton').css({'transform' : 'rotate(-360deg)'});
             } else {
+                this.scrollButtonAnimation();
                 this.isScrolling = true;
                 this.renderScroll();
-                $('#scrollButton').css({'transform' : 'rotate(-180deg)'});
             }
+        },
+        scrollButtonAnimation: function() {
+            $('#scrollButton').removeClass('animated');
+            $('#scrollButton').css({'transform' : 'rotate(-60deg)'});
+            setTimeout(() => {
+                $('#scrollButton').addClass('animated');
+                $('#scrollButton').css({'transform' : 'rotate(0deg)'});
+            }, 200);
         },
 
         // utils
@@ -556,8 +564,6 @@ var vm = new Vue({
             this.ctx.fillStyle = "#800000";
             this.ctx.fillRect(230, 0, 26, 64);
             this.ctx.fillRect(50, 32, 10, 32);
-            // website url
-            // noinspection JSJQueryEfficiency
             $('#canvas').drawText({
                 fillStyle: '#fff',
                 x: 220, y: 27,
@@ -649,12 +655,24 @@ var vm = new Vue({
                     this.writeUrl('destSettings');
                     break;
                 case 3:
-                    this.duplicateDest();
+                    this.$balmUI.onOpen('iconsDialogOpen');
+                    this.writeUrl('icons');
                     break;
                 case 4:
-                    this.deleteDest();
+                    if(this.current.scroll) {
+                        this.$balmUI.onOpen('scrollDialogOpen');
+                        this.writeUrl('scroll');
+                    } else {
+                        this.addScroll();
+                    }
                     break;
                 case 5:
+                    this.duplicateDest();
+                    break;
+                case 6:
+                    this.deleteDest();
+                    break;
+                case 7:
                     this.refreshMatrix(false, false, true);
                     break;
             }
@@ -836,16 +854,13 @@ var vm = new Vue({
                 moved = false;
                 this.dests.forEach((dest, i) => {
                     if(dest.code > 999 && dest.code == dragfromcode + 1000 * index) {
-                        console.log(i, id, index, dest.code);
                         // if dragto is before or after actual dest
                         if(!moved) {
                             if(id > i) {
                                 this.moveItem(i, id);
-                                console.log('down')
                                 moved = true;
                             } else {
                                 this.moveItem(i, id + index);
-                                console.log('up')
                                 moved = true;
                             }
                         }
@@ -1300,12 +1315,11 @@ var vm = new Vue({
         var subdomain = window.location.host.split('.')[1] ? window.location.host.split('.')[0] : false;
         if(subdomain === 'beta') {
             $('#nav-title-text').text('Kpp Maker - Beta');
-            this.$alert('This is a beta version of the site, which may contain bugs. Please report any malfunctions you encounter. This preview contain a small selection of usable fonts.')
+            this.$alert('This is a beta version of the site, which may contain bugs. Please report any malfunctions you encounter.');
         }
 
         //listen for window resize event
         window.addEventListener('resize', function(event) {
-            console.log('test')
             vm.isMobile = window.matchMedia('only screen and (max-width: 618px)').matches;
         });
 

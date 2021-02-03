@@ -224,9 +224,12 @@ hr {
     padding: 8px;
     margin-bottom: 8px;
 }
-.disclaimer p {
+.disclaimer p, .disclaimer .mdc-button {
     color: #613E11;
     margin: 8px 8px 8px 48px;
+}
+.disclaimer .mdc-button {
+    background-color: #613E1120;
 }
 .disclaimer i {
     color: #F3A54A;
@@ -256,8 +259,8 @@ hr {
     bottom: 8px;
     left: 8px;
 }
-#scrollButton {
-    transition: transform .2s ease-out;
+#scrollButton.animated {
+    transition: transform .5s cubic-bezier(0,.95,.25,.97);
 }
 
 /* slider */
@@ -415,4 +418,8 @@ body, ul, h1, h2, h3, h4, h5, h6, p, a, small, input, span, .mdc-snackbar__label
     background: #bbbbbb30 !important;
     float: right;
     margin-top: 16px;
+}
+.mdc-button.modal-float-right {
+    float: right;
+    margin-top: 8px;
 }

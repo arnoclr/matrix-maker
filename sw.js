@@ -1,6 +1,5 @@
-const PRECACHE = "precache-v2";
+const PRECACHE = "precache-xz5gtner";const PRECACHE_URLS = ["index.html", "/data/", "/static/xz5gtner.css", "/static/xz5gtner.js"];
 const RUNTIME = "runtime";
-const PRECACHE_URLS = ["index.html", "./", "/data/style.css", "/data/script.js"];
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
