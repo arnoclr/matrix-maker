@@ -1166,7 +1166,10 @@ var vm = new Vue({
                     terminus_list +=    "\t\t\t" +
                                         "\t" + (this.dests[dest].scroll.index.includes('11') ? dir + "\\" + this.dests[dest].code + ".png" : "") +
                                         "\t" + (this.dests[dest].scroll.index.includes('12') ? dir + "\\" + this.dests[dest].code + ".png" : "") +
-                                        "\t" + (this.dests[dest].scroll.index.includes('13') ? dir + "\\" + this.dests[dest].code + ".png" : "");
+                                        "\t" + (this.dests[dest].scroll.index.includes('13') ? dir + "\\" + this.dests[dest].code + ".png" : "") +
+                                        "\t\t\t\t\t\t\t\t\t\t";
+                } else {
+                    terminus_list += "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t";
                 }
                 terminus_list += "\r\n";
             }
@@ -1175,22 +1178,39 @@ var vm = new Vue({
                 "\r\n" +
                 "[name]\r\n" +
                 name + "\r\n" +
+                "\r\n" +
                 "[servicetrip]\r\n" +
                 (this.dests[Object.keys(this.dests)[0]].name !== ""?this.dests[Object.keys(this.dests)[0]].name:"NO NAME") + "\r\n" +
+                "\r\n" +
+                "\r\n" +
+                "\r\n" +
                 "[global_strings]\r\n" +
                 "6\r\n" +
                 name + "\r\n" +
                 name + "\r\n" +
                 name + "\r\n" +
+                "\r\n" +
+                "\r\n" +
+                "\r\n" +
+                "\r\n" +
+                "\r\n" +
+                "\r\n" +
+                "\r\n" +
+                "\r\n" +
                 "stringcount_terminus\r\n" +
-                "26\r\n" +
+                "26\n" +
+                "\r\n" +
                 "stringcount_busstop\r\n" +
-                "9\r\n" +
+                "9\n" +
+                "\r\n" +
+                "\r\n" +
+                "\r\n" +
                 "[addterminus_list]\r\n" +
                 terminus_list +
                 "[end]\r\n" +
+                "\r\n" +
+                "\r\n" +
                 "[addbusstop_list]\r\n" +
-                "STOP List\t\t\t\t\t\t\t\t\r\n" +
                 "[end]\r\n";
             return this.downloadUtf16(rtn);
         },
