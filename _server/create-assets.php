@@ -28,35 +28,40 @@ foreach ($styles as $style) {
     $css_str = $css_str . $style . PHP_EOL;
 }
 
-// minify JS
-$url = 'https://javascript-minifier.com/raw';
-$ch = curl_init();
+if(isset($_GET['raw'])) {
+    if($_SERVER['REMOTE_ADDR'] != '127.0.0.1') {
+        die('not in localhost');
+    }
+} else {
+    // minify assets
+    $url = 'https://javascript-minifier.com/raw';
+    $ch = curl_init();
 
-curl_setopt_array($ch, [
-    CURLOPT_URL => $url,
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_POST => true,
-    CURLOPT_HTTPHEADER => ["Content-Type: application/x-www-form-urlencoded"],
-    CURLOPT_POSTFIELDS => http_build_query([ "input" => $js_str ])
-]);
+    curl_setopt_array($ch, [
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST => true,
+        CURLOPT_HTTPHEADER => ["Content-Type: application/x-www-form-urlencoded"],
+        CURLOPT_POSTFIELDS => http_build_query([ "input" => $js_str ])
+    ]);
 
-$js_str = curl_exec($ch);
-curl_close($ch);
+    $js_str = curl_exec($ch);
+    curl_close($ch);
 
-// minify CSS
-$url = 'https://cssminifier.com/raw';
-$ch = curl_init();
+    $url = 'https://cssminifier.com/raw';
+    $ch = curl_init();
 
-curl_setopt_array($ch, [
-    CURLOPT_URL => $url,
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_POST => true,
-    CURLOPT_HTTPHEADER => ["Content-Type: application/x-www-form-urlencoded"],
-    CURLOPT_POSTFIELDS => http_build_query([ "input" => $css_str ])
-]);
+    curl_setopt_array($ch, [
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST => true,
+        CURLOPT_HTTPHEADER => ["Content-Type: application/x-www-form-urlencoded"],
+        CURLOPT_POSTFIELDS => http_build_query([ "input" => $css_str ])
+    ]);
 
-$css_str = curl_exec($ch);
-curl_close($ch);
+    $css_str = curl_exec($ch);
+    curl_close($ch);
+}
 
 // verify if js or css are not modified
 $last_js_dir = glob($_SERVER['DOCUMENT_ROOT'] . $static_dir . '*.js');
