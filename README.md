@@ -55,13 +55,15 @@ https://kpp.genav.ch
     '------------------------------------------------------------------------------------------'
     ```
 
+## Support
+
+Chat with us on our discord server. Submit ideas, search for help and stay tuned of new features : https://kpp.genav.ch/discord
+
 ## Contribute
 
 Submit new fonts : https://forms.gle/DcYYG9u63hQnE8e67
 
-## Support
-
-Chat with us on our discord server. Submit ideas, search for help and stay tuned of new features : https://kpp.genav.ch/discord
+To run the site locally, it is recommended to have a PHP web server. You just have to compile the assets by going to the following address: `localhost/_server/create-assets.php?raw`
 
 ## Authors
 

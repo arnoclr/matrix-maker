@@ -260,7 +260,7 @@ hr {
     left: 8px;
 }
 #scrollButton.animated {
-    transition: transform .5s cubic-bezier(0,.95,.25,.97);
+    transition: transform .2s ease-out;
 }
 
 /* slider */

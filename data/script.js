@@ -545,7 +545,7 @@ var vm = new Vue({
         },
         scrollButtonAnimation: function() {
             $('#scrollButton').removeClass('animated');
-            $('#scrollButton').css({'transform' : 'rotate(-60deg)'});
+            $('#scrollButton').css({'transform' : 'rotate(-180deg)'});
             setTimeout(() => {
                 $('#scrollButton').addClass('animated');
                 $('#scrollButton').css({'transform' : 'rotate(0deg)'});
@@ -1182,17 +1182,11 @@ var vm = new Vue({
                 "[servicetrip]\r\n" +
                 (this.dests[Object.keys(this.dests)[0]].name !== ""?this.dests[Object.keys(this.dests)[0]].name:"NO NAME") + "\r\n" +
                 "\r\n" +
-                "\r\n" +
-                "\r\n" +
                 "[global_strings]\r\n" +
                 "6\r\n" +
                 name + "\r\n" +
                 name + "\r\n" +
                 name + "\r\n" +
-                "\r\n" +
-                "\r\n" +
-                "\r\n" +
-                "\r\n" +
                 "\r\n" +
                 "\r\n" +
                 "\r\n" +
@@ -1204,13 +1198,13 @@ var vm = new Vue({
                 "9\n" +
                 "\r\n" +
                 "\r\n" +
-                "\r\n" +
                 "[addterminus_list]\r\n" +
                 terminus_list +
                 "[end]\r\n" +
                 "\r\n" +
                 "\r\n" +
                 "[addbusstop_list]\r\n" +
+                "STOP List\r\n" +
                 "[end]\r\n";
             return this.downloadUtf16(rtn);
         },
