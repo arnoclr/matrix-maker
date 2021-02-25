@@ -1437,5 +1437,5 @@ $(window).bind('beforeunload', function(){
 });
 
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js');
+    navigator.serviceWorker.register('/dist/sw.js');
 }
