@@ -34,6 +34,10 @@
     <meta property="og:description" content="Create colored matrix for omsi 2 and generate hof easily." />
     <meta property="og:image" content="http://kpp.genav.ch/data/illustrations/banner.jpg" />
 
+    <!-- google fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Material+Icons&display=swap" rel="stylesheet">
+
     <!-- preloader style html -->
     <style>
     #preloader {
@@ -689,37 +693,9 @@
         </div>
     </div>
 
-    <script>
-        function loadAssets() {
-            var _c = new Date().toISOString().slice(0,16);
-            var scripts = [
-                'https://cdn.jsdelivr.net/combine/npm/vue@2.6.12/dist/vue.js,npm/balm-ui@8.16.1,npm/balm-ui@8.16.1/dist/balm-ui-plus.js,npm/canvas2image@1.0.5/canvas2image.min.js,npm/jszip@3.5.0/dist/jszip.min.js,npm/jquery@3.5.1/dist/jquery.min.js,npm/jcanvas@21.0.1/dist/min/jcanvas.min.js',
-                './data/ascii-table.min.js',
-                'data/script.js?c='+_c,
-            ];
-            var styles = [
-                'https://cdn.jsdelivr.net/npm/balm-ui@next/dist/balm-ui.css',
-                'https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Material+Icons&display=swap',
-                'data/style.css?c='+_c,
-            ]
-            scripts.forEach((url, i) => {
-                setTimeout(() => {
-                    var script = document.createElement('script');
-                    script.src = url;
-                    document.head.appendChild(script);
-                }, 100 * i);
-            });
-            styles.forEach(url => {
-                var head = document.head;
-                var link = document.createElement("link");
-                link.type = "text/css";
-                link.rel = "stylesheet";
-                link.href = url;
-                head.appendChild(link);
-            });
-            document.getElementById('preloader').style.display = 'none';
-        }
-    </script>
+    <script src="dist/main.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/balm-ui/dist/balm-ui.css"/>
+    <link rel="stylesheet" href="src/style.css">
 
     <!-- start_assets --><link rel="stylesheet" href="/static/rhhswtdt.css"><script defer src="/static/rhhswtdt.js"></script><!-- end_assets -->
 

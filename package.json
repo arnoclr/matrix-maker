@@ -1,0 +1,33 @@
+{
+  "name": "matrix-maker",
+  "version": "1.0.0",
+  "description": "matrix creator for OMSI 2",
+  "main": "sw.js",
+  "dependencies": {
+    "ascii-table": "0.0.9",
+    "balm-ui": "^8.22.0",
+    "jcanvas": "^21.0.1",
+    "jquery": "^3.5.1",
+    "jszip": "^3.6.0",
+    "vue": "^2.6.12",
+    "webpack": "^5.24.2"
+  },
+  "devDependencies": {
+    "webpack-cli": "^4.5.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode=production",
+    "dev": "webpack --mode=development"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Aryqs-Ipsum/matrix-maker.git"
+  },
+  "author": "Arno Cellarier - Adam Mathieson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Aryqs-Ipsum/matrix-maker/issues"
+  },
+  "homepage": "https://github.com/Aryqs-Ipsum/matrix-maker#readme"
+}
