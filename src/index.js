@@ -1,10 +1,7 @@
 import $ from "jquery";
-import JCanvas from "jcanvas";
 import Vue from 'vue';
 import BalmUI from 'balm-ui'; // Official Google Material Components
 import BalmUIPlus from 'balm-ui/dist/balm-ui-plus'; // BalmJS Team Material Components
-
-JCanvas($, window);
 
 Vue.use(BalmUI); // Mandatory
 Vue.use(BalmUIPlus); // Optional
@@ -469,6 +466,7 @@ var vm = new Vue({
         },
 
         refreshMatrix: function(textOnly = false, part = false, universalPreview = false) {
+            if(!this.current) return;
             document.querySelector('#btn-spinning').style = 'transform: rotate('+this.rot+'deg)';
             this.rot+=360;
             switch (part) {
@@ -577,26 +575,31 @@ var vm = new Vue({
             this.ctx.fillStyle = "#800000";
             this.ctx.fillRect(230, 0, 26, 64);
             this.ctx.fillRect(50, 32, 10, 32);
-            $('#canvas').drawText({
-                fillStyle: '#fff',
-                x: 220, y: 27,
-                fontSize: '7pt',
-                fontFamily: 'Verdana',
-                text: 'kpp.genav.ch',
-                fromCenter: false,
-                rotate: 90
-            });
-            // dest code
-            if(this.current.code) {
+            import('jcanvas').then(moduleCanvas => {
+                var JCanvas = moduleCanvas.default;
+                JCanvas($, window);
+
                 $('#canvas').drawText({
                     fillStyle: '#fff',
-                    x: 230, y: 52,
+                    x: 220, y: 27,
                     fontSize: '7pt',
                     fontFamily: 'Verdana',
-                    text: this.current.code,
+                    text: 'kpp.genav.ch',
                     fromCenter: false,
+                    rotate: 90
                 });
-            }
+                // dest code
+                if(this.current.code) {
+                    $('#canvas').drawText({
+                        fillStyle: '#fff',
+                        x: 230, y: 52,
+                        fontSize: '7pt',
+                        fontFamily: 'Verdana',
+                        text: this.current.code,
+                        fromCenter: false,
+                    });
+                }
+            });
         },
         downloadCanvas: function() {
             let downloadLink = document.createElement('a');
@@ -1311,7 +1314,6 @@ var vm = new Vue({
         this.scrollPreviewCtxOver.imageSmoothingEnabled = false;
         this.ctx.fillBitmapTextDraw = this.fillBitmapTextDraw;
         this.ctx.bitmapTextDims = this.bitmapTextDims;
-        this.drawRedPattern();
 
         $.get('/data/fonts.json', (data)=>{
             vm.fontList = data;

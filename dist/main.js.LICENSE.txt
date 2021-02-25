@@ -28,9 +28,3 @@
  *
  * Date: 2020-05-04T22:49Z
  */
-
-/**
- * @license jCanvas v21.0.1
- * Copyright 2017 Caleb Evans
- * Released under the MIT license
- */
