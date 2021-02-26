@@ -259,8 +259,37 @@ hr {
     bottom: 8px;
     left: 8px;
 }
-#scrollButton.animated {
-    transition: transform .2s ease-out;
+#scrollButton {
+    position: relative;
+    cursor: pointer;
+    display: flex;
+}
+#scrollButton i {
+    position: absolute;
+    user-select: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+#scrollButton i:first-of-type {
+    transform: rotate(0);
+}
+#scrollButton i:last-of-type {
+    opacity: 0;
+    transform: scale(0.8) rotate(245deg);
+}
+#scrollButton.morphed i:first-of-type {
+    opacity: 0;
+    transform: rotate(135deg);
+}
+#scrollButton.morphed i:last-of-type {
+    opacity: 1;
+    transform: scale(1) rotate(1turn);
+}
+
+.mdc-fab {
+    position: fixed !important;
+    z-index: 1;
+    right: 2rem;
+    bottom: 1rem;
 }
 
 /* slider */

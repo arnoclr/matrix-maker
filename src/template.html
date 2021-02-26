@@ -146,6 +146,15 @@
             </ui-dialog-content>
         </ui-dialog>
 
+        <!-- new dest dialog -->
+        <ui-dialog v-model="newDialogOpen" @close="writeUrl();" mask-closable>
+            <ui-dialog-title>Create new destination</ui-dialog-title>
+            <ui-dialog-content>
+                <ui-textfield outlined v-model="addDestCode" input-type="number" min="0" max="999">Code</ui-textfield>
+                <ui-button outlined :disabled="addDestCode > 999" @click="addDest(addDestCode);newDialogOpen = false">create</ui-button>
+            </ui-dialog-content>
+        </ui-dialog>
+
         <!-- share dialog -->
         <ui-dialog v-model="shareDialogOpen" @close="writeUrl();" mask-closable>
             <ui-dialog-title>Share current matrix</ui-dialog-title>
@@ -310,7 +319,6 @@
                                 <ui-textfield-icon>search</ui-textfield-icon>
                             </template>
                         </ui-textfield>
-                        <ui-button style="margin:8px" v-show="searchDest.length > 0 && searchDest < 1000" @click="addDest(searchDest)" outlined>add {{ searchDest }}</ui-button>
                         <ui-nav-item
                             :draggable="dest.alternates != undefined"
                             ondragstart="vm.destDragStart(event);"
@@ -358,11 +366,16 @@
             <!-- App content -->
             <ui-drawer-app-content class="demo-app-content" ondragover="vm.hofDragover(event);">
 
+                <ui-fab title="add dest" @click="$balmUI.onOpen('newDialogOpen');writeUrl('new')" icon="add"></ui-fab>
+
                 <!-- hof data -->
                 <section v-shadow="2" v-show="current.code" class="hof-data">
                     <ui-textfield outlined v-model="current.code" input-type="number" style="width:7rem;height:48px;" v-show="!isMobile" disabled>code</ui-textfield>
                     <ui-textfield outlined v-model="current.name" style="height:48px;" required>dest</ui-textfield>
-                    <ui-icon-button title="play / pause scrolling preview" id="scrollButton" @click="scrollButton" v-show="current.scroll" :icon="isScrolling ? 'pause' : 'play_arrow'" style="float:right;margin:0px 4px;"></ui-icon-button>
+                    <ui-icon-button title="play / pause scrolling preview" id="scrollButton" @click="scrollButton" v-show="current.scroll" :class="isScrolling ? 'morphed' : ''" style="float:right;margin:0px 4px;">
+                        <i class="material-icons">play_arrow</i>
+                        <i class="material-icons">pause</i>
+                    </ui-icon-button>
                     <ui-menu-anchor style="float: right;">
                         <ui-icon-button @click="$balmUI.onOpen('toolsMenuOpen')" icon="more_vert"></ui-icon-button>
                         <ui-menu v-model="toolsMenuOpen" @selected="onSelectedTools">
@@ -679,14 +692,7 @@
                 <!-- Empty selection section -->
                 <section v-show="!current.code" class="empty-state">
                     <ui-icon>touch_app</ui-icon>
-                    <p>Start by select a destination or create it in the side nav. You can also drag and drop hof and backup files on the page.</p>
-                    <ui-textfield input-type="number" max="999" v-model="searchDest" id="search-dest">
-                        add destination
-                        <template #before>
-                            <ui-textfield-icon>add</ui-textfield-icon>
-                        </template>
-                    </ui-textfield>
-                    <ui-button v-show="searchDest.length > 0 && searchDest < 1000" @click="addDest(searchDest)" raised>add {{ searchDest }}</ui-button>
+                    <p>Start by select a destination or create it with plus button. You can also drag and drop hof and backup files on the page.</p>
                 </section>
 
             </ui-drawer-app-content>

@@ -94,6 +94,7 @@ var vm = new Vue({
         iconList,
         downloadMenu: false,
         shareDialogOpen: false,
+        newDialogOpen: false,
         frontDialogOpen: false,
         lineDialogOpen: false,
         sideDialogOpen: false,
@@ -547,22 +548,14 @@ var vm = new Vue({
         },
         scrollButton: function() {
             if(this.isScrolling) {
-                this.scrollButtonAnimation();
+                $('#scrollButton').addClass('morphed');
                 this.isScrolling = false;
                 this.refreshMatrix();
             } else {
-                this.scrollButtonAnimation();
+                $('#scrollButton').removeClass('morphed');
                 this.isScrolling = true;
                 this.renderScroll();
             }
-        },
-        scrollButtonAnimation: function() {
-            $('#scrollButton').removeClass('animated');
-            $('#scrollButton').css({'transform' : 'rotate(-180deg)'});
-            setTimeout(() => {
-                $('#scrollButton').addClass('animated');
-                $('#scrollButton').css({'transform' : 'rotate(0deg)'});
-            }, 200);
         },
 
         // utils
@@ -741,14 +734,14 @@ var vm = new Vue({
         },
         writeUrl: function(segment = false) {
             let a = $('<a style="display:none"></a>');
-            let href = (this.current.index == undefined ? '' : this.current.index) + '/' + (segment ? segment : '');
+            let href = (this.current ? (this.current.index == undefined ? '' : this.current.index) : '') + '/' + (segment ? segment : '');
             a.attr('href', '#' + href);
             $('body').append(a);
             a[0].click();
             a.remove();
         },
         anchorTrigger: function(string) {
-            let modals = ['front', 'line', 'side', 'icons', 'destSettings', 'download', 'licence', 'status', 'scroll'];
+            let modals = ['front', 'line', 'side', 'icons', 'destSettings', 'download', 'licence', 'status', 'scroll', 'new'];
             if(modals.includes(string)) {
                 this.$balmUI.onOpen(string + 'DialogOpen');
             }
@@ -973,6 +966,9 @@ var vm = new Vue({
             this.current = this.dests[index];
             this.alternatesDests = [];
             var codes = [];
+            if(!this.current.code) {
+                this.current.code = prompt('please enter a new code');
+            }
             this.dests.forEach((dest, arrayIndex) => {
                 if(dest != undefined && parseInt(dest.code) == parseInt(vm.current.code) + 1000 * (arrayIndex - index)) {
                     vm.dests[arrayIndex].index = arrayIndex;
@@ -982,9 +978,6 @@ var vm = new Vue({
             });
             this.multiplesDestWithSameName = codes.some((val, i) => codes.indexOf(val) !== i);
             this.dests[index].alternates = this.alternatesDests.length;
-            if(!this.current.code) {
-                this.current.code = prompt('please enter a new code');
-            }
             // import icon base64 value in select if custom icon detected
             if(this.current.front.iconUrlL) {
                 if(this.current.front.iconUrlL.match(/data:image+/)) {
@@ -1332,7 +1325,8 @@ var vm = new Vue({
                     }, 250);
                 }
                 if(anchor[1] != undefined) {
-                    this.anchorTrigger(anchor[1])
+                    let action = anchor[1].split('?').shift();
+                    this.anchorTrigger(action);
                 }
             }
             if(window.matchMedia('only screen and (min-width: 1200px)').matches) {
