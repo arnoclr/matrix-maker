@@ -106,6 +106,7 @@
         <!-- preloader -->
         <div id="preloader">
             <svg class="loader" width="60" height="60" xmlns="http://www.w3.org/2000/svg"><g><ellipse ry="25" rx="25" cy="30" cx="30" stroke-width="5" stroke="#607d8b" fill="none"/></g></svg>
+            <noscript>Javascript is disabled :(</noscript>
             <a href="https://github.com/Aryqs-Ipsum/matrix-maker/issues/new">not working ?</a>
         </div>
 
@@ -150,9 +151,13 @@
         <ui-dialog v-model="newDialogOpen" @close="writeUrl();" mask-closable>
             <ui-dialog-title>Create new destination</ui-dialog-title>
             <ui-dialog-content>
-                <ui-textfield outlined v-model="addDestCode" input-type="number" min="0" max="999">Code</ui-textfield>
-                <ui-button outlined :disabled="addDestCode > 999" @click="addDest(addDestCode);newDialogOpen = false">create</ui-button>
-            </ui-dialog-content>
+                <ui-textfield outlined v-model="addDestCode" input-type="number" min="0" max="999">
+                    Code
+                    <template #after>
+                        <ui-icon-button icon="add" :disabled="addDestCode == '' || addDestCode > 999" @click="addDest(addDestCode);newDialogOpen = false"></ui-icon-button>
+                    </template>
+                </ui-textfield>
+                </ui-dialog-content>
         </ui-dialog>
 
         <!-- share dialog -->
@@ -689,6 +694,24 @@
 
                 </section>
 
+                <!-- web app settings section-->
+                <section v-show="settingsSectionOpen" id="settings">
+                    <ui-icon-button icon="close" @click="settingsSectionOpen = false"></ui-icon-button>
+                    <ui-list>
+                        <ui-item disabled>
+                            <ui-item-text-content>High Contrast</ui-item-text-content>
+                            <ui-item-last-content>
+                                <ui-form-field>
+                                    <ui-switch onclick="vm.saveSettings();" v-model="settings.highContrast"></ui-switch>
+                                </ui-form-field>
+                            </ui-item-last-content>
+                        </ui-item>
+                        <ui-item>
+                            <ui-button @click="resetLocalStorage" style="background-color: var(--mdc-theme-error);" raised>reset local storage</ui-button>
+                        </ui-item>
+                    </ui-list>
+                </section>
+
                 <!-- Empty selection section -->
                 <section v-show="!current.code" class="empty-state">
                     <ui-icon>touch_app</ui-icon>
@@ -700,7 +723,6 @@
     </div>
 
     <link rel="preload" href="https://cdn.jsdelivr.net/npm/balm-ui/dist/balm-ui.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/balm-ui/dist/balm-ui.css"></noscript>
 
 </body>
 

@@ -452,3 +452,14 @@ body, ul, h1, h2, h3, h4, h5, h6, p, a, small, input, span, .mdc-snackbar__label
     float: right;
     margin-top: 8px;
 }
+
+/* settings section */
+#settings {
+    position: fixed;
+    height: 100vh;
+    width: 100vw;
+    top: 0;
+    left: 0;
+    background-color: #fff;
+    z-index: 7;
+}

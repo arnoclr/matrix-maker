@@ -1,12 +1,14 @@
 import $ from "jquery";
 import Vue from 'vue';
-import BalmUI from 'balm-ui'; // Official Google Material Components
-import BalmUIPlus from 'balm-ui/dist/balm-ui-plus'; // BalmJS Team Material Components
 
 import './style.css';
 
+import BalmUI from 'balm-ui'; // Official Google Material Components
+import BalmUIPlus from 'balm-ui/dist/balm-ui-plus'; // BalmJS Team Material Components
+
 Vue.use(BalmUI); // Mandatory
 Vue.use(BalmUIPlus); // Optional
+
 Vue.config.productionTip = false
 
 const iconList = [
@@ -106,6 +108,7 @@ var vm = new Vue({
         statusDialogOpen: false,
         licenceDialogOpen: false,
         presentationDialogOpen: false,
+        settingsSectionOpen: false,
         actualSlide: 0,
         toolsMenuOpen: false,
         shurl: null,
@@ -127,7 +130,10 @@ var vm = new Vue({
         progressAltIndex: 0,
         fileOnDrop: false,
         isMobile: window.matchMedia('only screen and (max-width: 618px)').matches,
-        lastIndex:0
+        lastIndex: 0,
+        settings: {
+            highContrast: false,
+        }
     },
     methods: {
         // Matrix
@@ -636,6 +642,21 @@ var vm = new Vue({
                 b: parseInt(result[3], 16)
             } : null;
         },
+        resetLocalStorage: function() {
+            this.$confirm('Reset app storage ? this action is irreversible').then(r => {
+                if(r) {
+                    window.localStorage.clear();
+                    window.location.reload();
+                };
+            });
+        },
+        saveSettings: function() {
+            setTimeout(() => {
+                let jsonSettings = JSON.stringify(this.settings);
+                localStorage.setItem('settings', jsonSettings);
+                this.$toast('Settings saved');
+            }, 100);
+        },
         
         // download menu
         onSelected(data) {
@@ -803,15 +824,11 @@ var vm = new Vue({
             };
             if(file.name.match(/(.+)(.json)/)) {
                 this.$confirm('Import json data and delete actual destinations ?').then((r) => {
-                    if (r) {
-                        readerJson.readAsText(file);
-                    }
+                    if (r) readerJson.readAsText(file);
                 })
             } else if(file.name.match(/(.+)(.hof)/)) {
                 this.$confirm('Import hof data and delete actual destinations ?').then((r) => {
-                    if (r) {
-                        readerHof.readAsText(file);
-                    }
+                    if (r) readerHof.readAsText(file);
                 })
             } else {
                 this.$alert('Invalid file format');
@@ -927,9 +944,7 @@ var vm = new Vue({
         },
         removeScroll: function() {
             this.$confirm('Remove scrolling matrix ?').then((r) => {
-                if(r) {
-                    delete this.current.scroll;
-                }
+                if(r) delete this.current.scroll;
             });
         },
         addAlternate: function() {
@@ -1283,6 +1298,8 @@ var vm = new Vue({
             this.$toast(`${jsonImport.code} → ${jsonImport.name} imported`);
             history.pushState("", document.title, window.location.pathname);
         }
+
+        if(localStorage.settings) this.settings = JSON.parse(localStorage.settings);
 
         // define canvas
         this.canvas = document.getElementById("canvas");
