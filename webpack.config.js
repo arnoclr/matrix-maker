@@ -2,6 +2,7 @@ const path = require('path');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
 
 module.exports = {
@@ -43,6 +44,14 @@ module.exports = {
             }
         ],
     },
+    /*optimization: {
+        minimize: true,
+        minimizer: [
+            new CssMinimizerPlugin({
+                test: /\.css$/i,
+            }),
+        ],
+    },*/
     output: {
         filename: '[name].[contenthash].js',
         path: path.resolve(__dirname, 'dist')

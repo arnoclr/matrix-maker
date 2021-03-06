@@ -360,6 +360,12 @@
                             </ui-item-first-content>
                             <ui-item-text-content>Submit icons</ui-item-text-content>
                         </ui-nav-item>
+                        <ui-nav-item draggable="false" @click="openSettings">
+                            <ui-item-first-content>
+                                <ui-icon>settings</ui-icon>
+                            </ui-item-first-content>
+                            <ui-item-text-content>Settings</ui-item-text-content>
+                        </ui-nav-item>
                         <div style="margin:16px;margin-bottom:120px;">
                             <small>matrix codes must be unique, the hof will not work correctly otherwise.</small>
                         </div>
@@ -376,11 +382,7 @@
                 <!-- hof data -->
                 <section v-shadow="2" v-show="current.code" class="hof-data">
                     <ui-textfield outlined v-model="current.code" input-type="number" style="width:7rem;height:48px;" v-show="!isMobile" disabled>code</ui-textfield>
-                    <ui-textfield outlined v-model="current.name" style="height:48px;" required>dest</ui-textfield>
-                    <ui-icon-button title="play / pause scrolling preview" id="scrollButton" @click="scrollButton" v-show="current.scroll" :class="isScrolling ? 'morphed' : ''" style="float:right;margin:0px 4px;">
-                        <i class="material-icons">play_arrow</i>
-                        <i class="material-icons">pause</i>
-                    </ui-icon-button>
+                    <ui-textfield outlined v-model="current.name" style="height:48px;" id="res-tf-c-name" required>dest</ui-textfield>
                     <ui-menu-anchor style="float: right;">
                         <ui-icon-button @click="$balmUI.onOpen('toolsMenuOpen')" icon="more_vert"></ui-icon-button>
                         <ui-menu v-model="toolsMenuOpen" @selected="onSelectedTools">
@@ -434,6 +436,10 @@
                             </ui-menuitem>
                         </ui-menu>
                     </ui-menu-anchor>
+                    <ui-icon-button title="play / pause scrolling preview" id="scrollButton" @click="scrollButton" v-show="current.scroll" :class="isScrolling ? 'morphed' : ''" style="float:right;margin:0px 4px;">
+                        <i class="material-icons">play_arrow</i>
+                        <i class="material-icons">pause</i>
+                    </ui-icon-button>
                 </section>
 
                 <!-- Edit current matrix section -->
@@ -476,7 +482,7 @@
                     <div style="position:relative">
                         <h4 style="margin-bottom:0">Alternating matrix</h4>
                         <p style="margin-top:0">loop over all frames with 2 seconds of delay</p>
-                        <div class="btn-container" style="position:absolute;top:0;right:0">
+                        <div class="btn-container" id="res-btn-ctn" style="position:absolute;top:0;right:0">
                             <ui-button icon="add" @click="addAlternate()" outlined>add</ui-button>
                             <ui-button icon="play_arrow" @click="previewAlternate();writeUrl('preview')" :disabled="current.alternates < 2" raised>preview</ui-button>
                         </div>
@@ -487,9 +493,8 @@
                                 <a  @click="selectCurrent(dest.index)"
                                     :href="'#' + dest.index"
                                     style="text-decoration: none;">
-                                    <ui-card outlined
-                                            :class="(current.code == dest.code) ? 'active-card-alt' : ''">
-                                        <ui-card-content style="padding: 8px 12px;">
+                                    <ui-card outlined>
+                                        <ui-card-content :class="(current.code == dest.code) ? 'active-card-alt card-alt' : 'card-alt'">
                                             <h2 style="margin:0">{{ index }}<span style="color:grey;font-weight:400;"> - {{ dest.code >= 1000 ? dest.code.toString().substr(1) : dest.code }}</span></h2>
                                             <p class="truncate" style="margin:0">{{ dest.front.text }}</p>
                                         </ui-card-content>
@@ -696,13 +701,16 @@
 
                 <!-- web app settings section-->
                 <section v-show="settingsSectionOpen" id="settings">
-                    <ui-icon-button icon="close" @click="settingsSectionOpen = false"></ui-icon-button>
+                    <ui-top-app-bar :nav-icon="false" v-shadow="4" id="settings-tb">
+                        <ui-icon-button icon="arrow_backward" @click="openSettings(false)"></ui-icon-button>
+                        <span>Settings</span>
+                    </ui-top-app-bar>
                     <ui-list>
                         <ui-item disabled>
                             <ui-item-text-content>High Contrast</ui-item-text-content>
                             <ui-item-last-content>
                                 <ui-form-field>
-                                    <ui-switch onclick="vm.saveSettings();" v-model="settings.highContrast"></ui-switch>
+                                    <ui-switch disabled onclick="vm.saveSettings();" v-model="settings.highContrast"></ui-switch>
                                 </ui-form-field>
                             </ui-item-last-content>
                         </ui-item>

@@ -650,6 +650,15 @@ var vm = new Vue({
                 };
             });
         },
+        openSettings: function(open = true) {
+            if(open) {
+                this.writeUrl('settings');
+                this.settingsSectionOpen = true;
+            } else {
+                this.writeUrl();
+                this.settingsSectionOpen = false;
+            }
+        },
         saveSettings: function() {
             setTimeout(() => {
                 let jsonSettings = JSON.stringify(this.settings);
@@ -775,6 +784,11 @@ var vm = new Vue({
                 case 'share':
                     setTimeout(() => {
                         this.shareCurrent();
+                    }, 1000);
+                    break;
+                case 'settings':
+                    setTimeout(() => {
+                        this.openSettings();
                     }, 1000);
                     break;
             }
