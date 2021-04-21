@@ -68,23 +68,23 @@
     }
     .loader ellipse {
         stroke-dasharray:10, 9999;
-        -webkit-animation:load 2s cubic-bezier(0.8,0.25,0.25,0.9) infinite, spin 2s linear infinite;
-        -webkit-transform-origin:center;
+        animation:load 2s cubic-bezier(0.8,0.25,0.25,0.9) infinite, spin 2s linear infinite;
+        transform-origin:center;
     }
-    @-webkit-keyframes load {
+    @keyframes load {
         50% {
             stroke-dasharray:140;
             stroke-dashoffset:0;
-            -webkit-transform:rotateZ(0deg);
+            transform:rotateZ(0deg);
         }
         100% {
             stroke-dasharray:146;
             stroke-dashoffset:-156;
         }
     }
-    @-webkit-keyframes spin {
+    @keyframes spin {
         to {
-            -webkit-transform:rotateZ(360deg);
+            transform:rotateZ(360deg);
         }
     }
     @keyframes fadeIn {
@@ -730,7 +730,7 @@
         </div>
     </div>
 
-    <link rel="preload" href="https://cdn.jsdelivr.net/npm/balm-ui/dist/balm-ui.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/balm-ui@8.22.0/dist/balm-ui.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
 
 </body>
 
