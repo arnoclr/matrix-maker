@@ -156,8 +156,8 @@
                     Code
                 </ui-textfield>
                 <p></p>
-                <ui-button raised :disabled="dests.hasOwnProperty(addDestCode) || addDestCode == '' || addDestCode > 999" @click="addDest(addDestCode);newDialogOpen = false">create</ui-button>
-                <div v-if="dests.hasOwnProperty(addDestCode)" class="disclaimer mt">
+                <ui-button raised :disabled="dests.find(x => x.code === addDestCode) || addDestCode == '' || addDestCode > 999" @click="addDest(addDestCode);newDialogOpen = false">create</ui-button>
+                <div v-if="dests.find(x => x.code === addDestCode)" class="disclaimer mt">
                     <ui-icon>error</ui-icon>
                     <p>do not use the same code for multiples dests, this may cause a bug in the game.</p>
                 </div>
