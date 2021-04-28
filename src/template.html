@@ -150,14 +150,18 @@
         <!-- new dest dialog -->
         <ui-dialog v-model="newDialogOpen" @close="writeUrl();" mask-closable>
             <ui-dialog-title>Create new destination</ui-dialog-title>
-            <ui-dialog-content>
+            <ui-dialog-content style="width: 360px;">
+                <p>The code is an identifier used to select dests in game. The line index can be chosen separately.</p>
                 <ui-textfield outlined v-model="addDestCode" input-type="number" min="0" max="999">
                     Code
-                    <template #after>
-                        <ui-icon-button icon="add" :disabled="addDestCode == '' || addDestCode > 999" @click="addDest(addDestCode);newDialogOpen = false"></ui-icon-button>
-                    </template>
                 </ui-textfield>
-                </ui-dialog-content>
+                <p></p>
+                <ui-button raised :disabled="dests.hasOwnProperty(addDestCode) || addDestCode == '' || addDestCode > 999" @click="addDest(addDestCode);newDialogOpen = false">create</ui-button>
+                <div v-if="dests.hasOwnProperty(addDestCode)" class="disclaimer mt">
+                    <ui-icon>error</ui-icon>
+                    <p>do not use the same code for multiples dests, this may cause a bug in the game.</p>
+                </div>
+            </ui-dialog-content>
         </ui-dialog>
 
         <!-- share dialog -->
