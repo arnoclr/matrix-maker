@@ -112,6 +112,7 @@ var vm = new Vue({
         actualSlide: 0,
         toolsMenuOpen: false,
         shurl: null,
+        shurlcb: false,
         qrurl: null,
         hofName: '',
         autosave: false,
@@ -1124,6 +1125,7 @@ var vm = new Vue({
             });
         },
         writeShareUrl: function() {
+            this.shurlcb = false;
             this.qrurl = 'https://api.qrserver.com/v1/create-qr-code/?data=' + this.shurl;
         },
         autosavePersist: function() {

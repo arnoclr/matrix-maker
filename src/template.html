@@ -171,7 +171,7 @@
                 <img height="250" width="250" class="loading" :src="qrurl" alt="qr code">
                 <hr>
                 <p>Open this link in a new browser to import current matrix.</p>
-                <ui-textfield outlined v-model="shurl" style="width:100%;margin-bottom:16px;">
+                <ui-textfield outlined v-model="shurl" @focus="$event.target.select()" style="width:100%;margin-bottom:16px;">
                     {{ current.name }} matrix link
                     <template #after>
                         <ui-textfield-icon title="Copy to clipboard" aria-describedby="clipboard copy"
@@ -179,7 +179,7 @@
                     </template>
                 </ui-textfield>
                 <ui-form-field v-if="shurl" v-show="!shurl.includes('bit.ly')">
-                    <ui-checkbox onclick="vm.reduceShareUrl();" input-id="checkbox-reduce-link"></ui-checkbox>
+                    <ui-checkbox onclick="vm.reduceShareUrl();" input-id="checkbox-reduce-link" v-model="shurlcb"></ui-checkbox>
                     <label for="checkbox-reduce-link">Generate reduced link</label>
                 </ui-form-field>
             </ui-dialog-content>
