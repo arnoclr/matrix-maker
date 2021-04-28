@@ -494,13 +494,13 @@ var vm = new Vue({
                     this.writeSideText();
                     break;
             }
-            this.writeIcon();
             this.drawRedPattern();
             this.renderCanvas(this.ctx, this.previewCtx);
-            if(this.current.scroll && !universalPreview) {
-                this.writeScrollText();
-            }
             if(!textOnly) {
+                this.writeIcon();
+                if(this.current.scroll && !universalPreview) {
+                    this.writeScrollText();
+                }
                 this.saveCurrentIntoDests();
                 if(this.autosave) {
                     this.saveDestsInLocalStorage();
