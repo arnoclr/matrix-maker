@@ -348,7 +348,8 @@
                             <ui-icon v-if="!ondrag" class="align draggable drag-icon-hide-class" style="position:absolute;right:4px">drag_handle</ui-icon>
                         </ui-nav-item>
                         <hr>
-                        <ui-nav-item draggable="false" href="https://github.com/Aryqs-Ipsum/matrix-maker/issues/new" target="_blank">
+                        <ui-nav-item draggable="false" target="_blank"
+                            :href="'https://github.com/Aryqs-Ipsum/matrix-maker/issues/new?body=' + encodeURIComponent('<!-- describe the problem encountered below -->\n\n<!-- Steps to reproduce the bug -->\n\n<!-- Please include a screenshot (photo or video) -->\n\n<!-- This string represent your actual dest, please don\'t remove it -->\n```json\n' + JSON.stringify(current) + '\n```')">
                             <ui-item-first-content>
                                 <ui-icon>feedback</ui-icon>
                             </ui-item-first-content>
