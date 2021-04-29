@@ -116,9 +116,10 @@
         <!-- dropzone -->
         <div id="dropzone" v-show="fileOnDrop" @dragover.prevent @dragleave="hofDragleave" @drop="hofDrop">
             <section class="empty-state">
-                <ui-icon>backup</ui-icon>
-                <p>Drop hof file or kpp maker archive to import existing destinations</p>
-                <small>supported formats : .hof, .json</small>
+                <ui-icon translate="no">backup</ui-icon>
+                <p translate-fr="Glissez déposez un fichier hof ou une archive au format json pour importer des girouettes"
+                >Drop hof file or kpp maker archive to import existing destinations</p>
+                <small><span translate-fr="formats supportés">supported formats</span> : .hof, .json</small>
             </section>
         </div>
 
@@ -163,28 +164,32 @@
 
         <!-- new dest dialog -->
         <ui-dialog v-model="newDialogOpen" @close="writeUrl();" mask-closable>
-            <ui-dialog-title>Create new destination</ui-dialog-title>
+            <ui-dialog-title translate-fr="Ajouter une nouvelle destination">Create new destination</ui-dialog-title>
             <ui-dialog-content style="width: 360px;">
-                <p>The code is an identifier used to select dests in game. The line index can be chosen separately.</p>
+                <p translate-fr="Ce code est un identifiant pour selectionner les girouettes en jeu, l'indice de ligne présent sur la girouette peut être choisi indépendament."
+                >The code is an identifier used to select dests in game. The line index can be chosen separately.</p>
                 <ui-textfield outlined v-model="addDestCode" input-type="number" min="0" max="999">
                     Code
                 </ui-textfield>
                 <p></p>
-                <ui-button raised :disabled="dests.find(x => x.code === addDestCode) || addDestCode == '' || addDestCode > 999" @click="addDest(addDestCode);newDialogOpen = false">create</ui-button>
+                <ui-button :disabled="dests.find(x => x.code === addDestCode) || addDestCode == '' || addDestCode > 999" @click="addDest(addDestCode);newDialogOpen = false"
+                    raised translate-fr="Créer">create</ui-button>
                 <div v-if="dests.find(x => x.code === addDestCode)" class="disclaimer mt">
-                    <ui-icon>error</ui-icon>
-                    <p>do not use the same code for multiples dests, this may cause a bug in the game.</p>
+                    <ui-icon translate="no">error</ui-icon>
+                    <p translate-fr="N'utilisez pas le même code pour plusieurs girouettes, cela causera des bugs dans le jeu."
+                    >do not use the same code for multiples dests, this may cause a bug in the game.</p>
                 </div>
             </ui-dialog-content>
         </ui-dialog>
 
         <!-- share dialog -->
         <ui-dialog v-model="shareDialogOpen" @close="writeUrl();" mask-closable>
-            <ui-dialog-title>Share current matrix</ui-dialog-title>
+            <ui-dialog-title translate-fr="Partager la girouette actuelle">Share current matrix</ui-dialog-title>
             <ui-dialog-content style="max-width:298px;">
                 <img height="250" width="250" class="loading" :src="qrurl" alt="qr code">
                 <hr>
-                <p>Open this link in a new browser to import current matrix.</p>
+                <p translate-fr="Ouvrez ce lien dans un autre navigateur pour importer cette girouette."
+                >Open this link in a new browser to import current matrix.</p>
                 <ui-textfield outlined v-model="shurl" @focus="$event.target.select()" style="width:100%;margin-bottom:16px;">
                     {{ current.name }} matrix link
                     <template #after>
@@ -194,7 +199,8 @@
                 </ui-textfield>
                 <ui-form-field v-if="shurl" v-show="!shurl.includes('bit.ly')">
                     <ui-checkbox onclick="vm.reduceShareUrl();" input-id="checkbox-reduce-link" v-model="shurlcb"></ui-checkbox>
-                    <label for="checkbox-reduce-link">Generate reduced link</label>
+                    <label for="checkbox-reduce-link"
+                    translate-fr="Générer un lien raccourci">Generate reduced link</label>
                 </ui-form-field>
             </ui-dialog-content>
         </ui-dialog>
@@ -204,12 +210,13 @@
             <ui-dialog-content>
                 <section class="illustration">
                     <ui-icon class="purple600">get_app</ui-icon>
-                    <h4>Last step</h4>
-                    <p>Select a hof name file</p>
+                    <h4 translate-fr="Dernière étape">Last step</h4>
+                    <p translate-fr="Choisissez un nom pour votre hof">Select a hof name file</p>
                     <img loading="lazy" height="363" width="335" src="./data/illustrations/package.png">
                 </section>
                 <ui-textfield outlined v-model="hofName">hof name</ui-textfield>
-                <ui-button raised class="modal-float-right" @click="generateHof()" :disabled="hofName == ''">Download</ui-button>
+                <ui-button raised class="modal-float-right" @click="generateHof()" :disabled="hofName == ''"
+                    translate-fr="Télécharger">Download</ui-button>
             </ui-dialog-content>
         </ui-dialog>
 
@@ -243,13 +250,13 @@
                 <ui-nav>
                     <ui-nav-item href="https://omsistuff.ga/?utm_source=kpp_maker&utm_medium=link&utm_campaign=beta">
                         <ui-item-first-content>
-                            <ui-icon>palette</ui-icon>
+                            <ui-icon translate="no">palette</ui-icon>
                         </ui-item-first-content>
                         <ui-item-text-content>Repaint library</ui-item-text-content>
                     </ui-nav-item>
                     <ui-nav-item href="https://github.com/Aryqs-Ipsum/matrix-maker">
                         <ui-item-first-content>
-                            <ui-icon>
+                            <ui-icon translate="no">
                                 <svg width="24" height="24" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg"><path d="M 500 0C 500 0 500 0 500 0C 776 0 1000 224 1000 500C 1000 720 857 908 659 974C 634 979 625 963 625 950C 625 933 626 879 626 813C 626 766 610 736 592 720C 703 708 820 665 820 473C 820 418 801 374 769 339C 774 327 791 275 764 207C 764 207 722 193 626 258C 586 247 544 241 501 241C 459 241 416 247 376 258C 281 194 239 207 239 207C 211 275 229 327 234 339C 202 374 183 419 183 473C 183 665 299 708 410 720C 396 733 383 755 378 787C 349 800 278 821 233 746C 223 731 195 694 156 695C 114 695 139 718 156 728C 178 740 202 784 208 798C 218 826 250 880 376 857C 376 899 376 938 376 950C 376 963 367 978 342 974C 143 908 0 721 0 500C 0 224 224 0 500 0"/></svg>
                             </ui-icon>
                         </ui-item-first-content>
@@ -257,7 +264,7 @@
                     </ui-nav-item>
                     <ui-nav-item href="https://kpp.genav.ch/discord">
                         <ui-item-first-content>
-                            <ui-icon>
+                            <ui-icon translate="no">
                                 <svg width="24" height="24" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg"><path d=" M 386 203C 387 203 388 203 388 203C 388 203 395 212 395 212C 267 248 209 304 209 304C 209 304 224 296 250 284C 326 250 386 241 411 239C 415 238 419 238 423 238C 466 232 515 231 566 236C 633 244 705 264 779 304C 779 304 723 251 603 214C 603 214 612 203 612 203C 612 203 709 201 811 277C 811 277 913 462 913 689C 913 689 853 792 697 797C 697 797 671 767 650 740C 743 714 778 656 778 656C 749 675 721 688 697 697C 661 712 627 722 594 728C 526 740 464 737 411 727C 371 719 336 708 307 697C 291 690 273 682 255 673C 253 671 251 670 249 669C 248 668 247 668 246 667C 233 660 226 655 226 655C 226 655 260 711 350 738C 329 765 303 797 303 797C 146 792 87 689 87 689C 87 462 189 277 189 277C 284 206 375 203 386 203C 386 203 386 203 386 203M 368 467C 327 467 296 502 296 545C 296 588 328 624 368 624C 408 624 440 588 440 545C 441 502 408 467 368 467C 368 467 368 467 368 467M 626 467C 586 467 554 502 554 545C 554 588 586 624 626 624C 666 624 698 588 698 545C 698 502 666 467 626 467C 626 467 626 467 626 467"/></svg>
                             </ui-icon>
                         </ui-item-first-content>
@@ -265,7 +272,7 @@
                     </ui-nav-item>
                     <ui-nav-item href="https://www.instagram.com/_genav/">
                         <ui-item-first-content>
-                            <ui-icon>
+                            <ui-icon translate="no">
                                 <svg width="24" height="24" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg"><path d="M 503 25C 631 25 647 26 697 28C 748 30 782 38 812 50C 843 62 870 78 896 105C 922 131 938 157 950 188C 962 218 970 253 972 303C 975 353 975 369 975 498C 975 626 975 642 972 693C 970 743 962 777 950 807C 938 838 922 865 896 891C 870 917 843 934 812 946C 782 957 748 965 698 968C 647 970 631 970 503 970C 374 970 358 970 308 968C 257 965 223 957 193 946C 162 934 136 917 109 891C 83 865 67 838 55 807C 43 777 35 743 33 693C 31 642 30 626 30 498C 30 369 31 353 33 303C 35 253 43 218 55 188C 67 157 83 131 109 105C 136 78 162 62 193 50C 223 38 258 30 308 28C 358 26 374 25 503 25C 503 25 503 25 503 25M 460 110C 372 110 355 111 312 113C 266 115 241 123 224 129C 202 138 186 148 170 165C 153 181 143 197 134 219C 128 236 120 261 118 307C 116 356 115 371 115 498C 115 624 116 639 118 689C 120 735 128 760 134 776C 143 798 153 814 170 831C 186 847 202 857 224 866C 241 872 266 880 312 882C 362 885 377 885 503 885C 629 885 644 885 694 882C 740 880 765 873 781 866C 804 857 819 847 836 831C 852 814 863 798 871 776C 878 760 885 735 887 689C 890 639 890 624 890 498C 890 372 890 357 887 307C 885 261 878 236 871 219C 863 197 852 181 836 165C 819 148 804 138 781 129C 765 123 740 115 694 113C 644 111 629 110 503 110C 487 110 473 110 460 110C 460 110 460 110 460 110M 755 189C 786 189 812 214 812 246C 812 277 786 302 755 302C 724 302 698 277 698 246C 698 214 724 189 755 189C 755 189 755 189 755 189M 503 255C 637 255 745 364 745 498C 745 632 637 740 503 740C 369 740 260 632 260 498C 260 364 369 255 503 255C 503 255 503 255 503 255M 345 498C 345 585 416 655 503 655C 590 655 660 585 660 498C 660 411 590 340 503 340C 416 340 345 411 345 498C 345 498 345 498 345 498"/></svg>
                             </ui-icon>
                         </ui-item-first-content>
@@ -274,19 +281,20 @@
                     <ui-divider>Attributions</ui-divider>
                     <ui-nav-item href="https://fonts.google.com/specimen/Poppins">
                         <ui-item-first-content>
-                            <ui-icon>format_size</ui-icon>
+                            <ui-icon translate="no">format_size</ui-icon>
                         </ui-item-first-content>
                         <ui-item-text-content>Google fonts</ui-item-text-content>
                     </ui-nav-item>
                     <ui-nav-item href="http://www.freepik.com">
                         <ui-item-first-content>
-                            <ui-icon>wallpaper</ui-icon>
+                            <ui-icon translate="no">wallpaper</ui-icon>
                         </ui-item-first-content>
                         <ui-item-text-content>Designed by macrovector / Freepik</ui-item-text-content>
                     </ui-nav-item>
                 </ui-nav>
                 <div style="padding:8px">
-                    <p>Site develloped by Adam Mathieson and Arno Cellarier. Fonts copyright their respective owners</p>
+                    <p translate-fr="Site dévellopé par Adam Mathieson et Arno Cellarier."
+                    >Site develloped by Adam Mathieson and Arno Cellarier. Fonts copyright their respective owners</p>
                     <small>version {{ appData.version }} <a href="#!" @click="debugInfos">debug infos</a></small>
                 </div>
             </ui-dialog-content>
@@ -328,18 +336,19 @@
                         </template>
                     </ui-drawer-subtitle>
                     <ui-switch input-id="toggle-autosave" v-tooltip="'toggle autosave'" aria-describedby="toggle autosave" v-model="autosave" @change="autosavePersist()" style="color: #fff;margin-top:12px;"></ui-switch>
-                    <label for="toggle-autosave">Autosave</label>
+                    <label for="toggle-autosave" translate-fr="Sauvegarde auto">Autosave</label>
                     <div v-if="multiplesDestWithSameName" class="disclaimer mt">
-                        <ui-icon>error</ui-icon>
-                        <p>2 or more dests have the same code</p>
+                        <ui-icon translate="no">error</ui-icon>
+                        <p translate-fr="Plusieurs destinations ont le même code">2 or more dests have the same code</p>
                     </div>
                 </ui-drawer-header>
                 <ui-drawer-content id="dest-container">
                     <ui-nav>
-                        <ui-textfield style="width:95%;margin-left:8px;" input-type="search" v-model="searchDest" id="search-dest">
-                            search or add
+                        <ui-textfield style="width:95%;margin-left:8px;" input-type="search" 
+                            v-model="searchDest" id="search-dest">
+                            Search
                             <template #before>
-                                <ui-textfield-icon>search</ui-textfield-icon>
+                                <ui-textfield-icon translate="no">search</ui-textfield-icon>
                             </template>
                         </ui-textfield>
                         <ui-nav-item
@@ -369,24 +378,25 @@
                         <ui-nav-item draggable="false" target="_blank"
                             :href="'https://github.com/Aryqs-Ipsum/matrix-maker/issues/new?body=' + encodeURIComponent('<!-- describe the problem encountered below -->\n\n<!-- Steps to reproduce the bug -->\n\n<!-- Please include a screenshot (photo or video) -->\n\n<!-- This string represent your actual dest, please don\'t remove it -->\n```json\n' + JSON.stringify(current) + '\n```')">
                             <ui-item-first-content>
-                                <ui-icon>feedback</ui-icon>
+                                <ui-icon translate="no">feedback</ui-icon>
                             </ui-item-first-content>
-                            <ui-item-text-content>Bug report</ui-item-text-content>
+                            <ui-item-text-content translate-fr="Signaler un bug">Bug report</ui-item-text-content>
                         </ui-nav-item>
                         <ui-nav-item draggable="false" href="https://forms.gle/DcYYG9u63hQnE8e67" target="_blank">
                             <ui-item-first-content>
-                                <ui-icon>cloud_upload</ui-icon>
+                                <ui-icon translate="no">cloud_upload</ui-icon>
                             </ui-item-first-content>
-                            <ui-item-text-content>Submit icons</ui-item-text-content>
+                            <ui-item-text-content translate-fr="Proposer des icônes">Submit icons</ui-item-text-content>
                         </ui-nav-item>
                         <ui-nav-item draggable="false" @click="openSettings">
                             <ui-item-first-content>
-                                <ui-icon>settings</ui-icon>
+                                <ui-icon translate="no">settings</ui-icon>
                             </ui-item-first-content>
-                            <ui-item-text-content>Settings</ui-item-text-content>
+                            <ui-item-text-content translate-fr="Paramètres">Settings</ui-item-text-content>
                         </ui-nav-item>
                         <div style="margin:16px;margin-bottom:120px;">
-                            <small>matrix codes must be unique, the hof will not work correctly otherwise.</small>
+                            <small translate-fr="Les codes de girouettes doivent être uniques, des bugs dans le jeu peuvent survenir sinon"
+                            >matrix codes must be unique, the hof will not work correctly otherwise.</small>
                         </div>
                     </ui-nav>
                     <ui-icon-button v-tooltip="'Terms and attributions'" aria-describedby="details" style="position:absolute;bottom:72px;left:8px" @click="$balmUI.onOpen('licenceDialogOpen');writeUrl('licence')" icon="info"></ui-icon-button>
@@ -407,51 +417,51 @@
                         <ui-menu v-model="toolsMenuOpen" @selected="onSelectedTools">
                             <ui-menuitem :disabled="current.code > 999">
                                 <ui-menuitem-icon>
-                                    <ui-icon>share</ui-icon>
+                                    <ui-icon translate="no">share</ui-icon>
                                 </ui-menuitem-icon>
-                                <ui-menuitem-text>share current matrix</ui-menuitem-text>
+                                <ui-menuitem-text translate-fr="Partager la girouette">share current matrix</ui-menuitem-text>
                             </ui-menuitem>
                             <ui-menuitem>
                                 <ui-menuitem-icon>
                                     <ui-icon id="btn-spinning">refresh</ui-icon>
                                 </ui-menuitem-icon>
-                                <ui-menuitem-text>refresh render</ui-menuitem-text>
+                                <ui-menuitem-text translate-fr="Rafraîchir le rendu">refresh render</ui-menuitem-text>
                             </ui-menuitem>
                             <ui-menuitem>
                                 <ui-menuitem-icon>
-                                    <ui-icon>settings</ui-icon>
+                                    <ui-icon translate="no">settings</ui-icon>
                                 </ui-menuitem-icon>
-                                <ui-menuitem-text>current matrix settings</ui-menuitem-text>
+                                <ui-menuitem-text translate-fr="Paramètres de la girouette">current matrix settings</ui-menuitem-text>
                             </ui-menuitem>
                             <ui-menuitem>
                                 <ui-menuitem-icon>
-                                    <ui-icon>dashboard_customize</ui-icon>
+                                    <ui-icon translate="no">dashboard_customize</ui-icon>
                                 </ui-menuitem-icon>
-                                <ui-menuitem-text>edit icons</ui-menuitem-text>
+                                <ui-menuitem-text translate-fr="Editer les icônes">edit icons</ui-menuitem-text>
                             </ui-menuitem>
                             <ui-menuitem>
                                 <ui-menuitem-icon>
-                                    <ui-icon>animation</ui-icon>
+                                    <ui-icon translate="no">animation</ui-icon>
                                 </ui-menuitem-icon>
                                 <ui-menuitem-text>{{ current.scroll ? 'scrolling settings' : 'add scrolling'}}</ui-menuitem-text>
                             </ui-menuitem>
                             <ui-menuitem>
                                 <ui-menuitem-icon>
-                                    <ui-icon>content_copy</ui-icon>
+                                    <ui-icon translate="no">content_copy</ui-icon>
                                 </ui-menuitem-icon>
-                                <ui-menuitem-text>duplicate current</ui-menuitem-text>
+                                <ui-menuitem-text translate-fr="Dupliquer">duplicate current</ui-menuitem-text>
                             </ui-menuitem>
                             <ui-menuitem>
                                 <ui-menuitem-icon>
-                                    <ui-icon>delete</ui-icon>
+                                    <ui-icon translate="no">delete</ui-icon>
                                 </ui-menuitem-icon>
-                                <ui-menuitem-text>delete</ui-menuitem-text>
+                                <ui-menuitem-text translate-fr="Supprimer">delete</ui-menuitem-text>
                             </ui-menuitem>
                             <ui-menuitem v-show="current.scroll">
                                 <ui-menuitem-icon>
-                                    <ui-icon>motion_photos_off</ui-icon>
+                                    <ui-icon translate="no">motion_photos_off</ui-icon>
                                 </ui-menuitem-icon>
-                                <ui-menuitem-text>non scroll preview</ui-menuitem-text>
+                                <ui-menuitem-text translate-fr="Rendu statique">non scroll preview</ui-menuitem-text>
                             </ui-menuitem>
                         </ui-menu>
                     </ui-menu-anchor>
@@ -468,12 +478,12 @@
                     <ui-dialog v-model="destSettingsDialogOpen" @close="writeUrl()" mask-closable>
                         <ui-dialog-title>Settings for {{ current.code }}</ui-dialog-title>
                         <ui-dialog-content style="max-width: 350px;">
-                            <small>unique id : {{current.index}}</small><br>
-                            <p>Edit dest code</p>
+                            <p translate-fr="Editer le code">Edit dest code</p>
                             <ui-textfield outlined v-model="current.code" input-type="number" style="width:7rem;">code</ui-textfield>
                             <div class="disclaimer mt">
-                                <ui-icon>info</ui-icon>
-                                <p>Do not delete the code entirely. Also, edit code can cause bugs with alternating matrix.</p>
+                                <ui-icon translate="no">info</ui-icon>
+                                <p translate-fr="Ne supprimez pas le code entierement. Aussi, le changement peut provoquer des bugs avec les girouettes alternantes."
+                                >Do not delete the code entirely. Also, edit code can cause bugs with alternating matrix.</p>
                             </div>
                         </ui-dialog-content>
                     </ui-dialog>
@@ -494,16 +504,18 @@
                         </div>
                     </div>
 
-                    <small>You can edit differents parts of the matrix by clicking on it.</small>
+                    <small translate-fr="Vous pouvez éditer les différentes partie de la girouette en cliquant dessus."
+                    >You can edit differents parts of the matrix by clicking on it.</small>
 
                     <!-- alternate -->
                     <hr>
                     <div style="position:relative">
-                        <h4 style="margin-bottom:0">Alternating matrix</h4>
-                        <p style="margin-top:0">loop over all frames with 2 seconds of delay</p>
+                        <h4 style="margin-bottom:0" translate-fr="Girouettes alternantes">Alternating matrix</h4>
+                        <p style="margin-top:0" translate-fr="Défile sur toutes les images avec un délai de 2 secondes"
+                        >loop over all frames with 2 seconds of delay</p>
                         <div class="btn-container" id="res-btn-ctn" style="position:absolute;top:0;right:0">
-                            <ui-button icon="add" @click="addAlternate()" outlined>add</ui-button>
-                            <ui-button icon="play_arrow" @click="previewAlternate();writeUrl('preview')" :disabled="current.alternates < 2" raised>preview</ui-button>
+                            <ui-button icon="add" @click="addAlternate()" translate-fr="ajouter" outlined>add</ui-button>
+                            <ui-button icon="play_arrow" @click="previewAlternate();writeUrl('preview')" :disabled="current.alternates < 2" translate-fr="prévisualisation" raised>preview</ui-button>
                         </div>
                     </div>
                     <ui-grid style="padding:0">
@@ -527,7 +539,7 @@
                     <ui-dialog v-model="scrollDialogOpen" @close="writeUrl()" mask-closable>
                         <ui-dialog-title>
                             Scrolling options
-                            <ui-button v-show="current.scroll" @click="removeScroll" class="dialog-header-btn" icon="delete" unelevated>remove</ui-button>
+                            <ui-button v-show="current.scroll" @click="removeScroll" class="dialog-header-btn" icon="delete" translate-fr="Supprimer" unelevated>remove</ui-button>
                         </ui-dialog-title>
                         <ui-dialog-content>
                             <img width="4096" height="256" src="data/overlayScroll.png" id="overlayScroll" style="display: none;">
@@ -540,21 +552,21 @@
                                 <ui-icon-button title="ajust text height" @click="current.scroll.mt+=1;refreshMatrix()" id="scroll-down-btn" icon="keyboard_arrow_down"></ui-icon-button>
                             </div>
                             <template v-if="current.scroll">
-                                <p>Text options.</p>
+                                <p translate-fr="Options du texte">Text options.</p>
                                 <ui-textfield outlined v-model="current.scroll.text" style="width:100%;margin-bottom:8px;">scroll text</ui-textfield>
-                                <p>Select the sections where the text will scroll.</p>
+                                <p translate-fr="Selectionnez les parties ou le texte va défiler">Select the sections where the text will scroll.</p>
                                 <ui-select outlined v-model="current.scroll.font" :options="fontList" @change="loadFont(current.scroll.font)">font</ui-select>
                                 <ui-form-field>
                                     <ui-checkbox @change="refreshMatrix" v-model="current.scroll.index" input-id="checkbox-scroll-front" value="11"></ui-checkbox>
-                                    <label for="checkbox-scroll-front">front</label>
+                                    <label for="checkbox-scroll-front" translate-fr="avant">front</label>
                                 </ui-form-field>
                                 <ui-form-field>
                                     <ui-checkbox @change="refreshMatrix" v-model="current.scroll.index" input-id="checkbox-scroll-line" value="12"></ui-checkbox>
-                                    <label for="checkbox-scroll-line">side</label>
+                                    <label for="checkbox-scroll-line" translate-fr="coté">side</label>
                                 </ui-form-field>
                                 <ui-form-field>
                                     <ui-checkbox @change="refreshMatrix" v-model="current.scroll.index" input-id="checkbox-scroll-side" value="13"></ui-checkbox>
-                                    <label for="checkbox-scroll-side">line</label>
+                                    <label for="checkbox-scroll-side" translate-fr="ligne">line</label>
                                 </ui-form-field>
                             </template>
                         </ui-dialog-content>
@@ -576,7 +588,7 @@
                             <hr>
                             <p>Skip a line to write on 2 levels, you can edit the fonts for each level individually.</p>
                             <div v-if="current.scroll" class="disclaimer">
-                                <ui-icon>info</ui-icon>
+                                <ui-icon translate="no">info</ui-icon>
                                 <p>The current matrix is scrolling. Consider writing a classic version for non-compatible buses.</p>
                                 <ui-button unelevated @click="refreshMatrix(false, false, true)">view compatibility rendering</ui-button>
                             </div>
@@ -603,7 +615,7 @@
                                 <ui-select outlined v-model="current.line.font" :options="fontList" @change="loadFont(current.line.font)" id="fontSelector"></ui-select>
                                 <p>Line number (you can use letters and the text can be different of the hof code).</p>
                                 <div v-if="current.scroll" class="disclaimer">
-                                    <ui-icon>info</ui-icon>
+                                    <ui-icon translate="no">info</ui-icon>
                                     <p>The current matrix is scrolling. Consider writing a classic version for non-compatible buses.</p>
                                     <ui-button unelevated @click="refreshMatrix(false, false, true)">view compatibility rendering</ui-button>
                                 </div>
@@ -644,7 +656,7 @@
                             </template>
                             <p>Skip a line to write on 2 levels, you can edit the fonts for each level individually.</p>
                             <div v-if="current.scroll" class="disclaimer">
-                                <ui-icon>info</ui-icon>
+                                <ui-icon translate="no">info</ui-icon>
                                 <p>The current matrix is scrolling. Consider writing a classic version for non-compatible buses.</p>
                                 <ui-button unelevated @click="refreshMatrix(false, false, true)">view compatibility rendering</ui-button>
                             </div>
@@ -722,27 +734,38 @@
                 <section v-show="settingsSectionOpen" id="settings">
                     <ui-top-app-bar :nav-icon="false" v-shadow="4" id="settings-tb">
                         <ui-icon-button icon="arrow_backward" @click="openSettings(false)"></ui-icon-button>
-                        <span>Settings</span>
+                        <span translate-fr="Paramètres">Settings</span>
                     </ui-top-app-bar>
                     <ui-list>
                         <ui-item disabled>
-                            <ui-item-text-content>High Contrast</ui-item-text-content>
+                            <ui-item-text-content translate-fr="Contraste élevé">High Contrast</ui-item-text-content>
                             <ui-item-last-content>
                                 <ui-form-field>
                                     <ui-switch disabled onclick="vm.saveSettings();" v-model="settings.highContrast"></ui-switch>
                                 </ui-form-field>
                             </ui-item-last-content>
                         </ui-item>
+                        <div style="margin: 16px">
+                            <ui-select
+                                v-model="selectedLanguage"
+                                :options="settingsLanguages"
+                                @selected="onLangSelect($event)"
+                            >Language</ui-select>
+                            <br><small translate-fr="Le changement de langue n'affecte pas tout le site, certains boutons ou parties resteront en anglais."
+                                >Some parts of site may not be translated.</small>
+                        </div>
                         <ui-item>
-                            <ui-button @click="resetLocalStorage" style="background-color: var(--mdc-theme-error);" raised>reset local storage</ui-button>
+                            <ui-button @click="resetLocalStorage" style="background-color: var(--mdc-theme-error);"
+                                translate-fr="Formatter le stockage du site" raised>reset local storage</ui-button>
                         </ui-item>
                     </ui-list>
                 </section>
 
                 <!-- Empty selection section -->
                 <section v-show="!current.code" class="empty-state">
-                    <ui-icon>touch_app</ui-icon>
-                    <p>Start by select a destination or create it with plus button. You can also drag and drop hof and backup files on the page.</p>
+                    <ui-icon translate="no">touch_app</ui-icon>
+                    <p translate-fr="Commencez par selectionner une destination dans la panneau latéral ou créez-en une avec le bouton plus. Vous pouvez aussi glissez déposer des fichiers hof ou des sauvegardes pour importer plusieurs destinations en même temps."
+                    >Start by select a destination or create it with plus button. You can also drag and drop hof and backup files on the page.</p>
                 </section>
 
             </ui-drawer-app-content>

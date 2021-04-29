@@ -1,6 +1,7 @@
 import $ from "jquery";
 import Vue from 'vue';
 import {changelogParse} from './changelogParser';
+import {translatePage, settingsLanguages} from './translate';
 
 import './style.css';
 
@@ -141,7 +142,9 @@ var vm = new Vue({
         appData: {
             version: '',
             date: ''
-        }
+        },
+        settingsLanguages,
+        selectedLanguage: null
     },
     methods: {
         // Matrix
@@ -728,6 +731,14 @@ var vm = new Vue({
         },
 
         // ui
+        onLangSelect: function(event) {
+            if(!this.settingsSectionOpen) return;
+            localStorage.setItem('lang', event.value);
+            if(event.value == 'auto') {
+                localStorage.removeItem('lang');
+            }
+            window.location.reload();
+        },
         pickerTextColor: function(color) {
             if(color) {
                 var r = parseInt(color.substr(1,2),16);
@@ -1372,6 +1383,7 @@ var vm = new Vue({
             if(window.matchMedia('only screen and (min-width: 1200px)').matches) {
                 $('#nav-menu').click();
             }
+            translatePage();
             $('#preloader').fadeOut();
         });
 
