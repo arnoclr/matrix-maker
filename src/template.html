@@ -147,6 +147,20 @@
             </ui-dialog-content>
         </ui-dialog>
 
+        <!-- changelog dialog -->
+        <ui-dialog :open="changelogDialogOpen" @close="writeUrl();" mask-closable>
+            <ui-dialog-title>New version {{ appData.version }}</ui-dialog-title>
+            <ui-dialog-content>
+                <p>Changelog of {{ appData.date }}</p>
+                <div v-for="(categorie, name) in changelog" :key="name">
+                    {{ name }}
+                    <ul>
+                        <li v-for="(line, index) in categorie" :key="index">{{ line }}</li>
+                    </ul>
+                </div>
+            </ui-dialog-content>
+        </ui-dialog>
+
         <!-- new dest dialog -->
         <ui-dialog v-model="newDialogOpen" @close="writeUrl();" mask-closable>
             <ui-dialog-title>Create new destination</ui-dialog-title>
@@ -273,7 +287,7 @@
                 </ui-nav>
                 <div style="padding:8px">
                     <p>Site develloped by Adam Mathieson and Arno Cellarier. Fonts copyright their respective owners</p>
-                    <small>v2.0a <a href="#!" @click="debugInfos">debug infos</a></small>
+                    <small>version {{ appData.version }} <a href="#!" @click="debugInfos">debug infos</a></small>
                 </div>
             </ui-dialog-content>
         </ui-dialog>

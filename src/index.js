@@ -1,5 +1,6 @@
 import $ from "jquery";
 import Vue from 'vue';
+import {changelogParse} from './changelogParser';
 
 import './style.css';
 
@@ -108,6 +109,7 @@ var vm = new Vue({
         statusDialogOpen: false,
         licenceDialogOpen: false,
         presentationDialogOpen: false,
+        changelogDialogOpen: false,
         settingsSectionOpen: false,
         actualSlide: 0,
         toolsMenuOpen: false,
@@ -134,6 +136,11 @@ var vm = new Vue({
         lastIndex: 0,
         settings: {
             highContrast: false,
+        },
+        changelog: null,
+        appData: {
+            version: '',
+            date: ''
         }
     },
     methods: {
@@ -772,7 +779,7 @@ var vm = new Vue({
             a.remove();
         },
         anchorTrigger: function(string) {
-            let modals = ['front', 'line', 'side', 'icons', 'destSettings', 'download', 'licence', 'status', 'scroll', 'new'];
+            let modals = ['front', 'line', 'side', 'icons', 'destSettings', 'download', 'licence', 'status', 'scroll', 'new', 'changelog'];
             if(modals.includes(string)) {
                 this.$balmUI.onOpen(string + 'DialogOpen');
             }
@@ -1370,8 +1377,8 @@ var vm = new Vue({
 
         // presentation modal
         if(localStorage.presentation == null) {
-            this.$balmUI.onOpen('presentationDialogOpen');
-            localStorage.presentation = true;
+            // this.$balmUI.onOpen('presentationDialogOpen');
+            // localStorage.presentation = true;
         }
 
         // beta disclaimer
@@ -1380,6 +1387,19 @@ var vm = new Vue({
             $('#nav-title-text').text('Kpp Maker - Beta');
             this.$alert('This is a beta version of the site, which may contain bugs. Please report any malfunctions you encounter.');
         }
+
+        // changelog
+        changelogParse('../changelog.md').then(changelog => {
+            let latestClient = localStorage.getItem('changelog')
+            vm.appData.version = changelog.latest
+            vm.appData.date = changelog.date
+            vm.changelog = changelog[changelog.latest]
+            if(latestClient != changelog.latest) {
+                localStorage.setItem('changelog', changelog.latest)
+                vm.writeUrl('changelog')
+                vm.changelogDialogOpen = true
+            }
+        })
 
         //listen for window resize event
         window.addEventListener('resize', function(event) {
