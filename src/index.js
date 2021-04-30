@@ -16,7 +16,7 @@ Vue.config.productionTip = false
 const iconList = [
     {
         label: '',
-        value: null,
+        value: 0,
     },
     {
         label: 'Aeroport',
@@ -94,7 +94,7 @@ var vm = new Vue({
         },
         tinycurrent: {},
         fonts: {},
-        fontList: {},
+        fontList: [],
         iconList,
         downloadMenu: false,
         shareDialogOpen: false,
@@ -947,6 +947,8 @@ var vm = new Vue({
                         line: true,
                         color: '#FF6A00',
                         iconHex: '#FF6A00',
+                        iconUrlL: 0,
+                        iconUrlR: 0,
                     },
                     line: {
                         font: 'luRS12',
@@ -961,6 +963,8 @@ var vm = new Vue({
                         text: (side !== '') ? side : 'SIDE',
                         color: '#FF6A00',
                         iconHex: '#FF6A00',
+                        iconUrlL: 0,
+                        iconUrlR: 0,
                     },
                 }
                 this.dests.push(destBuffer);
@@ -1015,10 +1019,13 @@ var vm = new Vue({
         },
         selectCurrent: async function(index) {
             this.isScrolling = false;
+            if(this.dests[index] == undefined) {
+                return this.$alert(`Destination n°${index} don't exist`)
+            }
             this.current = this.dests[index];
             this.alternatesDests = [];
             var codes = [];
-            if(!this.current.code) {
+            if(this.current.code == undefined) {
                 this.current.code = prompt('please enter a new code');
             }
             this.dests.forEach((dest, arrayIndex) => {
@@ -1105,7 +1112,9 @@ var vm = new Vue({
             }
         },
         pushFont: function(font) {
-            this.fonts[font] = JSON.parse(localStorage[font]);
+            let json = localStorage[font];
+            if(json == undefined || json == 'undefined') return;
+            this.fonts[font] = JSON.parse(json);
             this.refreshMatrix();
             this.$toast(font + ' loaded');
         },

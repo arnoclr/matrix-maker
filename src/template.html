@@ -160,6 +160,7 @@
                     </ul>
                 </div>
             </ui-dialog-content>
+            <ui-button style="display: none;"></ui-button>
         </ui-dialog>
 
         <!-- new dest dialog -->
@@ -206,6 +207,7 @@
                     translate-fr="Générer un lien raccourci">Generate reduced link</label>
                 </ui-form-field>
             </ui-dialog-content>
+            <ui-button style="display: none;"></ui-button>
         </ui-dialog>
 
         <!-- download hof dialog -->
@@ -227,8 +229,9 @@
         <ui-dialog :open="downloadProgressDialogOpen">
             <ui-dialog-content>
                 <p>Generation ...</p>
-                <ui-spinner :progress="(indexdl + 1) / dests.length"></ui-spinner>
+                <ui-spinner v-if="downloadProgressDialogOpen" :progress="(indexdl + 1) / dests.length"></ui-spinner>
             </ui-dialog-content>
+            <ui-button style="display: none;"></ui-button>
         </ui-dialog>
 
         <!-- sync dialog -->
@@ -245,6 +248,7 @@
                     <br><small>We recommend that you enable automatic backup</small>
                 </span>
             </ui-dialog-content>
+            <ui-button style="display: none;"></ui-button>
         </ui-dialog>
 
         <!-- licence dialog -->
@@ -301,6 +305,7 @@
                     <small>version {{ appData.version }} <a href="#!" @click="debugInfos">debug infos</a></small>
                 </div>
             </ui-dialog-content>
+            <ui-button style="display: none;"></ui-button>
         </ui-dialog>
 
         <div class="demo-container">
@@ -355,6 +360,7 @@
                             </template>
                         </ui-textfield>
                         <ui-nav-item
+                            href="javascript:void(0)"
                             :draggable="dest.alternates != undefined"
                             ondragstart="vm.destDragStart(event);"
                             ondragover="vm.destDropOver(event);"
@@ -391,7 +397,7 @@
                             </ui-item-first-content>
                             <ui-item-text-content translate-fr="Proposer des icônes">Submit icons</ui-item-text-content>
                         </ui-nav-item>
-                        <ui-nav-item draggable="false" @click="openSettings">
+                        <ui-nav-item draggable="false" @click="openSettings" href="javascript:void(0)">
                             <ui-item-first-content>
                                 <ui-icon translate="no">settings</ui-icon>
                             </ui-item-first-content>
@@ -489,6 +495,7 @@
                                 >Do not delete the code entirely. Also, edit code can cause bugs with alternating matrix.</p>
                             </div>
                         </ui-dialog-content>
+                        <ui-button style="display: none;"></ui-button>
                     </ui-dialog>
 
                     <!-- preview canvas -->
@@ -573,6 +580,7 @@
                                 </ui-form-field>
                             </template>
                         </ui-dialog-content>
+                        <ui-button style="display: none;"></ui-button>
                     </ui-dialog>
                     
                     <!-- Front text -->
@@ -607,6 +615,7 @@
                                 </ui-form-field>
                             </div>
                         </ui-dialog-content>
+                        <ui-button style="display: none;"></ui-button>
                     </ui-dialog>
 
                     <!-- Line -->
@@ -646,6 +655,7 @@
                                 <label for="checkbox-show-line-front">Show line on front</label>
                             </ui-form-field>
                         </ui-dialog-content>
+                        <ui-button style="display: none;"></ui-button>
                     </ui-dialog>
 
                     <!-- Side text -->
@@ -675,6 +685,7 @@
                                 </ui-form-field>
                             </div>
                         </ui-dialog-content>
+                        <ui-button style="display: none;"></ui-button>
                     </ui-dialog>
 
                     <!-- icons options -->
@@ -693,21 +704,21 @@
                             <ui-grid class="icon-select-grid">
                                 <ui-grid-cell columns="6">
                                     <div class="relative">
-                                        <ui-select outlined v-model="current.front.iconUrlL" :options="iconList" @change="refreshMatrix()" icon="add" withLeadingIcon>Front left</ui-select>
+                                        <ui-select outlined v-model="current.front.iconUrlL" :options="iconList" @change="refreshMatrix()" icon="add" with-leading-icon>Front left</ui-select>
                                         <img :src="current.front.iconUrlL" alt="">
                                     </div>
                                     <div class="relative">
-                                        <ui-select outlined v-model="current.side.iconUrlL" :options="iconList" @change="refreshMatrix()" icon="add" withLeadingIcon>Side left</ui-select>
+                                        <ui-select outlined v-model="current.side.iconUrlL" :options="iconList" @change="refreshMatrix()" icon="add" with-leading-icon>Side left</ui-select>
                                         <img :src="current.side.iconUrlL" alt="">
                                     </div>
                                 </ui-grid-cell>
                                 <ui-grid-cell columns="6">
                                     <div class="relative">
-                                        <ui-select outlined v-model="current.front.iconUrlR" :options="iconList" @change="refreshMatrix()" icon="add" withLeadingIcon>Front right</ui-select>
+                                        <ui-select outlined v-model="current.front.iconUrlR" :options="iconList" @change="refreshMatrix()" icon="add" with-leading-icon>Front right</ui-select>
                                         <img :src="current.front.iconUrlR" alt="">
                                     </div>
                                     <div class="relative">
-                                        <ui-select outlined v-model="current.side.iconUrlR" :options="iconList" @change="refreshMatrix()" icon="add" withLeadingIcon>Side right</ui-select>
+                                        <ui-select outlined v-model="current.side.iconUrlR" :options="iconList" @change="refreshMatrix()" icon="add" with-leading-icon>Side right</ui-select>
                                         <img :src="current.side.iconUrlR" alt="">
                                     </div>
                                 </ui-grid-cell>
@@ -729,17 +740,18 @@
                                 </div>
                             </ui-collapse>
                         </ui-dialog-content>
+                        <ui-button style="display: none;"></ui-button>
                     </ui-dialog>
 
                 </section>
 
                 <!-- web app settings section-->
                 <section v-show="settingsSectionOpen" id="settings">
-                    <ui-top-app-bar :nav-icon="false" v-shadow="4" id="settings-tb">
+                    <ui-top-app-bar content-selector=".settings-content" :nav-icon="false" v-shadow="4" id="settings-tb">
                         <ui-icon-button icon="arrow_backward" @click="openSettings(false)"></ui-icon-button>
                         <span translate-fr="Paramètres">Settings</span>
                     </ui-top-app-bar>
-                    <ui-list>
+                    <ui-list class="settings-content">
                         <ui-item disabled>
                             <ui-item-text-content translate-fr="Contraste élevé">High Contrast</ui-item-text-content>
                             <ui-item-last-content>
