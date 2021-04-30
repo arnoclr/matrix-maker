@@ -217,7 +217,7 @@ var vm = new Vue({
                 };
             }
         },
-        drawIcon: function(iconCode, matrix, showLine, invert = false, hex = '#ffffff') {
+        drawIcon: async function(iconCode, matrix, showLine, invert = false, hex = '#ffffff') {
             if(!iconCode) {
                 return null;
             }
@@ -248,29 +248,27 @@ var vm = new Vue({
             this.iconCanvas.style.height = "32px";
             this.iconCtx.fillStyle = '#000000';
             this.iconCtx.fillRect(0, 0, 32, 32);
-            var img = new Image();
-            img.onload = function() {
-                function drawIconPX(x, y, matrix, hex) {
-                    var canvas = document.getElementById("canvas");
-                    var ctx = canvas.getContext('2d');
-                    ctx.fillStyle = hex;
-                    ctx.fillRect(x, y, 1, 1);
-                }
-                var iconCanvas = document.getElementById("iconLoader");
-                var iconCtx = iconCanvas.getContext('2d');
-                iconCtx.drawImage(img, 1, 1);
-                for (var y = 0; y < 32; y++) {
-                    for (var x = 0; x < 32; x++) {
-                        if ((iconCtx.getImageData(x, y, 1, 1).data)[0] > 128) {
-                            drawIconPX(x + Xoff, y + Yoff, matrix, hex);
-                        } else {
-                            drawIconPX(x + Xoff, y + Yoff, matrix, '#000000');
-                        }
+            const img = await loadImage(iconCode);
+
+            function drawIconPX(x, y, matrix, hex) {
+                var canvas = document.getElementById("canvas");
+                var ctx = canvas.getContext('2d');
+                ctx.fillStyle = hex;
+                ctx.fillRect(x, y, 1, 1);
+            }
+
+            var iconCanvas = document.getElementById("iconLoader");
+            var iconCtx = iconCanvas.getContext('2d');
+            iconCtx.drawImage(img, 1, 1);
+            for (var y = 0; y < 32; y++) {
+                for (var x = 0; x < 32; x++) {
+                    if ((iconCtx.getImageData(x, y, 1, 1).data)[0] > 128) {
+                        drawIconPX(x + Xoff, y + Yoff, matrix, hex);
+                    } else {
+                        drawIconPX(x + Xoff, y + Yoff, matrix, '#000000');
                     }
                 }
-                window.dispatchEvent(new CustomEvent("icon:loaded"));
             }
-            img.src = iconCode;
         },
 
         // text margin
@@ -428,19 +426,20 @@ var vm = new Vue({
         },
 
         // write icon at top and bottom
-        writeIcon: function() {
+        writeIcon: async function() {
             if(this.current.front.iconUrlL) {
-                this.drawIcon(this.current.front.iconUrlL, 0, this.current.front.line, false, this.current.front.iconHex);
+                await this.drawIcon(this.current.front.iconUrlL, 0, this.current.front.line, false, this.current.front.iconHex);
             }
             if(this.current.front.iconUrlR) {
-                this.drawIcon(this.current.front.iconUrlR, 1, this.current.front.line, false, this.current.front.iconHex);
+                await this.drawIcon(this.current.front.iconUrlR, 1, this.current.front.line, false, this.current.front.iconHex);
             }
             if(this.current.side.iconUrlL) {
-                this.drawIcon(this.current.side.iconUrlL, 2, this.current.side.line, false, this.current.side.iconHex);
+                await this.drawIcon(this.current.side.iconUrlL, 2, this.current.side.line, false, this.current.side.iconHex);
             }
             if(this.current.side.iconUrlR) {
-                this.drawIcon(this.current.side.iconUrlR, 3, this.current.side.line, false, this.current.side.iconHex);
+                await this.drawIcon(this.current.side.iconUrlR, 3, this.current.side.line, false, this.current.side.iconHex);
             }
+            return;
         },
         iconSubmitted: function(event) {
             var file = event.target.files[0];
@@ -484,8 +483,12 @@ var vm = new Vue({
                 this.$toast(`File too big (${file.size}), max size allowed : 300o`);
             }
         },
+        // trigger when icons are loaded
+        iconLoaded: function() {
+            this.renderCanvas(this.ctx, this.previewCtx)
+        },
 
-        refreshMatrix: function(textOnly = false, part = false, universalPreview = false) {
+        refreshMatrix: async function(textOnly = false, part = false, universalPreview = false) {
             if(!this.current) return;
             document.querySelector('#btn-spinning').style = 'transform: rotate('+this.rot+'deg)';
             this.rot+=360;
@@ -505,10 +508,8 @@ var vm = new Vue({
                     this.writeSideText();
                     break;
             }
-            this.drawRedPattern();
-            this.renderCanvas(this.ctx, this.previewCtx);
             if(!textOnly) {
-                this.writeIcon();
+                await this.writeIcon();
                 if(this.current.scroll && !universalPreview) {
                     this.writeScrollText();
                 }
@@ -518,6 +519,9 @@ var vm = new Vue({
                 }
                 this.syncStatusRefresh();
             }
+            this.drawRedPattern();
+            this.renderCanvas(this.ctx, this.previewCtx);
+            return;
         },
         refreshUi: function() {
             this.qrurl = '';
@@ -1009,7 +1013,7 @@ var vm = new Vue({
             this.dests.push(currentBuffer);
             this.$toast(`${this.current.code} duplicated`);
         },
-        selectCurrent: function(index) {
+        selectCurrent: async function(index) {
             this.isScrolling = false;
             this.current = this.dests[index];
             this.alternatesDests = [];
@@ -1063,10 +1067,11 @@ var vm = new Vue({
             if(this.current.front.color == null) {
                 this.current.front.color = '#FF4400';
             }
-            this.refreshMatrix();
+            await this.refreshMatrix();
             this.refreshUi();
             document.title = this.current.code + ' → ' + this.current.name;
             this.$theme.secondary = (this.current.line.back) ? (this.current.line.back != '#ffffff' ? this.current.line.back : '#bbbbbb') : '#26c6da';
+            return;
         },
         saveCurrentIntoDests: function() {
             this.dests.splice(this.current.index, 1, this.current);
@@ -1190,17 +1195,15 @@ var vm = new Vue({
                 zip.file("codebook.txt", codeBook.toString());
             });
         },
-        selectCurrentForZip: function (img, scrollImg, zip, hofName) {
+        selectCurrentForZip: async function (img, scrollImg, zip, hofName) {
             if(this.indexdl < this.dests.length) {
-                this.selectCurrent(this.indexdl);
-                setTimeout(() => {
-                    vm.indexdl++;
-                    img.file(vm.dests[vm.indexdl - 1].code + ".png", $("#canvas").getCanvasImage().substr(22), {base64: true});
-                    if(vm.current.scroll) {
-                        scrollImg.file(vm.dests[vm.indexdl - 1].code + ".png", $("#scrollPreviewCanvas").getCanvasImage().substr(22), {base64: true});
-                    }
-                    vm.selectCurrentForZip(img, scrollImg, zip, hofName);
-                }, 150);
+                await this.selectCurrent(this.indexdl);
+                vm.indexdl++;
+                img.file(vm.dests[vm.indexdl - 1].code + ".png", $("#canvas").getCanvasImage().substr(22), {base64: true});
+                if(vm.current.scroll) {
+                    scrollImg.file(vm.dests[vm.indexdl - 1].code + ".png", $("#scrollPreviewCanvas").getCanvasImage().substr(22), {base64: true});
+                }
+                vm.selectCurrentForZip(img, scrollImg, zip, hofName);
             } else {
                 zip.generateAsync({type:"blob"}).then(function(content) {
                     saveFile(`${hofName}-kpp.genav.ch.zip`, "application/zip", content);
@@ -1482,11 +1485,13 @@ const cropCanvas = (sourceCanvas,left,top,width,height) => {
     return destCanvas;
 }
 
-// icons preview rerender after loading
-window.addEventListener("icon:loaded", function() {
-    previewCtx.drawImage(canvas, 0, 0, 1024, 256);
-    previewCtx.drawImage(overlayImage, 0, 0, 1024, 256);
-}, false);
+// ref: https://stackoverflow.com/a/52060802/11651419
+const loadImage = (url) => new Promise((resolve, reject) => {
+    const img = new Image();
+    img.addEventListener('load', () => resolve(img));
+    img.addEventListener('error', (err) => reject(err));
+    img.src = url;
+});
 
 // before unload
 $(window).bind('beforeunload', function(){
