@@ -164,21 +164,24 @@
 
         <!-- new dest dialog -->
         <ui-dialog v-model="newDialogOpen" @close="writeUrl();" mask-closable>
-            <ui-dialog-title translate-fr="Ajouter une nouvelle destination">Create new destination</ui-dialog-title>
+            <ui-dialog-title translate-fr="Ajouter une destination">Create new destination</ui-dialog-title>
             <ui-dialog-content style="width: 360px;">
                 <p translate-fr="Ce code est un identifiant pour selectionner les girouettes en jeu, l'indice de ligne présent sur la girouette peut être choisi indépendament."
                 >The code is an identifier used to select dests in game. The line index can be chosen separately.</p>
-                <ui-textfield outlined v-model="addDestCode" input-type="number" min="0" max="999">
-                    Code
-                </ui-textfield>
+                <section>
+                    <ui-textfield fullwidth v-model="addDestCode" helper-text-id="input-add-dest-helper" input-type="number" 
+                        min="0" max="999" maxlength="3" with-counter>
+                        Code
+                    </ui-textfield>
+                    <ui-textfield-helper
+                        id="input-add-dest-helper" class="invalid"
+                        v-show="dests.find(x => x.code === addDestCode)"
+                        visible>Code is already taken
+                    </ui-textfield-helper>
+                </section>
                 <p></p>
                 <ui-button :disabled="dests.find(x => x.code === addDestCode) || addDestCode == '' || addDestCode > 999" @click="addDest(addDestCode);newDialogOpen = false"
                     raised translate-fr="Créer">create</ui-button>
-                <div v-if="dests.find(x => x.code === addDestCode)" class="disclaimer mt">
-                    <ui-icon translate="no">error</ui-icon>
-                    <p translate-fr="N'utilisez pas le même code pour plusieurs girouettes, cela causera des bugs dans le jeu."
-                    >do not use the same code for multiples dests, this may cause a bug in the game.</p>
-                </div>
             </ui-dialog-content>
         </ui-dialog>
 
@@ -764,7 +767,7 @@
                 <!-- Empty selection section -->
                 <section v-show="!current.code" class="empty-state">
                     <ui-icon translate="no">touch_app</ui-icon>
-                    <p translate-fr="Commencez par selectionner une destination dans la panneau latéral ou créez-en une avec le bouton plus. Vous pouvez aussi glissez déposer des fichiers hof ou des sauvegardes pour importer plusieurs destinations en même temps."
+                    <p translate-fr="Commencez par selectionner une destination dans le panneau latéral ou créez-en une avec le bouton plus. Vous pouvez aussi glissez déposer des fichiers hof ou des sauvegardes pour importer plusieurs destinations en même temps."
                     >Start by select a destination or create it with plus button. You can also drag and drop hof and backup files on the page.</p>
                 </section>
 

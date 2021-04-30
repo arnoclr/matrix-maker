@@ -223,6 +223,9 @@ hr {
 .mdc-text-field--focused:not(.mdc-text-field--disabled) .mdc-floating-label {
     color: var(--mdc-theme-primary) !important;
 }
+.invalid .mdc-text-field-helper-text {
+    color: var(--mdc-theme-error,#b00020) !important;
+}
 
 /* disclaimer */
 .disclaimer {
