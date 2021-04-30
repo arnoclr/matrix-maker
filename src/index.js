@@ -1161,6 +1161,7 @@ var vm = new Vue({
 
         // generate hof
         generateHof: function() {
+            window.selected = vm.current.index;
             vm.downloadDialogOpen = false;
             vm.downloadProgressDialogOpen = true;
             if(!this.hofName) {
@@ -1209,6 +1210,7 @@ var vm = new Vue({
                     saveFile(`${hofName}-kpp.genav.ch.zip`, "application/zip", content);
                     vm.downloadProgressDialogOpen = false;
                     vm.$toast(`${hofName}-kpp.genav.ch.zip has been downloaded`);
+                    vm.selectCurrent(window.selected);
                 });
             }
         },

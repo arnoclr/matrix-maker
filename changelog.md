@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - French translations
 - Changelog
 
+### Fixed
+- Faster download of hofs with a detection when icons are loaded
+
 ## [2.2.0-beta] - 2021-01-28
 ### Added
 - RATP background color style
