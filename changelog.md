@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Faster download of hofs with a detection when icons are loaded
+- Remove a lot of error messages in console
 
 ## [2.2.0-beta] - 2021-01-28
 ### Added
