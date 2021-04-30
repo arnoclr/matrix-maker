@@ -1,6 +1,6 @@
 <?php
 $fonts = [];
-$fontFiles = glob("fonts\\churafont++ *x*.oft");
+$fontFiles = glob("fonts\\churafont++ *.oft");
 
 foreach ($fontFiles as $font) {
     $fontText = file_get_contents($font);

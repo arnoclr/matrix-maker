@@ -1,0 +1,52 @@
+  ## churafont++ 14h peps
+
+  ## https://reboot.omsi-webdisk.de/wiki/entry/35-fonts/
+  [\newfont]
+  1. name of the font without file extension
+  2. associated bitmap file name (image texture) including file extension
+  3. associated aplha texture with file extension
+  4. height of the characters in pixels, including vertical spacing
+  5. horizontal gap between the characters
+
+[newfont]
+churafont++ 14h peps
+churafont++ 14h peps.bmp
+churafont++ 14h peps.bmp
+14
+1
+
+  [\char]
+  1st code character
+  2. left pixel where the character begins
+  3. right pixel where the character ends
+  4. topmost pixel of the character line
+
+[char]
+.
+1
+2
+1
+
+[char]
+L
+4
+9
+1
+
+[char]
+M
+11
+17
+1
+
+[char]
+V
+19
+25
+1
+
+[char]
+ 
+409
+412
+51
