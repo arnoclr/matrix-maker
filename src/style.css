@@ -167,39 +167,38 @@ hr {
     white-space: nowrap;
     background-color: #fff;
 }
+.canvasBox.no-events {
+    pointer-events: none !important;
+}
 #previewCanvas {
     border: 1px solid black;
 }
 #lineOver {
-    position: absolute;
     height: 256px;
     width: 200px;
 }
 #frontOver {
-    position: absolute;
     width: 720px;
     height: 128px;
     margin-left: 200px;
 }
 #lineOverAlt {
-    position: absolute;
     margin-top: 128px;
     height: 128px;
     width: 200px;
 }
 #frontOverAlt {
-    position: absolute;
     width: 920px;
     height: 128px;
 }
 #sideOver {
-    position: absolute;
     width: 680px;
     height: 128px;
     margin-left: 240px;
     margin-top: 128px;
 }
 .matrixOver {
+    position: absolute !important;
     background-color: transparent;
     border: none;
     cursor: pointer;

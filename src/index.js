@@ -766,6 +766,7 @@ var vm = new Vue({
             $('#main-hover').fadeIn();
             $('.alt-progress-hover').fadeIn();
             $('.demo-app-bar').addClass('preview');
+            $('.canvasBox').addClass('no-events');
             this.$toast('start of preview');
             this.alternatesDests.forEach((d, i) => {
                 setTimeout(() => {
@@ -778,6 +779,7 @@ var vm = new Vue({
                             $('#main-hover').fadeOut();
                             $('.alt-progress-hover').fadeOut();
                             $('.demo-app-bar').removeClass('preview');
+                            $('.canvasBox').removeClass('no-events');
                             this.$toast('end of preview');
                             this.selectCurrent(this.alternatesDests[0].index);
                         }, 2200);
@@ -1283,7 +1285,7 @@ var vm = new Vue({
                 "\r\n" +
                 "\r\n" +
                 "[addbusstop_list]\r\n" +
-                "STOP List\r\n" +
+                "STOP List\t\t\t\t\t\t\t\t\r\n" +
                 "[end]\r\n";
             return this.downloadUtf16(rtn);
         },
