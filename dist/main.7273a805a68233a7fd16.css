@@ -165,40 +165,40 @@ hr {
     z-index: 7;
     overflow: auto;
     white-space: nowrap;
+    background-color: #fff;
+}
+.canvasBox.no-events {
+    pointer-events: none !important;
 }
 #previewCanvas {
     border: 1px solid black;
 }
 #lineOver {
-    position: absolute;
     height: 256px;
     width: 200px;
 }
 #frontOver {
-    position: absolute;
     width: 720px;
     height: 128px;
     margin-left: 200px;
 }
 #lineOverAlt {
-    position: absolute;
     margin-top: 128px;
     height: 128px;
     width: 200px;
 }
 #frontOverAlt {
-    position: absolute;
     width: 920px;
     height: 128px;
 }
 #sideOver {
-    position: absolute;
     width: 680px;
     height: 128px;
     margin-left: 240px;
     margin-top: 128px;
 }
 .matrixOver {
+    position: absolute !important;
     background-color: transparent;
     border: none;
     cursor: pointer;
@@ -221,6 +221,9 @@ hr {
 }
 .mdc-text-field--focused:not(.mdc-text-field--disabled) .mdc-floating-label {
     color: var(--mdc-theme-primary) !important;
+}
+.invalid .mdc-text-field-helper-text {
+    color: var(--mdc-theme-error,#b00020) !important;
 }
 
 /* disclaimer */
@@ -424,7 +427,7 @@ i.rotate {
 }
 
 /* fonts */
-body, ul, h1, h2, h3, h4, h5, h6, p, a, small, input, span, .mdc-snackbar__label, .mdc-floating-label {
+body, ul, h1, h2, h3, h4, h5, h6, p, a, small, input, span, .mdc-button, .mdc-snackbar__label, .mdc-floating-label {
     font-family: 'Poppins', 'Roboto', sans-serif !important;
 }
 h1, h2, h3, h4, h5, h6, p, span, small, i {

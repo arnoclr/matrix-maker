@@ -54,6 +54,10 @@ const iconList = [
         label: 'Tramway',
         value: 'icons/t.png'
     },
+    {
+        label: 'Mask (by Gg bus 49)',
+        value: 'icons/mask_ggbus49.png'
+    },
     // customs icons
     {
         label: 'custom left front', // -4
