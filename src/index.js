@@ -20,43 +20,43 @@ const iconList = [
     },
     {
         label: 'Aeroport',
-        value: 'icons/aero.png'
+        value: 'matrix_icons/aero.png'
     },
     {
         label: 'Gare',
-        value: 'icons/gare.png'
+        value: 'matrix_icons/gare.png'
     },
     {
         label: 'Hopital',
-        value: 'icons/hopital.png'
+        value: 'matrix_icons/hopital.png'
     },
     {
         label: 'Metro',
-        value: 'icons/m.png'
+        value: 'matrix_icons/m.png'
     },
     {
         label: 'Parking',
-        value: 'icons/p.png'
+        value: 'matrix_icons/p.png'
     },
     {
         label: 'PR',
-        value: 'icons/pr.png'
+        value: 'matrix_icons/pr.png'
     },
     {
         label: 'RER',
-        value: 'icons/rer.png'
+        value: 'matrix_icons/rer.png'
     },
     {
         label: 'SCO',
-        value: 'icons/sco.png'
+        value: 'matrix_icons/sco.png'
     },
     {
         label: 'Tramway',
-        value: 'icons/t.png'
+        value: 'matrix_icons/t.png'
     },
     {
         label: 'Mask (by Gg bus 49)',
-        value: 'icons/mask_ggbus49.png'
+        value: 'matrix_icons/mask_ggbus49.png'
     },
     // customs icons
     {
