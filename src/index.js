@@ -1148,7 +1148,7 @@ var vm = new Vue({
             .then((response) => response.json())
             //Then with the data from the response in JSON...
             .then((data) => {
-                if(data.status != 200) {
+                if(data.Status != 200) {
                     this.$toast(data.Message);
                     this.shurl = long_url;
                     this.writeShareUrl();
