@@ -13,6 +13,10 @@ Vue.use(BalmUIPlus); // Optional
 
 Vue.config.productionTip = false
 
+// first is main domain
+const HOSTNAMES = ['kpp.genav.ch', 'beta-kpp.genav.ch', 'kpp.omsi-gpm.fr', 'beta-kpp.omsi-gpm.fr']
+const IS_BETA = true
+
 const iconList = [
     {
         label: '',
@@ -1127,30 +1131,29 @@ var vm = new Vue({
         shareCurrent: function() {
             // this.tinycurrent.a = this.current.code;
             // this.tinycurrent.b = this.current.name;
-            this.shurl = window.location.href.replace(/#.+/, '') + '?s=' + base64_url_encode(JSON.stringify(this.current));
+            let domain
+            if (HOSTNAMES.includes(window.location.hostname)) {
+                domain = window.location.hostname;
+            } else {
+                domain = IS_BETA ? HOSTNAMES[1] : HOSTNAMES[0];
+            }
+            this.shurl = 'https://' + domain + '/?s=' + base64_url_encode(JSON.stringify(this.current));
             this.$balmUI.onOpen('shareDialogOpen');
             this.writeShareUrl();
             this.writeUrl('share');
         },
         reduceShareUrl: function() {
             let long_url = this.shurl;
-            fetch('https://api-ssl.bitly.com/v4/shorten', {
-                method: 'POST',
-                headers: {
-                    'Authorization': 'Bearer ec384d637e6ab5b8b79ed024790d157cceb23ca2',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({"long_url": long_url})
-            })
+            fetch('https://kpp.omsi-g.pm/new?name=KPP&key=KppKey&url=' + long_url)
             .then((response) => response.json())
             //Then with the data from the response in JSON...
             .then((data) => {
-                if(data.errors) {
-                    this.$toast(data.description);
+                if(data.status != 200) {
+                    this.$toast(data.Message);
                     this.shurl = long_url;
                     this.writeShareUrl();
                 } else {
-                    this.shurl = data.link;
+                    this.shurl = data.shortURL;
                     this.writeShareUrl();
                 }
             })
@@ -1414,8 +1417,7 @@ var vm = new Vue({
         }
 
         // beta disclaimer
-        var subdomain = window.location.host.split('.')[1] ? window.location.host.split('.')[0] : false;
-        if(subdomain === 'beta') {
+        if(IS_BETA) {
             $('#nav-title-text').text('Kpp Maker - Beta');
             this.$alert('This is a beta version of the site, which may contain bugs. Please report any malfunctions you encounter.');
         }
