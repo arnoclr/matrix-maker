@@ -69,7 +69,7 @@ If you want to edit css and js files, run at first `npm install` to install libr
 
 ## Authors
 
-Arno Cellarier : https://github.com/Aryqs-Ipsum
+Arno Cellarier : https://github.com/arnoclr
 Adam Mathieson : https://github.com/winer222
 
 ## Dependencies

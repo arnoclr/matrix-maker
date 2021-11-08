@@ -31,12 +31,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Aryqs-Ipsum/matrix-maker.git"
+    "url": "git+https://github.com/arnoclr/matrix-maker.git"
   },
   "author": "Arno Cellarier - Adam Mathieson",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Aryqs-Ipsum/matrix-maker/issues"
+    "url": "https://github.com/arnoclr/matrix-maker/issues"
   },
-  "homepage": "https://github.com/Aryqs-Ipsum/matrix-maker#readme"
+  "homepage": "https://github.com/arnoclr/matrix-maker#readme"
 }
