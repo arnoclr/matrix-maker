@@ -980,6 +980,7 @@ var vm = new Vue({
                 this.dests.push(destBuffer);
                 this.searchDest = '';
                 this.$toast(code + ' added in dests');
+                this.selectCurrent(this.dests.length - 1);
             } else {
                 this.$toast('invalid code');
             }
