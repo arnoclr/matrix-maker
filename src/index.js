@@ -1322,7 +1322,7 @@ var vm = new Vue({
         }
 
     },
-    mounted() {
+    async mounted() {
         // grey / cyan theme
         this.$theme.primary = '#607d8b';
         this.$theme.secondary = '#26c6da';
@@ -1417,12 +1417,6 @@ var vm = new Vue({
             // localStorage.presentation = true;
         }
 
-        // beta disclaimer
-        if(IS_BETA) {
-            $('#nav-title-text').text('Kpp Maker - Beta');
-            this.$alert('This is a beta version of the site, which may contain bugs. Please report any malfunctions you encounter.');
-        }
-
         // changelog
         changelogParse('../changelog.md').then(changelog => {
             let latestClient = localStorage.getItem('changelog')
@@ -1441,6 +1435,21 @@ var vm = new Vue({
             vm.isMobile = window.matchMedia('only screen and (max-width: 618px)').matches;
         });
 
+        // disclaimers
+        if(IS_BETA) {
+            $('#nav-title-text').text('Kpp Maker - Beta');
+            this.$alert('This is a beta version of the site, which may contain bugs. Please report any malfunctions you encounter.');
+        }
+
+        // detect adblock
+        const googleAdUrl = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js";
+        const googleAdRequest = await fetch(googleAdUrl, {
+            method: 'HEAD',
+        });
+
+        if (googleAdRequest.status !== 200 || googleAdRequest.redirected) {
+            document.getElementById('adblock-banner').style.display = 'block';
+        }
     }
 })
 
