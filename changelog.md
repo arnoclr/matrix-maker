@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Game crash when spawning a bus that contain website generated hof.
 - App installation
 
+### Changed
+- New shorten random ID format (xxxx99)
+
 ## [2.3.0-beta] - 2021-08-30
 ### Added
 - French translations

@@ -1,7 +1,8 @@
 import $ from "jquery";
 import Vue from 'vue';
 import { changelogParse } from './changelogParser';
-import { translatePage, settingsLanguages } from './translate';
+import { rrs } from './readable-random-string';
+import { settingsLanguages, translatePage } from './translate';
 
 import './style.css';
 
@@ -1234,10 +1235,7 @@ var vm = new Vue({
             }
         },
         uuidv4: function () {
-            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-                var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-                return v.toString(16);
-            });
+            return rrs(4) + Math.floor(Math.random() * 90 + 10);
         },
         generateHOF2: function (dir, name) {
             var terminus_list = "";
