@@ -21,11 +21,11 @@ module.exports = (env, options) => {
                 filename: '../index.html',
                 template: 'src/template.html'
             }),
-            new WorkboxPlugin.GenerateSW({
-                clientsClaim: true,
-                skipWaiting: true,
-                swDest: './sw.js'
-            })
+            // new WorkboxPlugin.GenerateSW({
+            //     clientsClaim: true,
+            //     skipWaiting: true,
+            //     swDest: '../sw.js'
+            // })
         ],
         module: {
             rules: [
@@ -57,5 +57,5 @@ module.exports = (env, options) => {
             filename: '[name].[contenthash].js',
             path: path.resolve(__dirname, options.mode === 'production' ? 'dist' : 'tmp')
         }
-    }
-}
+    };
+};

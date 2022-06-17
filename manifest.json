@@ -4,7 +4,7 @@
   "theme_color": "#546e7a",
   "background_color": "#546e7a",
   "display": "standalone",
-  "Scope": "/",
+  "scope": "/",
   "start_url": "/",
   "icons": [
     {
@@ -60,14 +60,24 @@
       "short_name": "Download HOF",
       "description": "Download and export all matrices for OMSI 2",
       "url": "/#/download?utm_source=homescreen",
-      "icons": [{ "src": "data/icons/download.png", "sizes": "418x418" }]
+      "icons": [
+        {
+          "src": "data/icons/download.png",
+          "sizes": "418x418"
+        }
+      ]
     },
     {
       "name": "New destination",
       "short_name": "New dest.",
       "description": "Create a new destination",
       "url": "/#/new?utm_source=homescreen",
-      "icons": [{ "src": "data/icons/new.png", "sizes": "418x418" }]
+      "icons": [
+        {
+          "src": "data/icons/new.png",
+          "sizes": "418x418"
+        }
+      ]
     }
   ],
   "splash_pages": null

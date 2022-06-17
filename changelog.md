@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Game crash when spawning a bus that contain website generated hof.
+- App installation
 
 ## [2.3.0-beta] - 2021-08-30
 ### Added
