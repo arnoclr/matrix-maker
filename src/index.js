@@ -359,6 +359,24 @@ var vm = new Vue({
             }
         },
 
+        cropScrollCanvas: function () {
+            // remove black margin
+            var heights = [];
+            for (let y = 0; y <= 32; y++) {
+                // TODO: stop at end of text
+                for (let x = 0; x <= 512; x++) {
+                    let color = this.scrollCtx.getImageData(x, y, 1, 1).data;
+                    if (color[3] == 255) {
+                        heights.push(y);
+                        break;
+                    }
+                }
+            }
+            // keep transparent areas
+            this.scrollPreviewCtx.clearRect(0, 0, 4096, heights[0] * 8);
+            this.scrollPreviewCtx.clearRect(0, (heights[heights.length - 1] + 1) * 8, 4096, (256 - heights[heights.length - 1]) * 8);
+        },
+
         // scroll
         writeScrollText: function () {
             // clear canvas
@@ -372,20 +390,8 @@ var vm = new Vue({
             this.fillBitmapTextDraw(this.scrollCtx, this.current.scroll.text, 0, parseInt(this.current.scroll.mt) + dims.height, this.current.scroll.font, textColor, () => { });
             // render big canvas
             this.scrollPreviewCtx.drawImage(this.scrollCanvas, 0, 0, 4096, 256);
-            // remove black margin
-            var heights = [];
-            for (let y = 0; y <= 32; y++) {
-                for (let x = 0; x <= dims.width; x++) {
-                    let color = this.scrollCtx.getImageData(x, y, 1, 1).data;
-                    if (color[3] == 255) {
-                        heights.push(y);
-                        break;
-                    }
-                }
-            }
-            // this.scrollPreviewCtx.drawImage(this.overlayScroll, 0, 0, 4096, 256);
-            this.scrollPreviewCtx.clearRect(0, 0, 4096, heights[0] * 8);
-            this.scrollPreviewCtx.clearRect(0, (heights[heights.length - 1] + 1) * 8, 4096, (256 - heights[heights.length - 1]) * 8);
+
+            this.cropScrollCanvas();
             this.scrollPreviewCtxOver.drawImage(this.scrollPreviewCanvas, 0, 0, 2048, 128);
             this.scrollPreviewCtxOver.drawImage(this.scrollPreviewCanvas, 2048, 0, 2048, 128);
             setTimeout(() => {
@@ -1222,6 +1228,9 @@ var vm = new Vue({
                 vm.indexdl++;
                 img.file(vm.dests[vm.indexdl - 1].code + ".png", $("#canvas").getCanvasImage().substr(22), { base64: true });
                 if (vm.current.scroll) {
+                    // draw scroll overlay at export time
+                    this.scrollPreviewCtx.drawImage(this.overlayScroll, 0, 0, 4096, 256);
+                    this.cropScrollCanvas();
                     scrollImg.file(vm.dests[vm.indexdl - 1].code + ".png", $("#scrollPreviewCanvas").getCanvasImage().substr(22), { base64: true });
                 }
                 vm.selectCurrentForZip(img, scrollImg, zip, hofName);
