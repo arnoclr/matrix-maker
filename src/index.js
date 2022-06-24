@@ -374,7 +374,16 @@ var vm = new Vue({
             }
             // keep transparent areas
             this.scrollPreviewCtx.clearRect(0, 0, 4096, heights[0] * 8);
-            this.scrollPreviewCtx.clearRect(0, (heights[heights.length - 1] + 1) * 8, 4096, (256 - heights[heights.length - 1]) * 8);
+            this.scrollPreviewCtx.clearRect(0, (heights[heights.length - 1] + 1) * 8, 4096, 256);
+
+            // create transmap
+            this.scrollTransmapCtx.fillStyle = '#ffffff';
+            this.scrollTransmapCtx.fillRect(0, 0, 512, 32);
+            this.scrollTransmapCtx.clearRect(0, 0, 512, heights[0]);
+            this.scrollTransmapCtx.clearRect(0, (heights[heights.length - 1] + 1), 512, 32);
+            if (!this.current.scroll.index.includes('13')) {
+                this.scrollTransmapCtx.clearRect(0, 0, 50, 32);
+            }
         },
 
         // scroll
@@ -1232,12 +1241,10 @@ var vm = new Vue({
                     this.scrollPreviewCtx.drawImage(this.overlayScroll, 0, 0, 4096, 256);
                     this.cropScrollCanvas();
                     scrollImg.file(vm.dests[vm.indexdl - 1].code + ".png", $("#scrollPreviewCanvas").getCanvasImage().substr(22), { base64: true });
+                    scrollImg.file(vm.dests[vm.indexdl - 1].code + ".transmap.png", $("#scrollTransmapCanvas").getCanvasImage().substr(22), { base64: true });
                 }
                 vm.selectCurrentForZip(img, scrollImg, zip, hofName);
             } else {
-                let defaultTransmap = await fetch("/data/transmap.hideOnLineNumber.png").then(response => response.blob());
-                scrollImg.file("transmap.hideOnLineNumber.png", defaultTransmap);
-
                 zip.generateAsync({ type: "blob" }).then(function (content) {
                     saveFile(`${hofName}-kpp.genav.ch.zip`, "application/zip", content);
                     vm.downloadProgressDialogOpen = false;
@@ -1270,7 +1277,7 @@ var vm = new Vue({
                         "\t" + (sSide ? dir + "\\" + this.dests[dest].code + ".png" : "") +
                         "\t" + (sLine ? dir + "\\" + this.dests[dest].code + ".png" : "") +
                         "\t" +
-                        (sLine ? "\t\t" : dir + "\\" + "transmap.hideOnLineNumber.png\t") +
+                        (sLine ? "\t\t" : dir + "\\" + this.dests[dest].code + ".transmap.png\t") +
                         "\t\t\t\t\t\t\t";
                 } else {
                     terminus_list += "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t";
@@ -1380,6 +1387,7 @@ var vm = new Vue({
         this.scrollCanvas = document.getElementById("scrollCanvas");
         this.scrollPreviewCanvas = document.getElementById("scrollPreviewCanvas");
         this.scrollPreviewCanvasOver = document.getElementById("scrollPreviewCanvasOver");
+        this.scrollTransmapCanvas = document.getElementById("scrollTransmapCanvas");
         this.iconCanvas = document.getElementById("iconLoader");
 
         // contexts
@@ -1389,6 +1397,7 @@ var vm = new Vue({
         this.iconCtx = this.iconCanvas.getContext('2d');
         this.scrollPreviewCtx = this.scrollPreviewCanvas.getContext('2d');
         this.scrollPreviewCtxOver = this.scrollPreviewCanvasOver.getContext('2d');
+        this.scrollTransmapCtx = this.scrollTransmapCanvas.getContext('2d');
 
         // overlays
         this.overlayImage = document.getElementById('overlayImage');
