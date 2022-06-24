@@ -1249,12 +1249,17 @@ var vm = new Vue({
                     "\t\t" + this.dests[dest].name +
                     "\t\t" + dir + "\\" + this.dests[dest].code + ".png";
                 // add scroll index
+                const sFront = this.dests[dest].scroll.index.includes('11');
+                const sSide = this.dests[dest].scroll.index.includes('12');
+                const sLine = this.dests[dest].scroll.index.includes('13');
                 if (this.dests[dest].scroll) {
                     terminus_list += "\t\t\t" +
-                        "\t" + (this.dests[dest].scroll.index.includes('11') ? dir + "\\" + this.dests[dest].code + ".png" : "") +
-                        "\t" + (this.dests[dest].scroll.index.includes('12') ? dir + "\\" + this.dests[dest].code + ".png" : "") +
-                        "\t" + (this.dests[dest].scroll.index.includes('13') ? dir + "\\" + this.dests[dest].code + ".png" : "") +
-                        "\t\t\t\t\t\t\t\t\t\t";
+                        "\t" + (sFront ? dir + "\\" + this.dests[dest].code + ".png" : "") +
+                        "\t" + (sSide ? dir + "\\" + this.dests[dest].code + ".png" : "") +
+                        "\t" + (sLine ? dir + "\\" + this.dests[dest].code + ".png" : "") +
+                        "\t" +
+                        (sLine ? "\t\t" : "50\t") +
+                        "\t\t\t\t\t\t\t";
                 } else {
                     terminus_list += "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t";
                 }
