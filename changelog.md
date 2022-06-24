@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.3.2-beta] - 2022-06-24
 
+### Added
+- Default colors selection
+
 ### Fixed
 - Scrolling matrix over line number when explicitly disabled.
 
