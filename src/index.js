@@ -1196,7 +1196,7 @@ var vm = new Vue({
             var hofName = this.hofName;
             var folderName = "KPPMaker-" + this.uuidv4();
             // lazy load ascii-table and JSZip modules
-            Promise.all([import('jszip'), import('ascii-table')]).then(([moduleZip, moduleTable]) => {
+            Promise.all([import('jszip'), import('ascii-table')]).then(async ([moduleZip, moduleTable]) => {
                 let JSZip = moduleZip.default;
                 var zip = new JSZip();
 
@@ -1235,6 +1235,9 @@ var vm = new Vue({
                 }
                 vm.selectCurrentForZip(img, scrollImg, zip, hofName);
             } else {
+                let defaultTransmap = await fetch("/data/transmap.hideOnLineNumber.png").then(response => response.blob());
+                img.file("transmap.hideOnLineNumber.png", defaultTransmap);
+
                 zip.generateAsync({ type: "blob" }).then(function (content) {
                     saveFile(`${hofName}-kpp.genav.ch.zip`, "application/zip", content);
                     vm.downloadProgressDialogOpen = false;
@@ -1267,7 +1270,7 @@ var vm = new Vue({
                         "\t" + (sSide ? dir + "\\" + this.dests[dest].code + ".png" : "") +
                         "\t" + (sLine ? dir + "\\" + this.dests[dest].code + ".png" : "") +
                         "\t" +
-                        (sLine ? "\t\t" : "50\t") +
+                        (sLine ? "\t\t" : dir + "\\" + "transmap.hideOnLineNumber.png\t") +
                         "\t\t\t\t\t\t\t";
                 } else {
                     terminus_list += "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t";
