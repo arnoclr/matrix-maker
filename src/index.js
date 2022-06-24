@@ -1236,7 +1236,7 @@ var vm = new Vue({
                 vm.selectCurrentForZip(img, scrollImg, zip, hofName);
             } else {
                 let defaultTransmap = await fetch("/data/transmap.hideOnLineNumber.png").then(response => response.blob());
-                img.file("transmap.hideOnLineNumber.png", defaultTransmap);
+                scrollImg.file("transmap.hideOnLineNumber.png", defaultTransmap);
 
                 zip.generateAsync({ type: "blob" }).then(function (content) {
                     saveFile(`${hofName}-kpp.genav.ch.zip`, "application/zip", content);
