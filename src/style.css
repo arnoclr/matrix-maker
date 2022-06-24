@@ -7,6 +7,7 @@
     background-color: #f9f9f9;
     transition: margin-left .2s cubic-bezier(0.075, 0.82, 0.165, 1);
 }
+
 .main-content {
     padding: 16px;
     max-width: 1026px;
@@ -17,12 +18,15 @@
 .mdc-drawer.mdc-drawer--dismissible {
     margin-top: 64px;
 }
+
 .mdc-drawer.mdc-drawer--modal {
     z-index: 10;
 }
+
 .mdc-drawer-scrim {
     z-index: 9;
 }
+
 .mdc-drawer.mdc-drawer--modal.mdc-drawer--open+.mdc-drawer-app-content {
     margin-left: 0;
 }
@@ -32,6 +36,7 @@
     z-index: 9;
     transition: margin-top .2s ease;
 }
+
 .demo-app-bar.preview {
     margin-top: -64px;
 }
@@ -42,9 +47,11 @@
     top: 16px;
     margin-left: 16px;
 }
+
 .nav-item {
     padding-right: 28px !important;
 }
+
 .active {
     color: var(--mdc-theme-secondary);
 }
@@ -55,6 +62,7 @@ hr {
     border-top: 1px solid #999;
     height: 1px;
 }
+
 #main-hover {
     background-color: #000000bb;
     position: absolute;
@@ -62,9 +70,11 @@ hr {
     height: 100%;
     z-index: 7;
 }
+
 .mtb {
     margin: 16px 0;
 }
+
 .mt {
     margin-top: 8px;
 }
@@ -76,10 +86,12 @@ hr {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
 .card-alt {
     padding: 8px 12px;
     transition: box-shadow 150ms ease-out;
 }
+
 .active-card-alt {
     box-shadow: 0px 0px 0px 2px inset var(--mdc-theme-secondary);
 }
@@ -89,6 +101,7 @@ hr {
     padding: 16px;
     position: relative;
 }
+
 .hof-data-btn-section {
     display: inline;
     position: absolute;
@@ -100,6 +113,7 @@ hr {
     pointer-events: inherit !important;
     color: #bbb;
 }
+
 .nav-item.hover {
     border: 1px dotted var(--mdc-theme-primary);
     box-sizing: border-box;
@@ -110,9 +124,11 @@ hr {
 .relative {
     position: relative;
 }
+
 .mdc-menu-surface--anchor {
     display: inline;
 }
+
 .menu-content {
     position: relative;
 }
@@ -122,6 +138,7 @@ hr {
     height: 250px !important;
     width: 250px !important;
 }
+
 .mdc-skeleton-img {
     max-width: 250px !important;
 }
@@ -130,6 +147,7 @@ hr {
 .mdc-dialog {
     z-index: 11 !important;
 }
+
 .mdc-snackbar {
     z-index: 12 !important;
 }
@@ -141,6 +159,7 @@ hr {
     top: 20px;
     left: 20px;
 }
+
 .icon-select-grid .mdc-select {
     margin: 8px;
 }
@@ -154,6 +173,7 @@ hr {
     width: 100vw;
     z-index: 10;
 }
+
 #dropzone i {
     color: #000;
 }
@@ -167,36 +187,44 @@ hr {
     white-space: nowrap;
     background-color: #fff;
 }
+
 .canvasBox.no-events {
     pointer-events: none !important;
 }
+
 #previewCanvas {
     border: 1px solid black;
 }
+
 #lineOver {
     height: 256px;
     width: 200px;
 }
+
 #frontOver {
     width: 720px;
     height: 128px;
     margin-left: 200px;
 }
+
 #lineOverAlt {
     margin-top: 128px;
     height: 128px;
     width: 200px;
 }
+
 #frontOverAlt {
     width: 920px;
     height: 128px;
 }
+
 #sideOver {
     width: 680px;
     height: 128px;
     margin-left: 240px;
     margin-top: 128px;
 }
+
 .matrixOver {
     position: absolute !important;
     background-color: transparent;
@@ -204,26 +232,32 @@ hr {
     cursor: pointer;
     transition: border .1s ease;
 }
+
 .matrixOver:hover {
-    border:solid 5px #eee;
+    border: solid 5px #eee;
     box-sizing: border-box;
     border-radius: 5px;
 }
 
 /* inputs */
-#frontText .mdc-text-field__resizer, #sideText .mdc-text-field__resizer {
+#frontText .mdc-text-field__resizer,
+#sideText .mdc-text-field__resizer {
     resize: none;
 }
-#frontText textarea, #sideText textarea {
+
+#frontText textarea,
+#sideText textarea {
     resize: horizontal;
     max-width: 500px;
     min-width: 369px;
 }
+
 .mdc-text-field--focused:not(.mdc-text-field--disabled) .mdc-floating-label {
     color: var(--mdc-theme-primary) !important;
 }
+
 .invalid .mdc-text-field-helper-text {
-    color: var(--mdc-theme-error,#b00020) !important;
+    color: var(--mdc-theme-error, #b00020) !important;
 }
 
 /* disclaimer */
@@ -234,13 +268,17 @@ hr {
     padding: 8px;
     margin-bottom: 8px;
 }
-.disclaimer p, .disclaimer .mdc-button {
+
+.disclaimer p,
+.disclaimer .mdc-button {
     color: #613E11 !important;
     margin: 8px 8px 8px 48px;
 }
+
 .disclaimer .mdc-button {
     background-color: #613E1120 !important;
 }
+
 .disclaimer i {
     color: #F3A54A;
     position: absolute;
@@ -256,40 +294,56 @@ hr {
     background: #dfdfdf;
     border-radius: 8px;
 }
+
+#overlayImage {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: 1px solid transparent;
+}
+
 #scrollPreviewCanvasOver {
     margin-left: 68px;
 }
+
 #scroll-up-btn {
     position: absolute;
     top: 8px;
     left: 8px;
 }
+
 #scroll-down-btn {
     position: absolute;
     bottom: 8px;
     left: 8px;
 }
+
 #scrollButton {
     position: relative;
     cursor: pointer;
     display: flex;
 }
+
 #scrollButton i {
     position: absolute;
     user-select: none;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 #scrollButton i:first-of-type {
     transform: rotate(0);
 }
+
 #scrollButton i:last-of-type {
     opacity: 0;
     transform: scale(0.8) rotate(245deg);
 }
+
 #scrollButton.morphed i:first-of-type {
     opacity: 0;
     transform: rotate(135deg);
 }
+
 #scrollButton.morphed i:last-of-type {
     opacity: 1;
     transform: scale(1) rotate(1turn);
@@ -308,17 +362,21 @@ hr {
     padding-left: 0;
     transition: padding .2s ease;
 }
+
 .slider .prev-btn {
     float: left;
     padding-right: 0;
     transition: padding .2s ease;
 }
+
 .slider .next-btn:hover {
     padding-left: 12px;
 }
+
 .slider .prev-btn:hover {
     padding-right: 12px;
 }
+
 .slider .slide img {
     object-fit: cover;
     width: 100%;
@@ -345,9 +403,11 @@ hr {
     bottom: 16px;
     left: 8px;
 }
+
 .alt-progress-hover .mdc-circular-progress {
     margin: 12px;
 }
+
 .alt-progress-hover span {
     display: inline-block;
     position: absolute;
@@ -359,11 +419,13 @@ hr {
     width: 100%;
     text-align: center;
 }
+
 .empty-state>i {
     margin: 5rem;
     font-size: 15rem;
     color: grey;
 }
+
 .empty-state>p {
     max-width: 550px;
     padding: 0px 16px 16px 16px;
@@ -372,7 +434,7 @@ hr {
 
 /* loading img skeleton */
 img.loading {
-    background: linear-gradient(90deg,#f2f2f2 25%,#dadada 37%,#f2f2f2 63%);
+    background: linear-gradient(90deg, #f2f2f2 25%, #dadada 37%, #f2f2f2 63%);
     background-size: 400% 100%;
     -webkit-animation: mdc-skeleton-loading 1.4s ease infinite;
     animation: mdc-skeleton-loading 1.4s ease infinite;
@@ -383,9 +445,12 @@ img.loading {
     text-align: center;
     padding: 1rem 5rem 1rem 5rem;
 }
-.illustration h4, .illustration p {
+
+.illustration h4,
+.illustration p {
     margin: 2px;
 }
+
 .illustration img {
     margin-top: 2rem;
     max-width: 100%;
@@ -401,9 +466,11 @@ img.loading {
 html {
     overflow: hidden;
 }
+
 body {
     margin: 0;
 }
+
 input[type=color] {
     cursor: pointer;
 }
@@ -412,13 +479,16 @@ input[type=color] {
 i.align {
     vertical-align: -25%;
 }
+
 i.rotate {
     transform: rotate(90deg);
 }
 
 /* detect mobile device */
 @media only screen and (max-width: 760px) {
-    #not-mobile { display: none; }
+    #not-mobile {
+        display: none;
+    }
 }
 
 /* animations */
@@ -427,10 +497,35 @@ i.rotate {
 }
 
 /* fonts */
-body, ul, h1, h2, h3, h4, h5, h6, p, a, small, input, span, .mdc-button, .mdc-snackbar__label, .mdc-floating-label {
+body,
+ul,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a,
+small,
+input,
+span,
+.mdc-button,
+.mdc-snackbar__label,
+.mdc-floating-label {
     font-family: 'Poppins', 'Roboto', sans-serif !important;
 }
-h1, h2, h3, h4, h5, h6, p, span, small, i {
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+small,
+i {
     user-select: none;
 }
 
@@ -443,21 +538,25 @@ h1, h2, h3, h4, h5, h6, p, span, small, i {
 .mdc-dialog__surface {
     border-radius: 16px !important;
 }
+
 .mdc-dialog__content {
     background: #fafafa;
     padding-top: 16px !important;
 }
+
 .mdc-dialog__title {
     background: var(--mdc-theme-primary);
     color: #fff !important;
     padding-bottom: 24px;
     padding-top: 8px;
 }
+
 .dialog-header-btn {
     background: #bbbbbb30 !important;
     float: right;
     margin-top: 16px;
 }
+
 .mdc-button.modal-float-right {
     float: right;
     margin-top: 8px;

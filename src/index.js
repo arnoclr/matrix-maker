@@ -383,7 +383,7 @@ var vm = new Vue({
                     }
                 }
             }
-            this.scrollPreviewCtx.drawImage(this.overlayScroll, 0, 0, 4096, 256);
+            // this.scrollPreviewCtx.drawImage(this.overlayScroll, 0, 0, 4096, 256);
             this.scrollPreviewCtx.clearRect(0, 0, 4096, heights[0] * 8);
             this.scrollPreviewCtx.clearRect(0, (heights[heights.length - 1] + 1) * 8, 4096, (256 - heights[heights.length - 1]) * 8);
             this.scrollPreviewCtxOver.drawImage(this.scrollPreviewCanvas, 0, 0, 2048, 128);
@@ -594,7 +594,7 @@ var vm = new Vue({
         },
         renderCanvas: function (ctx, previewCtx) {
             previewCtx.drawImage(this.canvas, 0, 0, 1024, 256);
-            previewCtx.drawImage(overlayImage, 0, 0, 1024, 256);
+            // previewCtx.drawImage(overlayImage, 0, 0, 1024, 256);
         },
         drawRedPattern: function () {
             this.ctx.fillStyle = "#800000";

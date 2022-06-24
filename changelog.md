@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Scrolling matrix over line number when explicitly disabled.
+- Scrolling text overlay in same style as fixed text
 
 ## [2.3.1-beta] - 2022-06-17
 
