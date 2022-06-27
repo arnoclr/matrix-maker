@@ -4,7 +4,7 @@ import VueI18n from 'vue-i18n'
 import { changelogParse } from './changelogParser';
 import { rrs } from './readable-random-string';
 import { settingsLanguages, translatePage } from './translate';
-import { translations } from 'translations/translations';
+import { translations } from './translations/translations';
 
 import './style.css';
 
