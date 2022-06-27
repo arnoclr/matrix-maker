@@ -1,8 +1,10 @@
 import $ from "jquery";
 import Vue from 'vue';
+import VueI18n from 'vue-i18n'
 import { changelogParse } from './changelogParser';
 import { rrs } from './readable-random-string';
 import { settingsLanguages, translatePage } from './translate';
+import { translations } from 'translations/translations';
 
 import './style.css';
 
@@ -11,6 +13,8 @@ import BalmUIPlus from 'balm-ui/dist/balm-ui-plus'; // BalmJS Team Material Comp
 
 Vue.use(BalmUI); // Mandatory
 Vue.use(BalmUIPlus); // Optional
+
+Vue.use(VueI18n); // Mandatory
 
 Vue.config.productionTip = false;
 
@@ -82,7 +86,13 @@ const iconList = [
     }
 ];
 
+const i18n = new VueI18n({
+    locale: 'en',
+    messages: translations
+})
+
 var vm = new Vue({
+    i18n,
     el: '#app',
     data: {
         canvas: '',
@@ -182,7 +192,7 @@ var vm = new Vue({
             cData.glyph.forEach((row) => {
                 for (var i = 0; i < row.length; i++) {
                     var char = row.substr(i, 1);
-                    if (char == "#") {
+                    if (char === '#') {
                         var fs = ctx.fillStyle;
                         ctx.fillStyle = fillStyle;
                         ctx.fillRect(curX + i, y + offY - cData.ascent, 1, 1);
@@ -204,7 +214,7 @@ var vm = new Vue({
                         this.loadFont(font);
                     }
                     // if (char !== " ") {
-                    if (this.fonts[font][font][char] == null || this.fonts[font][font][char].glyph.length == 0) {
+                    if (this.fonts[font][font][char] == null || this.fonts[font][font][char].glyph.length === 0) {
                         cData = this.fonts[font][font][' '];
                         this.$toast("Character '" + char + "' Not Found in font: '" + font + "'!");
                     } else {
@@ -366,7 +376,7 @@ var vm = new Vue({
                 // TODO: stop at end of text
                 for (let x = 0; x <= 512; x++) {
                     let color = this.scrollCtx.getImageData(x, y, 1, 1).data;
-                    if (color[3] == 255) {
+                    if (color[3] === 255) {
                         heights.push(y);
                         break;
                     }
@@ -428,7 +438,7 @@ var vm = new Vue({
                 for (let x = 0; x <= 50; x++) {
                     for (let y = 0; y <= 64; y++) {
                         let color = this.ctx.getImageData(x, y, 1, 1).data;
-                        if (color[0] == 0 && color[1] == 0 && color[2] == 0) {
+                        if (color[0] === 0 && color[1] === 0 && color[2] === 0) {
 
                         } else {
                             this.ctx.fillRect(x, y, 1, 1);
@@ -463,7 +473,6 @@ var vm = new Vue({
             if (this.current.side.iconUrlR) {
                 await this.drawIcon(this.current.side.iconUrlR, 3, this.current.side.line, false, this.current.side.iconHex);
             }
-            return;
         },
         iconSubmitted: function (event) {
             var file = event.target.files[0];
@@ -545,14 +554,13 @@ var vm = new Vue({
             }
             this.drawRedPattern();
             this.renderCanvas(this.ctx, this.previewCtx);
-            return;
         },
         refreshUi: function () {
             this.qrurl = '';
             this.headerShadow = (document.getElementById('dest-container').offsetHeight > window.innerHeight - 203) ? 2 : 0;
         },
         syncStatusRefresh: function () {
-            if (localStorage.data == JSON.stringify(this.dests)) {
+            if (localStorage.data === JSON.stringify(this.dests)) {
                 this.syncStatus = true;
             } else {
                 this.syncStatus = false;
@@ -872,10 +880,10 @@ var vm = new Vue({
                     let hofDests = hofDestsText.split('\n');
                     hofDests.pop();
                     hofDests.forEach((dest, index) => {
-                        group = dest.split(/	/);
-                        line = group[1];
+                        const group = dest.split(/	/);
+                        const line = group[1];
                         dest = (group[2] == null) ? 'undefined' : group[2];
-                        text = (group[3] == null) ? 'undefined' : group[3];
+                        const text = (group[3] == null) ? 'undefined' : group[3];
                         if (isNumber(line)) {
                             vm.addDest(line, dest, text, line, text);
                         }
