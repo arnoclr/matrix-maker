@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2.3.2-beta] - 2022-06-24
+## [2.3.2-beta] - 2022-06-28
 
 ### Added
 - Default colors selection
@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - Scrolling matrix over line number when explicitly disabled.
 - Scrolling text overlay in same style as fixed text
+- Polish characters are now usable with churafonts. (need a storage clear)
 
 ## [2.3.1-beta] - 2022-06-17
 
