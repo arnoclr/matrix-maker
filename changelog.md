@@ -10,9 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Default colors selection
 
 ### Fixed
-- Scrolling matrix over line number when explicitly disabled.
 - Scrolling text overlay in same style as fixed text
 - Polish characters are now usable with churafonts. (need a storage clear)
+
+### Fix in progress
+- Scrolling matrix over line number when explicitly disabled.
 
 ## [2.3.1-beta] - 2022-06-17
 
