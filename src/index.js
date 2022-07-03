@@ -359,6 +359,33 @@ var vm = new Vue({
             }
         },
 
+        cropScrollCanvas: function () {
+            // remove black margin
+            var heights = [];
+            for (let y = 0; y <= 32; y++) {
+                // TODO: stop at end of text
+                for (let x = 0; x <= 512; x++) {
+                    let color = this.scrollCtx.getImageData(x, y, 1, 1).data;
+                    if (color[3] == 255) {
+                        heights.push(y);
+                        break;
+                    }
+                }
+            }
+            // keep transparent areas
+            this.scrollPreviewCtx.clearRect(0, 0, 4096, heights[0] * 8);
+            this.scrollPreviewCtx.clearRect(0, (heights[heights.length - 1] + 1) * 8, 4096, 256);
+
+            // create transmap
+            this.scrollTransmapCtx.fillStyle = '#ffffff';
+            this.scrollTransmapCtx.fillRect(0, 0, 512, 32);
+            this.scrollTransmapCtx.clearRect(0, 0, 512, heights[0]);
+            this.scrollTransmapCtx.clearRect(0, (heights[heights.length - 1] + 1), 512, 32);
+            if (!this.current.scroll.index.includes('13')) {
+                this.scrollTransmapCtx.clearRect(0, 0, 50, 32);
+            }
+        },
+
         // scroll
         writeScrollText: function () {
             // clear canvas
@@ -372,20 +399,8 @@ var vm = new Vue({
             this.fillBitmapTextDraw(this.scrollCtx, this.current.scroll.text, 0, parseInt(this.current.scroll.mt) + dims.height, this.current.scroll.font, textColor, () => { });
             // render big canvas
             this.scrollPreviewCtx.drawImage(this.scrollCanvas, 0, 0, 4096, 256);
-            // remove black margin
-            var heights = [];
-            for (let y = 0; y <= 32; y++) {
-                for (let x = 0; x <= dims.width; x++) {
-                    let color = this.scrollCtx.getImageData(x, y, 1, 1).data;
-                    if (color[3] == 255) {
-                        heights.push(y);
-                        break;
-                    }
-                }
-            }
-            this.scrollPreviewCtx.drawImage(this.overlayScroll, 0, 0, 4096, 256);
-            this.scrollPreviewCtx.clearRect(0, 0, 4096, heights[0] * 8);
-            this.scrollPreviewCtx.clearRect(0, (heights[heights.length - 1] + 1) * 8, 4096, (256 - heights[heights.length - 1]) * 8);
+
+            this.cropScrollCanvas();
             this.scrollPreviewCtxOver.drawImage(this.scrollPreviewCanvas, 0, 0, 2048, 128);
             this.scrollPreviewCtxOver.drawImage(this.scrollPreviewCanvas, 2048, 0, 2048, 128);
             setTimeout(() => {
@@ -594,7 +609,7 @@ var vm = new Vue({
         },
         renderCanvas: function (ctx, previewCtx) {
             previewCtx.drawImage(this.canvas, 0, 0, 1024, 256);
-            previewCtx.drawImage(overlayImage, 0, 0, 1024, 256);
+            // previewCtx.drawImage(overlayImage, 0, 0, 1024, 256);
         },
         drawRedPattern: function () {
             this.ctx.fillStyle = "#800000";
@@ -1190,7 +1205,7 @@ var vm = new Vue({
             var hofName = this.hofName;
             var folderName = "KPPMaker-" + this.uuidv4();
             // lazy load ascii-table and JSZip modules
-            Promise.all([import('jszip'), import('ascii-table')]).then(([moduleZip, moduleTable]) => {
+            Promise.all([import('jszip'), import('ascii-table')]).then(async ([moduleZip, moduleTable]) => {
                 let JSZip = moduleZip.default;
                 var zip = new JSZip();
 
@@ -1222,7 +1237,11 @@ var vm = new Vue({
                 vm.indexdl++;
                 img.file(vm.dests[vm.indexdl - 1].code + ".png", $("#canvas").getCanvasImage().substr(22), { base64: true });
                 if (vm.current.scroll) {
+                    // draw scroll overlay at export time
+                    this.scrollPreviewCtx.drawImage(this.overlayScroll, 0, 0, 4096, 256);
+                    this.cropScrollCanvas();
                     scrollImg.file(vm.dests[vm.indexdl - 1].code + ".png", $("#scrollPreviewCanvas").getCanvasImage().substr(22), { base64: true });
+                    scrollImg.file(vm.dests[vm.indexdl - 1].code + ".transmap.png", $("#scrollTransmapCanvas").getCanvasImage().substr(22), { base64: true });
                 }
                 vm.selectCurrentForZip(img, scrollImg, zip, hofName);
             } else {
@@ -1249,12 +1268,17 @@ var vm = new Vue({
                     "\t\t" + this.dests[dest].name +
                     "\t\t" + dir + "\\" + this.dests[dest].code + ".png";
                 // add scroll index
+                const sFront = this.dests[dest].scroll.index.includes('11');
+                const sSide = this.dests[dest].scroll.index.includes('12');
+                const sLine = this.dests[dest].scroll.index.includes('13');
                 if (this.dests[dest].scroll) {
                     terminus_list += "\t\t\t" +
-                        "\t" + (this.dests[dest].scroll.index.includes('11') ? dir + "\\" + this.dests[dest].code + ".png" : "") +
-                        "\t" + (this.dests[dest].scroll.index.includes('12') ? dir + "\\" + this.dests[dest].code + ".png" : "") +
-                        "\t" + (this.dests[dest].scroll.index.includes('13') ? dir + "\\" + this.dests[dest].code + ".png" : "") +
-                        "\t\t\t\t\t\t\t\t\t\t";
+                        "\t" + (sFront ? dir + "\\" + this.dests[dest].code + ".png" : "") +
+                        "\t" + (sSide ? dir + "\\" + this.dests[dest].code + ".png" : "") +
+                        "\t" + (sLine ? dir + "\\" + this.dests[dest].code + ".png" : "") +
+                        "\t" +
+                        (sLine ? "\t\t" : dir + "\\" + this.dests[dest].code + ".transmap.png\t") +
+                        "\t\t\t\t\t\t\t";
                 } else {
                     terminus_list += "\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t";
                 }
@@ -1363,6 +1387,7 @@ var vm = new Vue({
         this.scrollCanvas = document.getElementById("scrollCanvas");
         this.scrollPreviewCanvas = document.getElementById("scrollPreviewCanvas");
         this.scrollPreviewCanvasOver = document.getElementById("scrollPreviewCanvasOver");
+        this.scrollTransmapCanvas = document.getElementById("scrollTransmapCanvas");
         this.iconCanvas = document.getElementById("iconLoader");
 
         // contexts
@@ -1372,6 +1397,7 @@ var vm = new Vue({
         this.iconCtx = this.iconCanvas.getContext('2d');
         this.scrollPreviewCtx = this.scrollPreviewCanvas.getContext('2d');
         this.scrollPreviewCtxOver = this.scrollPreviewCanvasOver.getContext('2d');
+        this.scrollTransmapCtx = this.scrollTransmapCanvas.getContext('2d');
 
         // overlays
         this.overlayImage = document.getElementById('overlayImage');

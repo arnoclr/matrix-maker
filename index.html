@@ -1,59 +1,959 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Simple kpp maker - OMSI 2</title><meta name="description" content="Create colored matrix for omsi 2 and generate hof easily."><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><meta name="apple-mobile-web-app-title" content="Material Design Lite"><link rel="apple-touch-icon" href="./data/icons/icon-192x192.png"><meta name="msapplication-TileImage" content="./data/icons/icon-192x192.png"><meta name="msapplication-TileColor" content="#26C6DA"><link rel="shortcut icon" href="./data/icons/icon-96x96.png"><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#34515E"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Simple kpp maker - OMSI 2"><meta name="twitter:description" content="Create colored matrix for omsi 2 and generate hof easily."><meta name="twitter:creator" content="@ipsumhh"><meta name="twitter:image" content="http://kpp.genav.ch/data/illustrations/banner.jpg"><meta property="og:title" content="Simple kpp maker - OMSI 2"/><meta property="og:description" content="Create colored matrix for omsi 2 and generate hof easily."/><meta property="og:image" content="http://kpp.genav.ch/data/illustrations/banner.jpg"/><link rel="preconnect" href="https://fonts.gstatic.com"><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Material+Icons&display=swap" rel="stylesheet"><style>#preloader {
-        width: 100%;
-        height: 100%;
-        background-color: #eee;
-        position: fixed;
-        z-index: 11;
-        top: 0;
-        left: 0;
-        overflow: none;
-    }
-    #preloader svg {
-        position: absolute;
-        top: 50%;
-        left: calc(50% - 30px);
-    }
-    #preloader a {
-        font-family: Arial, Helvetica, sans-serif;
-        position: absolute;
-        bottom: 8px;
-        left: 8px;
-        text-decoration: none;
-        color: grey;
-        animation: 3s fadeIn;
-        animation-fill-mode: forwards;
-        visibility: hidden;
-    }
-    .loader ellipse {
-        stroke-dasharray:10, 9999;
-        animation:load 2s cubic-bezier(0.8,0.25,0.25,0.9) infinite, spin 2s linear infinite;
-        transform-origin:center;
-    }
-    @keyframes load {
-        50% {
-            stroke-dasharray:140;
-            stroke-dashoffset:0;
-            transform:rotateZ(0deg);
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <!-- basic meta -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple kpp maker - OMSI 2</title>
+    <meta name="description" content="Create colored matrix for omsi 2 and generate hof easily.">
+
+    <!-- app -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Material Design Lite">
+    <link rel="apple-touch-icon" href="./data/icons/icon-192x192.png">
+
+    <meta name="msapplication-TileImage" content="./data/icons/icon-192x192.png">
+    <meta name="msapplication-TileColor" content="#26C6DA">
+
+    <link rel="shortcut icon" href="./data/icons/icon-96x96.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#34515E">
+
+    <!-- twitter card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Simple kpp maker - OMSI 2">
+    <meta name="twitter:description" content="Create colored matrix for omsi 2 and generate hof easily.">
+    </meta>
+    <meta name="twitter:creator" content="@ipsumhh">
+    <meta name="twitter:image" content="http://kpp.genav.ch/data/illustrations/banner.jpg">
+
+    <!-- open graph -->
+    <meta property="og:title" content="Simple kpp maker - OMSI 2" />
+    <meta property="og:description" content="Create colored matrix for omsi 2 and generate hof easily." />
+    <meta property="og:image" content="http://kpp.genav.ch/data/illustrations/banner.jpg" />
+
+    <!-- google fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Material+Icons&display=swap"
+        rel="stylesheet">
+
+    <!-- preloader style html -->
+    <style>
+        #preloader {
+            width: 100%;
+            height: 100%;
+            background-color: #eee;
+            position: fixed;
+            z-index: 11;
+            top: 0;
+            left: 0;
+            overflow: none;
         }
-        100% {
-            stroke-dasharray:146;
-            stroke-dashoffset:-156;
+
+        #preloader svg {
+            position: absolute;
+            top: 50%;
+            left: calc(50% - 30px);
         }
-    }
-    @keyframes spin {
-        to {
-            transform:rotateZ(360deg);
-        }
-    }
-    @keyframes fadeIn {
-        99% {
+
+        #preloader a {
+            font-family: Arial, Helvetica, sans-serif;
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            text-decoration: none;
+            color: grey;
+            animation: 3s fadeIn;
+            animation-fill-mode: forwards;
             visibility: hidden;
         }
-        100% {
-            visibility: visible;
+
+        .loader ellipse {
+            stroke-dasharray: 10, 9999;
+            animation: load 2s cubic-bezier(0.8, 0.25, 0.25, 0.9) infinite, spin 2s linear infinite;
+            transform-origin: center;
         }
-    }</style><script defer="defer" src="dist/main.1dc4536e737a11c1b74d.js"></script><link href="dist/main.7273a805a68233a7fd16.css" rel="stylesheet"></head><body><div id="app"><div id="preloader"><svg class="loader" width="60" height="60" xmlns="http://www.w3.org/2000/svg"><g><ellipse ry="25" rx="25" cy="30" cx="30" stroke-width="5" stroke="#607d8b" fill="none"/></g></svg><noscript>Javascript is disabled :(</noscript><a href="https://github.com/arnoclr/matrix-maker/issues/new">not working ?</a></div><div id="main-hover" style="display: none;"></div><div id="dropzone" v-show="fileOnDrop" @dragover.prevent @dragleave="hofDragleave" @drop="hofDrop"><section class="empty-state"><ui-icon translate="no">backup</ui-icon><p translate-fr="Glissez déposez un fichier hof ou une archive au format json pour importer des girouettes">Drop hof file or kpp maker archive to import existing destinations</p><small><span translate-fr="formats supportés">supported formats</span> : .hof, .json</small></section></div><ui-dialog v-model="presentationDialogOpen" mask-closable><ui-dialog-content><div class="slider"><div class="slide" v-show="actualSlide == 0"><img class="loading" loading="lazy" width="512" height="250" src="https://i.imgur.com/szRCIZm.webp" alt="main interface"><h1>Welcome</h1><p>Welcome to simple kpp maker. Make beautiful matrix for omsi 2 in few minutes, without developer knowledge.</p></div><div class="slide" v-show="actualSlide == 1"><img class="loading" loading="lazy" width="512" height="250" src="https://i.imgur.com/guqnbeH.webp" alt="scrolling options"><h1>Rich editor</h1><p>Use multiples fonts, create scrolling animations and add icons. Edit colors and more with simple UI.</p></div><div class="slide" v-show="actualSlide == 2"><img class="loading" loading="lazy" width="512" height="250" src="https://i.imgur.com/o6GPmou.webp" alt="download modal"><h1>Download</h1><p>Instant download your destinations and use it in OMSI2, without prior configuration.</p></div><ui-icon-button class="prev-btn" v-show="actualSlide != 0" @click="actualSlide-=1" icon="arrow_backward"></ui-icon-button><ui-icon-button class="next-btn" v-show="actualSlide < 2" @click="actualSlide+=1" icon="arrow_forward"></ui-icon-button></div></ui-dialog-content></ui-dialog><ui-dialog :open="changelogDialogOpen" @close="writeUrl();" mask-closable><ui-dialog-title>New version {{ appData.version }}</ui-dialog-title><ui-dialog-content><p>Changelog of {{ appData.date }}</p><div v-for="(categorie, name) in changelog" :key="name">{{ name }}<ul><li v-for="(line, index) in categorie" :key="index">{{ line }}</li></ul></div></ui-dialog-content><ui-button style="display: none;"></ui-button></ui-dialog><ui-dialog v-model="newDialogOpen" @close="writeUrl();" mask-closable><ui-dialog-title translate-fr="Ajouter une destination">Create new destination</ui-dialog-title><ui-dialog-content style="width: 360px;"><p translate-fr="Ce code est un identifiant pour selectionner les girouettes en jeu, l'indice de ligne présent sur la girouette peut être choisi indépendament.">The code is an identifier used to select dests in game. The line index can be chosen separately.</p><section><ui-textfield fullwidth v-model="addDestCode" helper-text-id="input-add-dest-helper" input-type="number" min="0" max="999" maxlength="3" with-counter>Code</ui-textfield><ui-textfield-helper id="input-add-dest-helper" class="invalid" v-show="dests.find(x => x.code === addDestCode)" visible>Code is already taken</ui-textfield-helper></section><p></p><ui-button :disabled="dests.find(x => x.code === addDestCode) || addDestCode == '' || addDestCode > 999" @click="addDest(addDestCode);newDialogOpen = false" raised translate-fr="Créer">create</ui-button></ui-dialog-content></ui-dialog><ui-dialog v-model="shareDialogOpen" @close="writeUrl();" mask-closable><ui-dialog-title translate-fr="Partager cette girouette">Share current matrix</ui-dialog-title><ui-dialog-content style="max-width:298px;"><img height="250" width="250" class="loading" :src="qrurl" alt="qr code"><hr><p translate-fr="Ouvrez ce lien dans un autre navigateur pour importer cette girouette.">Open this link in a new browser to import current matrix.</p><ui-textfield outlined v-model="shurl" @focus="$event.target.select()" style="width:100%;margin-bottom:16px;">{{ current.name }} matrix link<template #after><ui-textfield-icon title="Copy to clipboard" aria-describedby="clipboard copy" @click.native="copyToClipboard(shurl)">content_copy</ui-textfield-icon></template></ui-textfield><ui-form-field v-if="shurl" v-show="!shurl.includes('bit.ly')"><ui-checkbox onclick="vm.reduceShareUrl();" input-id="checkbox-reduce-link" v-model="shurlcb"></ui-checkbox><label for="checkbox-reduce-link" translate-fr="Générer un lien raccourci">Generate reduced link</label></ui-form-field></ui-dialog-content><ui-button style="display: none;"></ui-button></ui-dialog><ui-dialog v-model="downloadDialogOpen" @close="writeUrl()" mask-closable><ui-dialog-content><section class="illustration"><ui-icon class="purple600">get_app</ui-icon><h4 translate-fr="Dernière étape">Last step</h4><p translate-fr="Choisissez un nom pour votre hof">Select a hof name file</p><img loading="lazy" height="363" width="335" src="./data/illustrations/package.png"></section><ui-textfield outlined v-model="hofName">hof name</ui-textfield><ui-button raised class="modal-float-right" @click="generateHof()" :disabled="hofName == ''" translate-fr="Télécharger">Download</ui-button></ui-dialog-content></ui-dialog><ui-dialog :open="downloadProgressDialogOpen"><ui-dialog-content><p>Generation ...</p><ui-spinner v-if="downloadProgressDialogOpen" :progress="(indexdl + 1) / dests.length"></ui-spinner></ui-dialog-content><ui-button style="display: none;"></ui-button></ui-dialog><ui-dialog v-model="statusDialogOpen" @close="writeUrl()" mask-closable><ui-dialog-title><ui-icon style="margin-top:16px;" :size="36">{{ syncStatus ? 'done' : 'settings_backup_restore' }}</ui-icon></ui-dialog-title><ui-dialog-content style="max-width:300px;"><p v-show="syncStatus">Great ! All your dests are saved in this device. You can quit this website and reopen later without loose your data.</p><span v-show="!syncStatus"><p>Caution ! Don't quit this website without save data, or you will loose your actual work.</p><ui-switch input-id="toggle-autosave-status-modal" v-tooltip="'toggle autosave'" aria-describedby="toggle autosave" v-model="autosave" @change="autosavePersist()"></ui-switch><label for="toggle-autosave-status-modal">Autosave</label><br><small>We recommend that you enable automatic backup</small></span></ui-dialog-content><ui-button style="display: none;"></ui-button></ui-dialog><ui-dialog v-model="licenceDialogOpen" @close="writeUrl()" mask-closable><ui-dialog-content><ui-nav><ui-nav-item href="https://omsistuff.ga/?utm_source=kpp_maker&utm_medium=link&utm_campaign=beta"><ui-item-first-content><ui-icon translate="no">palette</ui-icon></ui-item-first-content><ui-item-text-content>Repaint library</ui-item-text-content></ui-nav-item><ui-nav-item href="https://github.com/arnoclr/matrix-maker"><ui-item-first-content><ui-icon translate="no"><svg width="24" height="24" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg"><path d="M 500 0C 500 0 500 0 500 0C 776 0 1000 224 1000 500C 1000 720 857 908 659 974C 634 979 625 963 625 950C 625 933 626 879 626 813C 626 766 610 736 592 720C 703 708 820 665 820 473C 820 418 801 374 769 339C 774 327 791 275 764 207C 764 207 722 193 626 258C 586 247 544 241 501 241C 459 241 416 247 376 258C 281 194 239 207 239 207C 211 275 229 327 234 339C 202 374 183 419 183 473C 183 665 299 708 410 720C 396 733 383 755 378 787C 349 800 278 821 233 746C 223 731 195 694 156 695C 114 695 139 718 156 728C 178 740 202 784 208 798C 218 826 250 880 376 857C 376 899 376 938 376 950C 376 963 367 978 342 974C 143 908 0 721 0 500C 0 224 224 0 500 0"/></svg></ui-icon></ui-item-first-content><ui-item-text-content>Open source project</ui-item-text-content></ui-nav-item><ui-nav-item href="https://kpp.genav.ch/discord"><ui-item-first-content><ui-icon translate="no"><svg width="24" height="24" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg"><path d=" M 386 203C 387 203 388 203 388 203C 388 203 395 212 395 212C 267 248 209 304 209 304C 209 304 224 296 250 284C 326 250 386 241 411 239C 415 238 419 238 423 238C 466 232 515 231 566 236C 633 244 705 264 779 304C 779 304 723 251 603 214C 603 214 612 203 612 203C 612 203 709 201 811 277C 811 277 913 462 913 689C 913 689 853 792 697 797C 697 797 671 767 650 740C 743 714 778 656 778 656C 749 675 721 688 697 697C 661 712 627 722 594 728C 526 740 464 737 411 727C 371 719 336 708 307 697C 291 690 273 682 255 673C 253 671 251 670 249 669C 248 668 247 668 246 667C 233 660 226 655 226 655C 226 655 260 711 350 738C 329 765 303 797 303 797C 146 792 87 689 87 689C 87 462 189 277 189 277C 284 206 375 203 386 203C 386 203 386 203 386 203M 368 467C 327 467 296 502 296 545C 296 588 328 624 368 624C 408 624 440 588 440 545C 441 502 408 467 368 467C 368 467 368 467 368 467M 626 467C 586 467 554 502 554 545C 554 588 586 624 626 624C 666 624 698 588 698 545C 698 502 666 467 626 467C 626 467 626 467 626 467"/></svg></ui-icon></ui-item-first-content><ui-item-text-content>Discord server</ui-item-text-content></ui-nav-item><ui-nav-item href="https://www.instagram.com/_genav/"><ui-item-first-content><ui-icon translate="no"><svg width="24" height="24" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg"><path d="M 503 25C 631 25 647 26 697 28C 748 30 782 38 812 50C 843 62 870 78 896 105C 922 131 938 157 950 188C 962 218 970 253 972 303C 975 353 975 369 975 498C 975 626 975 642 972 693C 970 743 962 777 950 807C 938 838 922 865 896 891C 870 917 843 934 812 946C 782 957 748 965 698 968C 647 970 631 970 503 970C 374 970 358 970 308 968C 257 965 223 957 193 946C 162 934 136 917 109 891C 83 865 67 838 55 807C 43 777 35 743 33 693C 31 642 30 626 30 498C 30 369 31 353 33 303C 35 253 43 218 55 188C 67 157 83 131 109 105C 136 78 162 62 193 50C 223 38 258 30 308 28C 358 26 374 25 503 25C 503 25 503 25 503 25M 460 110C 372 110 355 111 312 113C 266 115 241 123 224 129C 202 138 186 148 170 165C 153 181 143 197 134 219C 128 236 120 261 118 307C 116 356 115 371 115 498C 115 624 116 639 118 689C 120 735 128 760 134 776C 143 798 153 814 170 831C 186 847 202 857 224 866C 241 872 266 880 312 882C 362 885 377 885 503 885C 629 885 644 885 694 882C 740 880 765 873 781 866C 804 857 819 847 836 831C 852 814 863 798 871 776C 878 760 885 735 887 689C 890 639 890 624 890 498C 890 372 890 357 887 307C 885 261 878 236 871 219C 863 197 852 181 836 165C 819 148 804 138 781 129C 765 123 740 115 694 113C 644 111 629 110 503 110C 487 110 473 110 460 110C 460 110 460 110 460 110M 755 189C 786 189 812 214 812 246C 812 277 786 302 755 302C 724 302 698 277 698 246C 698 214 724 189 755 189C 755 189 755 189 755 189M 503 255C 637 255 745 364 745 498C 745 632 637 740 503 740C 369 740 260 632 260 498C 260 364 369 255 503 255C 503 255 503 255 503 255M 345 498C 345 585 416 655 503 655C 590 655 660 585 660 498C 660 411 590 340 503 340C 416 340 345 411 345 498C 345 498 345 498 345 498"/></svg></ui-icon></ui-item-first-content><ui-item-text-content>Instagram</ui-item-text-content></ui-nav-item><ui-divider>Attributions</ui-divider><ui-nav-item href="https://fonts.google.com/specimen/Poppins"><ui-item-first-content><ui-icon translate="no">format_size</ui-icon></ui-item-first-content><ui-item-text-content>Google fonts</ui-item-text-content></ui-nav-item><ui-nav-item href="http://www.freepik.com"><ui-item-first-content><ui-icon translate="no">wallpaper</ui-icon></ui-item-first-content><ui-item-text-content>Designed by macrovector / Freepik</ui-item-text-content></ui-nav-item></ui-nav><div style="padding:8px"><p translate-fr="Site dévellopé par Adam Mathieson et Arno Cellarier.">Site develloped by Adam Mathieson and Arno Cellarier. Fonts copyright their respective owners</p><small>version {{ appData.version }} <a href="#!" @click="debugInfos">debug infos</a></small></div></ui-dialog-content><ui-button style="display: none;"></ui-button></ui-dialog><div class="demo-container"><ui-top-app-bar v-shadow="4" class="demo-app-bar" content-selector=".demo-app-content" nav-id="nav-menu"><span id="nav-title-text">Kpp Maker</span><template #toolbar="{ toolbarItemClass }"><ui-icon-button @click="$balmUI.onOpen('statusDialogOpen');writeUrl('status')" v-tooltip="'show save status'" aria-describedby="save status" :icon="syncStatus ? 'done' : 'sync'"></ui-icon-button><ui-icon-button :class="toolbarItemClass" v-tooltip="'Save all destinations in device storage'" aria-describedby="save in storage" icon="save" @click="saveDestsInLocalStorage()"></ui-icon-button><div class="menu-content"><ui-icon-button :class="toolbarItemClass" icon="get_app" @click="$balmUI.onOpen('downloadMenu')"></ui-icon-button><ui-menu-anchor absolute><ui-menu @selected="onSelected" v-model="downloadMenu" :items="[
+
+        @keyframes load {
+            50% {
+                stroke-dasharray: 140;
+                stroke-dashoffset: 0;
+                transform: rotateZ(0deg);
+            }
+
+            100% {
+                stroke-dasharray: 146;
+                stroke-dashoffset: -156;
+            }
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotateZ(360deg);
+            }
+        }
+
+        @keyframes fadeIn {
+            99% {
+                visibility: hidden;
+            }
+
+            100% {
+                visibility: visible;
+            }
+        }
+    </style>
+
+<script defer src="tmp/main.6dcad22c1256c53f26a4.js"></script><link href="tmp/main.4d082b87829333791744.css" rel="stylesheet"></head>
+
+<body>
+
+    <div id="app">
+
+        <!-- preloader -->
+        <div id="preloader">
+            <svg class="loader" width="60" height="60" xmlns="http://www.w3.org/2000/svg">
+                <g>
+                    <ellipse ry="25" rx="25" cy="30" cx="30" stroke-width="5" stroke="#607d8b" fill="none" />
+                </g>
+            </svg>
+            <noscript>Javascript is disabled :(</noscript>
+            <a href="https://github.com/arnoclr/matrix-maker/issues/new">not working ?</a>
+        </div>
+
+        <!-- hover preview matrix -->
+        <div id="main-hover" style="display: none;"></div>
+
+        <!-- dropzone -->
+        <div id="dropzone" v-show="fileOnDrop" @dragover.prevent @dragleave="hofDragleave" @drop="hofDrop">
+            <section class="empty-state">
+                <ui-icon translate="no">backup</ui-icon>
+                <p
+                    translate-fr="Glissez déposez un fichier hof ou une archive au format json pour importer des girouettes">
+                    Drop hof file or kpp maker archive to import existing destinations</p>
+                <small><span translate-fr="formats supportés">supported formats</span> : .hof, .json</small>
+            </section>
+        </div>
+
+        <!-- presentation dialog -->
+        <ui-dialog v-model="presentationDialogOpen" mask-closable>
+            <ui-dialog-content>
+                <div class="slider">
+                    <div class="slide" v-show="actualSlide == 0">
+                        <img class="loading" loading="lazy" width="512" height="250"
+                            src="https://i.imgur.com/szRCIZm.webp" alt="main interface">
+                        <h1>Welcome</h1>
+                        <p>Welcome to simple kpp maker. Make beautiful matrix for omsi 2 in few minutes, without
+                            developer knowledge.</p>
+                    </div>
+                    <div class="slide" v-show="actualSlide == 1">
+                        <img class="loading" loading="lazy" width="512" height="250"
+                            src="https://i.imgur.com/guqnbeH.webp" alt="scrolling options">
+                        <h1>Rich editor</h1>
+                        <p>Use multiples fonts, create scrolling animations and add icons. Edit colors and more with
+                            simple UI.</p>
+                    </div>
+                    <div class="slide" v-show="actualSlide == 2">
+                        <img class="loading" loading="lazy" width="512" height="250"
+                            src="https://i.imgur.com/o6GPmou.webp" alt="download modal">
+                        <h1>Download</h1>
+                        <p>Instant download your destinations and use it in OMSI2, without prior configuration.</p>
+                    </div>
+                    <ui-icon-button class="prev-btn" v-show="actualSlide != 0" @click="actualSlide-=1"
+                        icon="arrow_backward"></ui-icon-button>
+                    <ui-icon-button class="next-btn" v-show="actualSlide < 2" @click="actualSlide+=1"
+                        icon="arrow_forward"></ui-icon-button>
+                </div>
+            </ui-dialog-content>
+        </ui-dialog>
+
+        <!-- changelog dialog -->
+        <ui-dialog :open="changelogDialogOpen" @close="writeUrl();" mask-closable>
+            <ui-dialog-title>New version {{ appData.version }}</ui-dialog-title>
+            <ui-dialog-content>
+                <p>Changelog of {{ appData.date }}</p>
+                <div v-for="(categorie, name) in changelog" :key="name">
+                    {{ name }}
+                    <ul>
+                        <li v-for="(line, index) in categorie" :key="index">{{ line }}</li>
+                    </ul>
+                </div>
+            </ui-dialog-content>
+            <ui-button style="display: none;"></ui-button>
+        </ui-dialog>
+
+        <!-- new dest dialog -->
+        <ui-dialog v-model="newDialogOpen" @close="writeUrl();" mask-closable>
+            <ui-dialog-title translate-fr="Ajouter une destination">Create new destination</ui-dialog-title>
+            <ui-dialog-content style="width: 360px;">
+                <p
+                    translate-fr="Ce code est un identifiant pour selectionner les girouettes en jeu, l'indice de ligne présent sur la girouette peut être choisi indépendament.">
+                    The code is an identifier used to select dests in game. The line index can be chosen separately.</p>
+                <section>
+                    <ui-textfield fullwidth v-model="addDestCode" helper-text-id="input-add-dest-helper"
+                        input-type="number" min="0" max="999" maxlength="3" with-counter>
+                        Code
+                    </ui-textfield>
+                    <ui-textfield-helper id="input-add-dest-helper" class="invalid"
+                        v-show="dests.find(x => x.code === addDestCode)" visible>Code is already taken
+                    </ui-textfield-helper>
+                </section>
+                <p></p>
+                <ui-button :disabled="dests.find(x => x.code === addDestCode) || addDestCode == '' || addDestCode > 999"
+                    @click="addDest(addDestCode);newDialogOpen = false" raised translate-fr="Créer">create</ui-button>
+            </ui-dialog-content>
+        </ui-dialog>
+
+        <!-- share dialog -->
+        <ui-dialog v-model="shareDialogOpen" @close="writeUrl();" mask-closable>
+            <ui-dialog-title translate-fr="Partager cette girouette">Share current matrix</ui-dialog-title>
+            <ui-dialog-content style="max-width:298px;">
+                <img height="250" width="250" class="loading" :src="qrurl" alt="qr code">
+                <hr>
+                <p translate-fr="Ouvrez ce lien dans un autre navigateur pour importer cette girouette.">Open this link
+                    in a new browser to import current matrix.</p>
+                <ui-textfield outlined v-model="shurl" @focus="$event.target.select()"
+                    style="width:100%;margin-bottom:16px;">
+                    {{ current.name }} matrix link
+                    <template #after>
+                        <ui-textfield-icon title="Copy to clipboard" aria-describedby="clipboard copy"
+                            @click.native="copyToClipboard(shurl)">content_copy</ui-textfield-icon>
+                    </template>
+                </ui-textfield>
+                <ui-form-field v-if="shurl" v-show="!shurl.includes('bit.ly')">
+                    <ui-checkbox onclick="vm.reduceShareUrl();" input-id="checkbox-reduce-link" v-model="shurlcb">
+                    </ui-checkbox>
+                    <label for="checkbox-reduce-link" translate-fr="Générer un lien raccourci">Generate reduced
+                        link</label>
+                </ui-form-field>
+            </ui-dialog-content>
+            <ui-button style="display: none;"></ui-button>
+        </ui-dialog>
+
+        <!-- download hof dialog -->
+        <ui-dialog v-model="downloadDialogOpen" @close="writeUrl()" mask-closable>
+            <ui-dialog-content>
+                <section class="illustration">
+                    <ui-icon class="purple600">get_app</ui-icon>
+                    <h4 translate-fr="Dernière étape">Last step</h4>
+                    <p translate-fr="Choisissez un nom pour votre hof">Select a hof name file</p>
+                    <img loading="lazy" height="363" width="335" src="./data/illustrations/package.png">
+                </section>
+                <ui-textfield outlined v-model="hofName">hof name</ui-textfield>
+                <ui-button raised class="modal-float-right" @click="generateHof()" :disabled="hofName == ''"
+                    translate-fr="Télécharger">Download</ui-button>
+            </ui-dialog-content>
+        </ui-dialog>
+
+        <!-- download progress hof dialog -->
+        <ui-dialog :open="downloadProgressDialogOpen">
+            <ui-dialog-content>
+                <p>Generation ...</p>
+                <ui-spinner v-if="downloadProgressDialogOpen" :progress="(indexdl + 1) / dests.length"></ui-spinner>
+            </ui-dialog-content>
+            <ui-button style="display: none;"></ui-button>
+        </ui-dialog>
+
+        <!-- sync dialog -->
+        <ui-dialog v-model="statusDialogOpen" @close="writeUrl()" mask-closable>
+            <ui-dialog-title>
+                <ui-icon style="margin-top:16px;" :size="36">{{ syncStatus ? 'done' : 'settings_backup_restore' }}
+                </ui-icon>
+            </ui-dialog-title>
+            <ui-dialog-content style="max-width:300px;">
+                <p v-show="syncStatus">Great ! All your dests are saved in this device. You can quit this website and
+                    reopen later without loose your data.</p>
+                <span v-show="!syncStatus">
+                    <p>Caution ! Don't quit this website without save data, or you will loose your actual work.</p>
+                    <ui-switch input-id="toggle-autosave-status-modal" v-tooltip="'toggle autosave'"
+                        aria-describedby="toggle autosave" v-model="autosave" @change="autosavePersist()"></ui-switch>
+                    <label for="toggle-autosave-status-modal">Autosave</label>
+                    <br><small>We recommend that you enable automatic backup</small>
+                </span>
+            </ui-dialog-content>
+            <ui-button style="display: none;"></ui-button>
+        </ui-dialog>
+
+        <!-- licence dialog -->
+        <ui-dialog v-model="licenceDialogOpen" @close="writeUrl()" mask-closable>
+            <ui-dialog-content>
+                <ui-nav>
+                    <ui-nav-item href="https://omsistuff.ga/?utm_source=kpp_maker&utm_medium=link&utm_campaign=beta">
+                        <ui-item-first-content>
+                            <ui-icon translate="no">palette</ui-icon>
+                        </ui-item-first-content>
+                        <ui-item-text-content>Repaint library</ui-item-text-content>
+                    </ui-nav-item>
+                    <ui-nav-item href="https://github.com/arnoclr/matrix-maker">
+                        <ui-item-first-content>
+                            <ui-icon translate="no">
+                                <svg width="24" height="24" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M 500 0C 500 0 500 0 500 0C 776 0 1000 224 1000 500C 1000 720 857 908 659 974C 634 979 625 963 625 950C 625 933 626 879 626 813C 626 766 610 736 592 720C 703 708 820 665 820 473C 820 418 801 374 769 339C 774 327 791 275 764 207C 764 207 722 193 626 258C 586 247 544 241 501 241C 459 241 416 247 376 258C 281 194 239 207 239 207C 211 275 229 327 234 339C 202 374 183 419 183 473C 183 665 299 708 410 720C 396 733 383 755 378 787C 349 800 278 821 233 746C 223 731 195 694 156 695C 114 695 139 718 156 728C 178 740 202 784 208 798C 218 826 250 880 376 857C 376 899 376 938 376 950C 376 963 367 978 342 974C 143 908 0 721 0 500C 0 224 224 0 500 0" />
+                                </svg>
+                            </ui-icon>
+                        </ui-item-first-content>
+                        <ui-item-text-content>Open source project</ui-item-text-content>
+                    </ui-nav-item>
+                    <ui-nav-item href="https://kpp.genav.ch/discord">
+                        <ui-item-first-content>
+                            <ui-icon translate="no">
+                                <svg width="24" height="24" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d=" M 386 203C 387 203 388 203 388 203C 388 203 395 212 395 212C 267 248 209 304 209 304C 209 304 224 296 250 284C 326 250 386 241 411 239C 415 238 419 238 423 238C 466 232 515 231 566 236C 633 244 705 264 779 304C 779 304 723 251 603 214C 603 214 612 203 612 203C 612 203 709 201 811 277C 811 277 913 462 913 689C 913 689 853 792 697 797C 697 797 671 767 650 740C 743 714 778 656 778 656C 749 675 721 688 697 697C 661 712 627 722 594 728C 526 740 464 737 411 727C 371 719 336 708 307 697C 291 690 273 682 255 673C 253 671 251 670 249 669C 248 668 247 668 246 667C 233 660 226 655 226 655C 226 655 260 711 350 738C 329 765 303 797 303 797C 146 792 87 689 87 689C 87 462 189 277 189 277C 284 206 375 203 386 203C 386 203 386 203 386 203M 368 467C 327 467 296 502 296 545C 296 588 328 624 368 624C 408 624 440 588 440 545C 441 502 408 467 368 467C 368 467 368 467 368 467M 626 467C 586 467 554 502 554 545C 554 588 586 624 626 624C 666 624 698 588 698 545C 698 502 666 467 626 467C 626 467 626 467 626 467" />
+                                </svg>
+                            </ui-icon>
+                        </ui-item-first-content>
+                        <ui-item-text-content>Discord server</ui-item-text-content>
+                    </ui-nav-item>
+                    <ui-nav-item href="https://www.instagram.com/_genav/">
+                        <ui-item-first-content>
+                            <ui-icon translate="no">
+                                <svg width="24" height="24" viewBox="0 0 1000 1000" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M 503 25C 631 25 647 26 697 28C 748 30 782 38 812 50C 843 62 870 78 896 105C 922 131 938 157 950 188C 962 218 970 253 972 303C 975 353 975 369 975 498C 975 626 975 642 972 693C 970 743 962 777 950 807C 938 838 922 865 896 891C 870 917 843 934 812 946C 782 957 748 965 698 968C 647 970 631 970 503 970C 374 970 358 970 308 968C 257 965 223 957 193 946C 162 934 136 917 109 891C 83 865 67 838 55 807C 43 777 35 743 33 693C 31 642 30 626 30 498C 30 369 31 353 33 303C 35 253 43 218 55 188C 67 157 83 131 109 105C 136 78 162 62 193 50C 223 38 258 30 308 28C 358 26 374 25 503 25C 503 25 503 25 503 25M 460 110C 372 110 355 111 312 113C 266 115 241 123 224 129C 202 138 186 148 170 165C 153 181 143 197 134 219C 128 236 120 261 118 307C 116 356 115 371 115 498C 115 624 116 639 118 689C 120 735 128 760 134 776C 143 798 153 814 170 831C 186 847 202 857 224 866C 241 872 266 880 312 882C 362 885 377 885 503 885C 629 885 644 885 694 882C 740 880 765 873 781 866C 804 857 819 847 836 831C 852 814 863 798 871 776C 878 760 885 735 887 689C 890 639 890 624 890 498C 890 372 890 357 887 307C 885 261 878 236 871 219C 863 197 852 181 836 165C 819 148 804 138 781 129C 765 123 740 115 694 113C 644 111 629 110 503 110C 487 110 473 110 460 110C 460 110 460 110 460 110M 755 189C 786 189 812 214 812 246C 812 277 786 302 755 302C 724 302 698 277 698 246C 698 214 724 189 755 189C 755 189 755 189 755 189M 503 255C 637 255 745 364 745 498C 745 632 637 740 503 740C 369 740 260 632 260 498C 260 364 369 255 503 255C 503 255 503 255 503 255M 345 498C 345 585 416 655 503 655C 590 655 660 585 660 498C 660 411 590 340 503 340C 416 340 345 411 345 498C 345 498 345 498 345 498" />
+                                </svg>
+                            </ui-icon>
+                        </ui-item-first-content>
+                        <ui-item-text-content>Instagram</ui-item-text-content>
+                    </ui-nav-item>
+                    <ui-divider>Attributions</ui-divider>
+                    <ui-nav-item href="https://fonts.google.com/specimen/Poppins">
+                        <ui-item-first-content>
+                            <ui-icon translate="no">format_size</ui-icon>
+                        </ui-item-first-content>
+                        <ui-item-text-content>Google fonts</ui-item-text-content>
+                    </ui-nav-item>
+                    <ui-nav-item href="http://www.freepik.com">
+                        <ui-item-first-content>
+                            <ui-icon translate="no">wallpaper</ui-icon>
+                        </ui-item-first-content>
+                        <ui-item-text-content>Designed by macrovector / Freepik</ui-item-text-content>
+                    </ui-nav-item>
+                </ui-nav>
+                <div style="padding:8px">
+                    <p translate-fr="Site dévellopé par Adam Mathieson et Arno Cellarier.">Site develloped by Adam
+                        Mathieson and Arno Cellarier. Fonts copyright their respective owners</p>
+                    <small>version {{ appData.version }} <a href="#!" @click="debugInfos">debug infos</a></small>
+                </div>
+            </ui-dialog-content>
+            <ui-button style="display: none;"></ui-button>
+        </ui-dialog>
+
+        <div class="demo-container">
+            <!-- App bar -->
+            <ui-top-app-bar v-shadow="4" class="demo-app-bar" content-selector=".demo-app-content" nav-id="nav-menu">
+                <span id="nav-title-text">Kpp Maker</span>
+                <template #toolbar="{ toolbarItemClass }">
+                    <ui-icon-button @click="$balmUI.onOpen('statusDialogOpen');writeUrl('status')"
+                        v-tooltip="'show save status'" aria-describedby="save status"
+                        :icon="syncStatus ? 'done' : 'sync'"></ui-icon-button>
+                    <ui-icon-button :class="toolbarItemClass" v-tooltip="'Save all destinations in device storage'"
+                        aria-describedby="save in storage" icon="save" @click="saveDestsInLocalStorage()">
+                    </ui-icon-button>
+
+                    <div class="menu-content">
+                        <ui-icon-button :class="toolbarItemClass" icon="get_app"
+                            @click="$balmUI.onOpen('downloadMenu')"></ui-icon-button>
+                        <ui-menu-anchor absolute>
+                            <ui-menu @selected="onSelected" v-model="downloadMenu" :items="[
                                 'Current matrix',
                                 'Create hof with destinations',
                                 'Export as json'
-                            ]"></ui-menu></ui-menu-anchor></div></template></ui-top-app-bar><ui-drawer :type="isMobile ? 'modal' : 'dismissible'" nav-id="nav-menu" viewport-height><ui-drawer-header v-show="current.code" v-shadow="headerShadow" style="z-index:1;padding-bottom:16px;"><canvas width="256" height="64" style="border: solid 1px black;margin-left:-18px;" id="canvas"></canvas><ui-drawer-title>{{ current.name }}</ui-drawer-title><ui-drawer-subtitle><template v-for="(dest, i) in alternatesDests"><span :class="(dest.code == current.code && current.alternates > 1) ? 'active' : ''">{{ dest.code }}</span><ui-icon class="align" v-if="current.alternates > 1 && i < alternatesDests.length - 1">arrow_forward</ui-icon></template></ui-drawer-subtitle><ui-switch input-id="toggle-autosave" v-tooltip="'toggle autosave'" aria-describedby="toggle autosave" v-model="autosave" @change="autosavePersist()" style="color: #fff;margin-top:12px;"></ui-switch><label for="toggle-autosave" translate-fr="Sauvegarde auto">Autosave</label><div v-if="multiplesDestWithSameName" class="disclaimer mt"><ui-icon translate="no">error</ui-icon><p translate-fr="Plusieurs destinations ont le même code">2 or more dests have the same code</p></div></ui-drawer-header><ui-drawer-content id="dest-container"><ui-nav><ui-textfield style="width:95%;margin-left:8px;" input-type="search" v-model="searchDest" id="search-dest">Search<template #before><ui-textfield-icon translate="no">search</ui-textfield-icon></template></ui-textfield><ui-nav-item href="javascript:void(0)" :draggable="dest.alternates != undefined" ondragstart="vm.destDragStart(event);" ondragover="vm.destDropOver(event);" ondrop="vm.destDropped(event);" ondragend="vm.destDropEnd(event);" ondragleave="vm.destDropLeave(event);" @click="selectCurrent(index);writeUrl()" :active="dest.name == current.name" v-for="(dest, index) in dests" :key="index" :id="index + '-nav-item'" :data-drag="index" class="nav-item" v-show="(dest.name.toLowerCase().includes(searchDest.toLowerCase()) || dest.code.toString().includes(searchDest)) && dest.code < 1000"><ui-item-first-content style="margin-right:4px"><ui-icon v-bind:style="{ color: dest.line.back != '#ffffff' ? dest.line.back : '#bbbbbb' }">flag</ui-icon></ui-item-first-content><ui-item-text-content><span style="width:24px;">{{dest.code}}</span><ui-icon class="align rotate">{{ dest.alternates > 1 ? 'call_split' : 'arrow_upward' }}</ui-icon>{{dest.name}}</ui-item-text-content><ui-icon v-if="!ondrag" class="align draggable drag-icon-hide-class" style="position:absolute;right:4px">drag_handle</ui-icon></ui-nav-item><hr><ui-nav-item draggable="false" target="_blank" :href="'https://github.com/arnoclr/matrix-maker/issues/new?body=' + encodeURIComponent('<!-- describe the problem encountered below -->\n\n<!-- Steps to reproduce the bug -->\n\n<!-- Please include a screenshot (photo or video) -->\n\n<!-- This string represent your actual dest, please don\'t remove it -->\n```json\n' + JSON.stringify(current) + '\n```')"><ui-item-first-content><ui-icon translate="no">feedback</ui-icon></ui-item-first-content><ui-item-text-content translate-fr="Signaler un bug">Bug report</ui-item-text-content></ui-nav-item><ui-nav-item draggable="false" href="https://forms.gle/DcYYG9u63hQnE8e67" target="_blank"><ui-item-first-content><ui-icon translate="no">cloud_upload</ui-icon></ui-item-first-content><ui-item-text-content translate-fr="Proposer des icônes">Submit icons</ui-item-text-content></ui-nav-item><ui-nav-item draggable="false" @click="openSettings" href="javascript:void(0)"><ui-item-first-content><ui-icon translate="no">settings</ui-icon></ui-item-first-content><ui-item-text-content translate-fr="Paramètres">Settings</ui-item-text-content></ui-nav-item><div style="margin:16px;margin-bottom:120px;"><small translate-fr="Les codes de girouettes doivent être uniques, des bugs dans le jeu peuvent survenir sinon">matrix codes must be unique, the hof will not work correctly otherwise.</small></div></ui-nav><ui-icon-button v-tooltip="'Terms and attributions'" aria-describedby="details" style="position:absolute;bottom:72px;left:8px" @click="$balmUI.onOpen('licenceDialogOpen');writeUrl('licence')" icon="info"></ui-icon-button></ui-drawer-content></ui-drawer><ui-drawer-backdrop v-if="isMobile"></ui-drawer-backdrop><ui-drawer-app-content class="demo-app-content" ondragover="vm.hofDragover(event);"><ui-fab title="add dest" @click="$balmUI.onOpen('newDialogOpen');writeUrl('new')" icon="add"></ui-fab><section v-shadow="2" v-show="current.code" class="hof-data"><ui-textfield outlined v-model="current.code" input-type="number" style="width:7rem;height:48px;" v-show="!isMobile" disabled="disabled">code</ui-textfield><ui-textfield outlined v-model="current.name" style="height:48px;" id="res-tf-c-name" required>dest</ui-textfield><ui-menu-anchor style="float: right;"><ui-icon-button @click="$balmUI.onOpen('toolsMenuOpen')" icon="more_vert"></ui-icon-button><ui-menu v-model="toolsMenuOpen" @selected="onSelectedTools"><ui-menuitem :disabled="current.code > 999"><ui-menuitem-icon><ui-icon translate="no">share</ui-icon></ui-menuitem-icon><ui-menuitem-text translate-fr="Partager la girouette">share current matrix</ui-menuitem-text></ui-menuitem><ui-menuitem><ui-menuitem-icon><ui-icon id="btn-spinning">refresh</ui-icon></ui-menuitem-icon><ui-menuitem-text translate-fr="Rafraîchir le rendu">refresh render</ui-menuitem-text></ui-menuitem><ui-menuitem><ui-menuitem-icon><ui-icon translate="no">settings</ui-icon></ui-menuitem-icon><ui-menuitem-text translate-fr="Paramètres de la girouette">current matrix settings</ui-menuitem-text></ui-menuitem><ui-menuitem><ui-menuitem-icon><ui-icon translate="no">dashboard_customize</ui-icon></ui-menuitem-icon><ui-menuitem-text translate-fr="Editer les icônes">edit icons</ui-menuitem-text></ui-menuitem><ui-menuitem><ui-menuitem-icon><ui-icon translate="no">animation</ui-icon></ui-menuitem-icon><ui-menuitem-text>{{ current.scroll ? 'scrolling settings' : 'add scrolling'}}</ui-menuitem-text></ui-menuitem><ui-menuitem><ui-menuitem-icon><ui-icon translate="no">content_copy</ui-icon></ui-menuitem-icon><ui-menuitem-text translate-fr="Dupliquer">duplicate current</ui-menuitem-text></ui-menuitem><ui-menuitem><ui-menuitem-icon><ui-icon translate="no">delete</ui-icon></ui-menuitem-icon><ui-menuitem-text translate-fr="Supprimer">delete</ui-menuitem-text></ui-menuitem><ui-menuitem v-show="current.scroll"><ui-menuitem-icon><ui-icon translate="no">motion_photos_off</ui-icon></ui-menuitem-icon><ui-menuitem-text translate-fr="Rendu statique">non scroll preview</ui-menuitem-text></ui-menuitem></ui-menu></ui-menu-anchor><ui-icon-button title="play / pause scrolling preview" id="scrollButton" @click="scrollButton" v-show="current.scroll" :class="isScrolling ? 'morphed' : ''" style="float:right;margin:0px 4px;"><i class="material-icons">play_arrow</i> <i class="material-icons">pause</i></ui-icon-button></section><div id="adblock-banner" class="disclaimer" style="display: none; border-radius: 0px;"><p translate-fr="Vous utilisez un bloqueur de publicité, le site pourrait ne pas fonctionner comme attendu. Désactivez le si vous rencontrez des problèmes.">You are using an ad blocker, the site may not work as expected. Disable it if you're encounter problems.</p></div><section v-show="current.code" class="main-content"><ui-dialog v-model="destSettingsDialogOpen" @close="writeUrl()" mask-closable><ui-dialog-title>Settings for {{ current.code }}</ui-dialog-title><ui-dialog-content style="max-width: 350px;"><p translate-fr="Editer le code">Edit dest code</p><ui-textfield outlined v-model="current.code" input-type="number" style="width:7rem;">code</ui-textfield><div class="disclaimer mt"><ui-icon translate="no">info</ui-icon><p translate-fr="Ne supprimez pas le code entierement. Aussi, le changement peut provoquer des bugs avec les girouettes alternantes.">Do not delete the code entirely. Also, edit code can cause bugs with alternating matrix.</p></div></ui-dialog-content><ui-button style="display: none;"></ui-button></ui-dialog><img width="2048" height="512" src="data/overlayImage.png" id="overlayImage" style="display: none;"><div class="canvasBox"><div v-ripple @click="$balmUI.onOpen('lineDialogOpen');writeUrl('line')" v-tooltip="'Line options'" aria-describedby="line" class="matrixOver" id="lineOver" v-show="current.front.line"></div><div v-ripple @click="$balmUI.onOpen('lineDialogOpen');writeUrl('line')" v-tooltip="'Line options'" aria-describedby="lineAlt" class="matrixOver" id="lineOverAlt" v-show="!current.front.line"></div><div v-ripple @click="$balmUI.onOpen('frontDialogOpen');writeUrl('front')" v-tooltip="'Front text options'" aria-describedby="front" class="matrixOver" id="frontOver" v-show="current.front.line"></div><div v-ripple @click="$balmUI.onOpen('frontDialogOpen');writeUrl('front')" v-tooltip="'Front text options'" aria-describedby="frontAlt" class="matrixOver" id="frontOverAlt" v-show="!current.front.line"></div><div v-ripple @click="$balmUI.onOpen('sideDialogOpen');writeUrl('side')" v-tooltip="'Side text options'" aria-describedby="side" class="matrixOver" id="sideOver"></div><canvas width="1024" height="256" id="previewCanvas"></canvas><div class="alt-progress-hover" v-shadow="2"><ui-spinner :progress="progressAltPreview" :size="'small'"></ui-spinner><span>{{ progressAltIndex }} / {{ alternatesDests.length }}</span></div></div><small translate-fr="Vous pouvez éditer les différentes partie de la girouette en cliquant dessus.">You can edit differents parts of the matrix by clicking on it.</small><hr><div style="position:relative"><h4 style="margin-bottom:0" translate-fr="Girouettes alternantes">Alternating matrix</h4><p style="margin-top:0" translate-fr="Défile sur toutes les images avec un délai de 2 secondes">loop over all frames with 2 seconds of delay</p><div class="btn-container" id="res-btn-ctn" style="position:absolute;top:0;right:0"><ui-button icon="add" @click="addAlternate()" translate-fr="ajouter" outlined>add</ui-button><ui-button icon="play_arrow" @click="previewAlternate();writeUrl('preview')" :disabled="current.alternates < 2" translate-fr="prévisualisation" raised>preview</ui-button></div></div><ui-grid style="padding:0"><template v-for="(dest, index) in alternatesDests"><ui-grid-cell columns="3"><a @click="selectCurrent(dest.index)" :href="'#' + dest.index" style="text-decoration: none;"><ui-card outlined><ui-card-content :class="(current.code == dest.code) ? 'active-card-alt card-alt' : 'card-alt'"><h2 style="margin:0">{{ index }}<span style="color:grey;font-weight:400;"> - {{ dest.code >= 1000 ? dest.code.toString().substr(1) : dest.code }}</span></h2><p class="truncate" style="margin:0">{{ dest.front.text }}</p></ui-card-content></ui-card></a></ui-grid-cell></template></ui-grid><ui-dialog v-model="scrollDialogOpen" @close="writeUrl()" mask-closable><ui-dialog-title>Scrolling options<ui-button v-show="current.scroll" @click="removeScroll" class="dialog-header-btn" icon="delete" translate-fr="Supprimer" unelevated>remove</ui-button></ui-dialog-title><ui-dialog-content><img width="4096" height="256" src="data/overlayScroll.png" id="overlayScroll" style="display: none;"><canvas id="scrollCanvas" height="32" width="512" style="display:none;"></canvas><canvas id="scrollPreviewCanvas" height="256" width="4096" style="display:none;"></canvas><div class="scroll-preview-box"><canvas id="scrollPreviewCanvasOver" height="128" width="4096"></canvas><ui-icon-button title="ajust text height" @click="current.scroll.mt-=1;refreshMatrix()" id="scroll-up-btn" icon="keyboard_arrow_up"></ui-icon-button><ui-icon-button title="ajust text height" @click="current.scroll.mt+=1;refreshMatrix()" id="scroll-down-btn" icon="keyboard_arrow_down"></ui-icon-button></div><template v-if="current.scroll"><p translate-fr="Options du texte">Text options.</p><ui-textfield outlined v-model="current.scroll.text" style="width:100%;margin-bottom:8px;">scroll text</ui-textfield><p translate-fr="Selectionnez les parties ou le texte va défiler">Select the sections where the text will scroll.</p><ui-select outlined v-model="current.scroll.font" :options="fontList" @change="loadFont(current.scroll.font)">font</ui-select><ui-form-field><ui-checkbox @change="refreshMatrix" v-model="current.scroll.index" input-id="checkbox-scroll-front" value="11"></ui-checkbox><label for="checkbox-scroll-front" translate-fr="avant">front</label></ui-form-field><ui-form-field><ui-checkbox @change="refreshMatrix" v-model="current.scroll.index" input-id="checkbox-scroll-line" value="12"></ui-checkbox><label for="checkbox-scroll-line" translate-fr="coté">side</label></ui-form-field><ui-form-field><ui-checkbox @change="refreshMatrix" v-model="current.scroll.index" input-id="checkbox-scroll-side" value="13"></ui-checkbox><label for="checkbox-scroll-side" translate-fr="ligne">line</label></ui-form-field></template></ui-dialog-content><ui-button style="display: none;"></ui-button></ui-dialog><ui-dialog v-model="frontDialogOpen" @close="writeUrl()" mask-closable><ui-dialog-title>Front text options<ui-button v-show="!current.scroll" @click="addScroll" class="dialog-header-btn" unelevated>add scroll</ui-button><ui-button v-show="current.scroll" @click="removeScroll" class="dialog-header-btn" unelevated>remove scroll</ui-button></ui-dialog-title><ui-dialog-content><template v-if="current.front.text"><p>Font(s) selection.</p><ui-select outlined v-model="current.front.font" :options="fontList" @change="loadFont(current.front.font)" id="fontSelector">{{ current.front.text.includes('\n') ? 'Top' : 'Main' }} font</ui-select><ui-select outlined v-model="current.front.fontb" :options="fontList" @change="loadFont(current.front.font)" id="fontSelector" v-show="current.front.text.includes('\n')">Bottom font</ui-select></template><hr><p>Skip a line to write on 2 levels, you can edit the fonts for each level individually.</p><div v-if="current.scroll" class="disclaimer"><ui-icon translate="no">info</ui-icon><p>The current matrix is scrolling. Consider writing a classic version for non-compatible buses.</p><ui-button unelevated @click="refreshMatrix(false, false, true)">view compatibility rendering</ui-button></div><ui-textfield outlined maxlength="150" v-model="current.front.text" id="frontText" input-type="textarea" rows="2" cols="40" @keyup="refreshMatrix(true, 'front')" @change="refreshMatrix()">front text</ui-textfield><div class="mtb"><div style="position:relative; display:inline-block"><ui-button unelevated type="button" v-bind:style="{ backgroundColor: current.front.color, color: pickerTextColor(current.front.color) }">front text color</ui-button><input type="color" v-model="current.front.color" @change="refreshMatrix()" style="opacity:0; position:absolute; left:0;top:0;width:100%"/></div><ui-form-field><ui-checkbox v-model="current.front.invert" input-id="checkbox-front-invert" @change="refreshMatrix()"></ui-checkbox><label for="checkbox-front-invert">Invert colors</label></ui-form-field></div></ui-dialog-content><ui-button style="display: none;"></ui-button></ui-dialog><ui-dialog v-model="lineDialogOpen" @close="writeUrl()" mask-closable><ui-dialog-title>Line options</ui-dialog-title><ui-dialog-content><section><p>Select line font. Fonts have differents size. Note that you can't edit size of a font.</p><ui-select outlined v-model="current.line.font" :options="fontList" @change="loadFont(current.line.font)" id="fontSelector"></ui-select><p>Line number (you can use letters and the text can be different of the hof code).</p><div v-if="current.scroll" class="disclaimer"><ui-icon translate="no">info</ui-icon><p>The current matrix is scrolling. Consider writing a classic version for non-compatible buses.</p><ui-button unelevated @click="refreshMatrix(false, false, true)">view compatibility rendering</ui-button></div><ui-textfield outlined v-model="current.line.text" @keyup="refreshMatrix(true, 'line')" @change="refreshMatrix()">front line number</ui-textfield><p></p><div style="position:relative; display:inline-block"><ui-button unelevated type="button" v-bind:style="{ backgroundColor: current.line.fore, color: pickerTextColor(current.line.fore) }">line color</ui-button><input type="color" v-model="current.line.fore" @change="refreshMatrix()" style="opacity:0; position:absolute; left:0;top:0;width:100%"/></div><div style="position:relative; display:inline-block"><ui-button unelevated type="button" v-bind:style="{ backgroundColor: current.line.outl, color: pickerTextColor(current.line.outl) }">line outline</ui-button><input type="color" v-model="current.line.outl" @change="refreshMatrix()" style="opacity:0; position:absolute; left:0;top:0;width:100%"/></div><div style="position:relative; display:inline-block"><ui-button unelevated type="button" v-bind:style="{ backgroundColor: current.line.back, color: pickerTextColor(current.line.back) }">line background</ui-button><input type="color" v-model="current.line.back" @change="refreshMatrix()" style="opacity:0; position:absolute; left:0;top:0;width:100%"/></div></section><ui-form-field><ui-checkbox v-model="current.line.partial" input-id="checkbox-partial-line" @change="refreshMatrix()"></ui-checkbox><label for="checkbox-partial-line">Partial line background</label></ui-form-field><br><ui-form-field><ui-checkbox v-model="current.front.line" input-id="checkbox-show-line-front" @change="refreshMatrix()"></ui-checkbox><label for="checkbox-show-line-front">Show line on front</label></ui-form-field></ui-dialog-content><ui-button style="display: none;"></ui-button></ui-dialog><ui-dialog v-model="sideDialogOpen" @close="writeUrl()" mask-closable><ui-dialog-title>Side text options</ui-dialog-title><ui-dialog-content><template v-if="current.side.text"><p>Font(s) selection.</p><ui-select outlined v-model="current.side.font" :options="fontList" @change="loadFont(current.side.font)" id="fontSelector">{{ current.side.text.includes('\n') ? 'Top' : 'Main' }} font</ui-select><ui-select outlined v-model="current.side.fontb" :options="fontList" @change="loadFont(current.side.font)" id="fontSelector" v-show="current.side.text.includes('\n')">Bottom font</ui-select></template><p>Skip a line to write on 2 levels, you can edit the fonts for each level individually.</p><div v-if="current.scroll" class="disclaimer"><ui-icon translate="no">info</ui-icon><p>The current matrix is scrolling. Consider writing a classic version for non-compatible buses.</p><ui-button unelevated @click="refreshMatrix(false, false, true)">view compatibility rendering</ui-button></div><ui-textfield outlined maxlength="150" v-model="current.side.text" id="frontText" input-type="textarea" rows="2" cols="40" @keyup="refreshMatrix(true, 'side')" @change="refreshMatrix()">front text</ui-textfield><div class="mtb"><div style="position:relative; display:inline-block"><ui-button unelevated type="button" v-bind:style="{ backgroundColor: current.side.color, color: pickerTextColor(current.side.color) }">side text color</ui-button><input type="color" v-model="current.side.color" @change="refreshMatrix()" style="opacity:0; position:absolute; left:0;top:0;width:100%"/></div><ui-form-field><ui-checkbox v-model="current.side.invert" input-id="checkbox-side-invert" @change="refreshMatrix()"></ui-checkbox><label for="checkbox-side-invert">Invert colors</label></ui-form-field></div></ui-dialog-content><ui-button style="display: none;"></ui-button></ui-dialog><ui-dialog v-model="iconsDialogOpen" @close="writeUrl()" mask-closable><ui-dialog-title>Icon options</ui-dialog-title><ui-dialog-content><div style="position:relative; display:inline-block"><ui-button unelevated type="button" v-bind:style="{ backgroundColor: current.front.iconHex, color: pickerTextColor(current.front.iconHex) }">Front icon color</ui-button><input type="color" v-model="current.front.iconHex" @change="refreshMatrix()" style="opacity:0; position:absolute; left:0;top:0;width:100%"/></div><div style="position:relative; display:inline-block"><ui-button unelevated type="button" v-bind:style="{ backgroundColor: current.side.iconHex, color: pickerTextColor(current.side.iconHex) }">Side icon color</ui-button><input type="color" v-model="current.side.iconHex" @change="refreshMatrix()" style="opacity:0; position:absolute; left:0;top:0;width:100%"/></div><p></p><ui-grid class="icon-select-grid"><ui-grid-cell columns="6"><div class="relative"><ui-select outlined v-model="current.front.iconUrlL" :options="iconList" @change="refreshMatrix()" icon="add" with-leading-icon>Front left</ui-select><img :src="current.front.iconUrlL" alt=""></div><div class="relative"><ui-select outlined v-model="current.side.iconUrlL" :options="iconList" @change="refreshMatrix()" icon="add" with-leading-icon>Side left</ui-select><img :src="current.side.iconUrlL" alt=""></div></ui-grid-cell><ui-grid-cell columns="6"><div class="relative"><ui-select outlined v-model="current.front.iconUrlR" :options="iconList" @change="refreshMatrix()" icon="add" with-leading-icon>Front right</ui-select><img :src="current.front.iconUrlR" alt=""></div><div class="relative"><ui-select outlined v-model="current.side.iconUrlR" :options="iconList" @change="refreshMatrix()" icon="add" with-leading-icon>Side right</ui-select><img :src="current.side.iconUrlR" alt=""></div></ui-grid-cell></ui-grid><br><ui-collapse with-icon ripple><template #toggle><div>Advanced options</div></template><div><p style="margin-bottom:0;">Add customs icons.</p><small>Must be black and white .png with 32px height and 29px width.</small><br><input type="file" id="frontIconInputL" @change="iconSubmitted">Front left icon<input type="file" id="frontIconInputR" @change="iconSubmitted">Front right icon<input type="file" id="sideIconInputL" @change="iconSubmitted">Side left icon<input type="file" id="sideIconInputR" @change="iconSubmitted">Side right icon<br><canvas id="iconLoader" width="32" height="32" style="width:32px;height:32px;"></canvas></div></ui-collapse></ui-dialog-content><ui-button style="display: none;"></ui-button></ui-dialog></section><section v-show="settingsSectionOpen" id="settings"><ui-top-app-bar content-selector=".settings-content" :nav-icon="false" v-shadow="4" id="settings-tb"><ui-icon-button icon="arrow_backward" @click="openSettings(false)"></ui-icon-button><span translate-fr="Paramètres">Settings</span></ui-top-app-bar><ui-list class="settings-content"><ui-item disabled="disabled"><ui-item-text-content translate-fr="Contraste élevé">High Contrast</ui-item-text-content><ui-item-last-content><ui-form-field><ui-switch disabled="disabled" onclick="vm.saveSettings();" v-model="settings.highContrast"></ui-switch></ui-form-field></ui-item-last-content></ui-item><div style="margin: 16px"><ui-select v-model="selectedLanguage" :options="settingsLanguages" @selected="onLangSelect($event)">Language</ui-select><br><small translate-fr="Le changement de langue n'affecte pas tout le site, certains boutons ou parties resteront en anglais.">Some parts of site may not be translated.</small></div><ui-item><ui-button @click="resetLocalStorage" style="background-color: var(--mdc-theme-error);" translate-fr="Formatter le stockage du site" raised>reset local storage</ui-button></ui-item></ui-list></section><section v-show="!current.code" class="empty-state"><ui-icon translate="no">touch_app</ui-icon><p translate-fr="Commencez par selectionner une destination dans le panneau latéral ou créez-en une avec le bouton plus. Vous pouvez aussi glisser déposer des fichiers hof ou des sauvegardes pour importer plusieurs destinations en même temps.">Start by select a destination or create it with plus button. You can also drag and drop hof and backup files on the page.</p></section></ui-drawer-app-content></div></div><link rel="preload" href="https://cdn.jsdelivr.net/npm/balm-ui@8.22.0/dist/balm-ui.css" as="style" onload="this.onload=null;this.rel='stylesheet'"></body></html>
+                            ]"></ui-menu>
+                        </ui-menu-anchor>
+                    </div>
+                </template>
+            </ui-top-app-bar>
+            <!-- Drawer -->
+            <ui-drawer :type="isMobile ? 'modal' : 'dismissible'" nav-id="nav-menu" viewport-height>
+                <ui-drawer-header v-show="current.code" v-shadow="headerShadow" style="z-index:1;padding-bottom:16px;">
+                    <canvas width="256" height="64" style="border: solid 1px black;margin-left:-18px;"
+                        id="canvas"></canvas>
+                    <ui-drawer-title>{{ current.name }}</ui-drawer-title>
+                    <ui-drawer-subtitle>
+                        <template v-for="(dest, i) in alternatesDests">
+                            <span :class="(dest.code == current.code && current.alternates > 1) ? 'active' : ''">{{
+                                dest.code }}</span>
+                            <ui-icon class="align" v-if="current.alternates > 1 && i < alternatesDests.length - 1">
+                                arrow_forward</ui-icon>
+                        </template>
+                    </ui-drawer-subtitle>
+                    <ui-switch input-id="toggle-autosave" v-tooltip="'toggle autosave'"
+                        aria-describedby="toggle autosave" v-model="autosave" @change="autosavePersist()"
+                        style="color: #fff;margin-top:12px;"></ui-switch>
+                    <label for="toggle-autosave" translate-fr="Sauvegarde auto">Autosave</label>
+                    <div v-if="multiplesDestWithSameName" class="disclaimer mt">
+                        <ui-icon translate="no">error</ui-icon>
+                        <p translate-fr="Plusieurs destinations ont le même code">2 or more dests have the same code</p>
+                    </div>
+                </ui-drawer-header>
+                <ui-drawer-content id="dest-container">
+                    <ui-nav>
+                        <ui-textfield style="width:95%;margin-left:8px;" input-type="search" v-model="searchDest"
+                            id="search-dest">
+                            Search
+                            <template #before>
+                                <ui-textfield-icon translate="no">search</ui-textfield-icon>
+                            </template>
+                        </ui-textfield>
+                        <ui-nav-item href="javascript:void(0)" :draggable="dest.alternates != undefined"
+                            ondragstart="vm.destDragStart(event);" ondragover="vm.destDropOver(event);"
+                            ondrop="vm.destDropped(event);" ondragend="vm.destDropEnd(event);"
+                            ondragleave="vm.destDropLeave(event);" @click="selectCurrent(index);writeUrl()"
+                            :active="dest.name == current.name" v-for="(dest, index) in dests" :key="index"
+                            :id="index + '-nav-item'" :data-drag="index" class="nav-item"
+                            v-show="(dest.name.toLowerCase().includes(searchDest.toLowerCase()) || dest.code.toString().includes(searchDest)) && dest.code < 1000">
+                            <ui-item-first-content style="margin-right:4px">
+                                <ui-icon
+                                    v-bind:style="{ color: dest.line.back != '#ffffff' ? dest.line.back : '#bbbbbb' }">
+                                    flag</ui-icon>
+                            </ui-item-first-content>
+                            <ui-item-text-content>
+                                <span style="width:24px;">{{dest.code}}</span>
+                                <ui-icon class="align rotate">{{ dest.alternates > 1 ? 'call_split' : 'arrow_upward' }}
+                                </ui-icon>
+                                {{dest.name}}
+                            </ui-item-text-content>
+                            <ui-icon v-if="!ondrag" class="align draggable drag-icon-hide-class"
+                                style="position:absolute;right:4px">drag_handle</ui-icon>
+                        </ui-nav-item>
+                        <hr>
+                        <ui-nav-item draggable="false" target="_blank"
+                            :href="'https://github.com/arnoclr/matrix-maker/issues/new?body=' + encodeURIComponent('<!-- describe the problem encountered below -->\n\n<!-- Steps to reproduce the bug -->\n\n<!-- Please include a screenshot (photo or video) -->\n\n<!-- This string represent your actual dest, please don\'t remove it -->\n```json\n' + JSON.stringify(current) + '\n```')">
+                            <ui-item-first-content>
+                                <ui-icon translate="no">feedback</ui-icon>
+                            </ui-item-first-content>
+                            <ui-item-text-content translate-fr="Signaler un bug">Bug report</ui-item-text-content>
+                        </ui-nav-item>
+                        <ui-nav-item draggable="false" href="https://forms.gle/DcYYG9u63hQnE8e67" target="_blank">
+                            <ui-item-first-content>
+                                <ui-icon translate="no">cloud_upload</ui-icon>
+                            </ui-item-first-content>
+                            <ui-item-text-content translate-fr="Proposer des icônes">Submit icons</ui-item-text-content>
+                        </ui-nav-item>
+                        <ui-nav-item draggable="false" @click="openSettings" href="javascript:void(0)">
+                            <ui-item-first-content>
+                                <ui-icon translate="no">settings</ui-icon>
+                            </ui-item-first-content>
+                            <ui-item-text-content translate-fr="Paramètres">Settings</ui-item-text-content>
+                        </ui-nav-item>
+                        <div style="margin:16px;margin-bottom:120px;">
+                            <small
+                                translate-fr="Les codes de girouettes doivent être uniques, des bugs dans le jeu peuvent survenir sinon">matrix
+                                codes must be unique, the hof will not work correctly otherwise.</small>
+                        </div>
+                    </ui-nav>
+                    <ui-icon-button v-tooltip="'Terms and attributions'" aria-describedby="details"
+                        style="position:absolute;bottom:72px;left:8px"
+                        @click="$balmUI.onOpen('licenceDialogOpen');writeUrl('licence')" icon="info"></ui-icon-button>
+                </ui-drawer-content>
+            </ui-drawer>
+            <ui-drawer-backdrop v-if="isMobile"></ui-drawer-backdrop>
+            <!-- App content -->
+            <ui-drawer-app-content class="demo-app-content" ondragover="vm.hofDragover(event);">
+
+                <ui-fab title="add dest" @click="$balmUI.onOpen('newDialogOpen');writeUrl('new')" icon="add"></ui-fab>
+
+                <!-- hof data -->
+                <section v-shadow="2" v-show="current.code" class="hof-data">
+                    <ui-textfield outlined v-model="current.code" input-type="number" style="width:7rem;height:48px;"
+                        v-show="!isMobile" disabled>code</ui-textfield>
+                    <ui-textfield outlined v-model="current.name" style="height:48px;" id="res-tf-c-name" required>dest
+                    </ui-textfield>
+                    <ui-menu-anchor style="float: right;">
+                        <ui-icon-button @click="$balmUI.onOpen('toolsMenuOpen')" icon="more_vert"></ui-icon-button>
+                        <ui-menu v-model="toolsMenuOpen" @selected="onSelectedTools">
+                            <ui-menuitem :disabled="current.code > 999">
+                                <ui-menuitem-icon>
+                                    <ui-icon translate="no">share</ui-icon>
+                                </ui-menuitem-icon>
+                                <ui-menuitem-text translate-fr="Partager la girouette">share current matrix
+                                </ui-menuitem-text>
+                            </ui-menuitem>
+                            <ui-menuitem>
+                                <ui-menuitem-icon>
+                                    <ui-icon id="btn-spinning">refresh</ui-icon>
+                                </ui-menuitem-icon>
+                                <ui-menuitem-text translate-fr="Rafraîchir le rendu">refresh render</ui-menuitem-text>
+                            </ui-menuitem>
+                            <ui-menuitem>
+                                <ui-menuitem-icon>
+                                    <ui-icon translate="no">settings</ui-icon>
+                                </ui-menuitem-icon>
+                                <ui-menuitem-text translate-fr="Paramètres de la girouette">current matrix settings
+                                </ui-menuitem-text>
+                            </ui-menuitem>
+                            <ui-menuitem>
+                                <ui-menuitem-icon>
+                                    <ui-icon translate="no">dashboard_customize</ui-icon>
+                                </ui-menuitem-icon>
+                                <ui-menuitem-text translate-fr="Editer les icônes">edit icons</ui-menuitem-text>
+                            </ui-menuitem>
+                            <ui-menuitem>
+                                <ui-menuitem-icon>
+                                    <ui-icon translate="no">animation</ui-icon>
+                                </ui-menuitem-icon>
+                                <ui-menuitem-text>{{ current.scroll ? 'scrolling settings' : 'add scrolling'}}
+                                </ui-menuitem-text>
+                            </ui-menuitem>
+                            <ui-menuitem>
+                                <ui-menuitem-icon>
+                                    <ui-icon translate="no">content_copy</ui-icon>
+                                </ui-menuitem-icon>
+                                <ui-menuitem-text translate-fr="Dupliquer">duplicate current</ui-menuitem-text>
+                            </ui-menuitem>
+                            <ui-menuitem>
+                                <ui-menuitem-icon>
+                                    <ui-icon translate="no">delete</ui-icon>
+                                </ui-menuitem-icon>
+                                <ui-menuitem-text translate-fr="Supprimer">delete</ui-menuitem-text>
+                            </ui-menuitem>
+                            <ui-menuitem v-show="current.scroll">
+                                <ui-menuitem-icon>
+                                    <ui-icon translate="no">motion_photos_off</ui-icon>
+                                </ui-menuitem-icon>
+                                <ui-menuitem-text translate-fr="Rendu statique">non scroll preview</ui-menuitem-text>
+                            </ui-menuitem>
+                        </ui-menu>
+                    </ui-menu-anchor>
+                    <ui-icon-button title="play / pause scrolling preview" id="scrollButton" @click="scrollButton"
+                        v-show="current.scroll" :class="isScrolling ? 'morphed' : ''"
+                        style="float:right;margin:0px 4px;">
+                        <i class="material-icons">play_arrow</i>
+                        <i class="material-icons">pause</i>
+                    </ui-icon-button>
+                </section>
+
+                <!-- adblock disclaimer -->
+                <div id="adblock-banner" class="disclaimer" style="display: none; border-radius: 0px;">
+                    <p
+                        translate-fr="Vous utilisez un bloqueur de publicité, le site pourrait ne pas fonctionner comme attendu. Désactivez le si vous rencontrez des problèmes.">
+                        You are using an ad blocker, the site may not work as expected. Disable it if you're encounter
+                        problems.</p>
+                </div>
+
+                <!-- Edit current matrix section -->
+                <section v-show="current.code" class="main-content">
+
+                    <!-- dest settings dialog -->
+                    <ui-dialog v-model="destSettingsDialogOpen" @close="writeUrl()" mask-closable>
+                        <ui-dialog-title>Settings for {{ current.code }}</ui-dialog-title>
+                        <ui-dialog-content style="max-width: 350px;">
+                            <p translate-fr="Editer le code">Edit dest code</p>
+                            <ui-textfield outlined v-model="current.code" input-type="number" style="width:7rem;">code
+                            </ui-textfield>
+                            <div class="disclaimer mt">
+                                <ui-icon translate="no">info</ui-icon>
+                                <p
+                                    translate-fr="Ne supprimez pas le code entierement. Aussi, le changement peut provoquer des bugs avec les girouettes alternantes.">
+                                    Do not delete the code entirely. Also, edit code can cause bugs with alternating
+                                    matrix.</p>
+                            </div>
+                        </ui-dialog-content>
+                        <ui-button style="display: none;"></ui-button>
+                    </ui-dialog>
+
+                    <!-- preview canvas -->
+                    <div class="canvasBox">
+                        <img width="1024" height="256" src="data/overlayImage.png" id="overlayImage">
+                        <div v-ripple @click="$balmUI.onOpen('lineDialogOpen');writeUrl('line')"
+                            v-tooltip="'Line options'" aria-describedby="line" class="matrixOver" id="lineOver"
+                            v-show="current.front.line"></div>
+                        <div v-ripple @click="$balmUI.onOpen('lineDialogOpen');writeUrl('line')"
+                            v-tooltip="'Line options'" aria-describedby="lineAlt" class="matrixOver" id="lineOverAlt"
+                            v-show="!current.front.line"></div>
+                        <div v-ripple @click="$balmUI.onOpen('frontDialogOpen');writeUrl('front')"
+                            v-tooltip="'Front text options'" aria-describedby="front" class="matrixOver" id="frontOver"
+                            v-show="current.front.line"></div>
+                        <div v-ripple @click="$balmUI.onOpen('frontDialogOpen');writeUrl('front')"
+                            v-tooltip="'Front text options'" aria-describedby="frontAlt" class="matrixOver"
+                            id="frontOverAlt" v-show="!current.front.line"></div>
+                        <div v-ripple @click="$balmUI.onOpen('sideDialogOpen');writeUrl('side')"
+                            v-tooltip="'Side text options'" aria-describedby="side" class="matrixOver" id="sideOver">
+                        </div>
+                        <canvas width="1024" height="256" id="previewCanvas"></canvas>
+                        <div class="alt-progress-hover" v-shadow="2">
+                            <ui-spinner :progress="progressAltPreview" :size="'small'"></ui-spinner>
+                            <span>{{ progressAltIndex }} / {{ alternatesDests.length }}</span>
+                        </div>
+                    </div>
+
+                    <small
+                        translate-fr="Vous pouvez éditer les différentes partie de la girouette en cliquant dessus.">You
+                        can edit differents parts of the matrix by clicking on it.</small>
+
+                    <!-- alternate -->
+                    <hr>
+                    <div style="position:relative">
+                        <h4 style="margin-bottom:0" translate-fr="Girouettes alternantes">Alternating matrix</h4>
+                        <p style="margin-top:0" translate-fr="Défile sur toutes les images avec un délai de 2 secondes">
+                            loop over all frames with 2 seconds of delay</p>
+                        <div class="btn-container" id="res-btn-ctn" style="position:absolute;top:0;right:0">
+                            <ui-button icon="add" @click="addAlternate()" translate-fr="ajouter" outlined>add
+                            </ui-button>
+                            <ui-button icon="play_arrow" @click="previewAlternate();writeUrl('preview')"
+                                :disabled="current.alternates < 2" translate-fr="prévisualisation" raised>preview
+                            </ui-button>
+                        </div>
+                    </div>
+                    <ui-grid style="padding:0">
+                        <template v-for="(dest, index) in alternatesDests">
+                            <ui-grid-cell columns="3">
+                                <a @click="selectCurrent(dest.index)" :href="'#' + dest.index"
+                                    style="text-decoration: none;">
+                                    <ui-card outlined>
+                                        <ui-card-content
+                                            :class="(current.code == dest.code) ? 'active-card-alt card-alt' : 'card-alt'">
+                                            <h2 style="margin:0">{{ index }}<span style="color:grey;font-weight:400;"> -
+                                                    {{ dest.code >= 1000 ? dest.code.toString().substr(1) : dest.code
+                                                    }}</span></h2>
+                                            <p class="truncate" style="margin:0">{{ dest.front.text }}</p>
+                                        </ui-card-content>
+                                    </ui-card>
+                                </a>
+                            </ui-grid-cell>
+                        </template>
+                    </ui-grid>
+
+                    <!-- scrolling matrix -->
+                    <ui-dialog v-model="scrollDialogOpen" @close="writeUrl()" mask-closable>
+                        <ui-dialog-title>
+                            Scrolling options
+                            <ui-button v-show="current.scroll" @click="removeScroll" class="dialog-header-btn"
+                                icon="delete" translate-fr="Supprimer" unelevated>remove</ui-button>
+                        </ui-dialog-title>
+                        <ui-dialog-content>
+                            <img width="4096" height="256" src="data/overlayScroll.png" id="overlayScroll"
+                                style="display: none;">
+                            <!-- canvas used for writing / download -->
+                            <canvas id="scrollTransmapCanvas" height="32" width="512" style="display: none;"></canvas>
+                            <canvas id="scrollCanvas" height="32" width="512" style="display:none;"></canvas>
+                            <canvas id="scrollPreviewCanvas" height="256" width="4096" style="display:none;"></canvas>
+                            <div class="scroll-preview-box">
+                                <canvas id="scrollPreviewCanvasOver" height="128" width="4096"></canvas>
+                                <ui-icon-button title="ajust text height" @click="current.scroll.mt-=1;refreshMatrix()"
+                                    id="scroll-up-btn" icon="keyboard_arrow_up"></ui-icon-button>
+                                <ui-icon-button title="ajust text height" @click="current.scroll.mt+=1;refreshMatrix()"
+                                    id="scroll-down-btn" icon="keyboard_arrow_down"></ui-icon-button>
+                            </div>
+                            <template v-if="current.scroll">
+                                <p translate-fr="Options du texte">Text options.</p>
+                                <ui-textfield outlined v-model="current.scroll.text"
+                                    style="width:100%;margin-bottom:8px;">scroll text</ui-textfield>
+                                <p translate-fr="Selectionnez les parties ou le texte va défiler">Select the sections
+                                    where the text will scroll.</p>
+                                <ui-select outlined v-model="current.scroll.font" :options="fontList"
+                                    @change="loadFont(current.scroll.font)">font</ui-select>
+                                <ui-form-field>
+                                    <ui-checkbox @change="refreshMatrix" v-model="current.scroll.index"
+                                        input-id="checkbox-scroll-front" value="11"></ui-checkbox>
+                                    <label for="checkbox-scroll-front" translate-fr="avant">front</label>
+                                </ui-form-field>
+                                <ui-form-field>
+                                    <ui-checkbox @change="refreshMatrix" v-model="current.scroll.index"
+                                        input-id="checkbox-scroll-line" value="12"></ui-checkbox>
+                                    <label for="checkbox-scroll-line" translate-fr="coté">side</label>
+                                </ui-form-field>
+                                <ui-form-field>
+                                    <ui-checkbox @change="refreshMatrix" v-model="current.scroll.index"
+                                        input-id="checkbox-scroll-side" value="13"></ui-checkbox>
+                                    <label for="checkbox-scroll-side" translate-fr="ligne">line</label>
+                                </ui-form-field>
+                            </template>
+                        </ui-dialog-content>
+                        <ui-button style="display: none;"></ui-button>
+                    </ui-dialog>
+
+                    <!-- Front text -->
+                    <ui-dialog v-model="frontDialogOpen" @close="writeUrl()" mask-closable>
+                        <ui-dialog-title>
+                            Front text options
+                            <ui-button v-show="!current.scroll" @click="addScroll" class="dialog-header-btn" unelevated>
+                                add scroll</ui-button>
+                            <ui-button v-show="current.scroll" @click="removeScroll" class="dialog-header-btn"
+                                unelevated>remove scroll</ui-button>
+                        </ui-dialog-title>
+                        <ui-dialog-content>
+                            <template v-if="current.front.text">
+                                <p>Font(s) selection.</p>
+                                <ui-select outlined v-model="current.front.font" :options="fontList"
+                                    @change="loadFont(current.front.font)" id="fontSelector">{{
+                                    current.front.text.includes('\n') ? 'Top' : 'Main' }} font</ui-select>
+                                <ui-select outlined v-model="current.front.fontb" :options="fontList"
+                                    @change="loadFont(current.front.font)" id="fontSelector"
+                                    v-show="current.front.text.includes('\n')">Bottom font</ui-select>
+                            </template>
+                            <hr>
+                            <p>Skip a line to write on 2 levels, you can edit the fonts for each level individually.</p>
+                            <div v-if="current.scroll" class="disclaimer">
+                                <ui-icon translate="no">info</ui-icon>
+                                <p>The current matrix is scrolling. Consider writing a classic version for
+                                    non-compatible buses.</p>
+                                <ui-button unelevated @click="refreshMatrix(false, false, true)">view compatibility
+                                    rendering</ui-button>
+                            </div>
+                            <ui-textfield outlined maxlength="150" v-model="current.front.text" id="frontText"
+                                input-type="textarea" rows="2" cols="40" @keyup="refreshMatrix(true, 'front')"
+                                @change="refreshMatrix()">front text</ui-textfield>
+                            <div class="mtb">
+                                <div style="position:relative; display:inline-block">
+                                    <ui-button unelevated type="button"
+                                        v-bind:style="{ backgroundColor: current.front.color, color: pickerTextColor(current.front.color) }">
+                                        front text color</ui-button raised>
+                                    <input type="color" list="defaultColors" v-model="current.front.color"
+                                        @change="refreshMatrix()"
+                                        style="opacity:0; position:absolute; left:0;top:0;width:100%" />
+                                </div>
+                                <ui-form-field>
+                                    <ui-checkbox v-model="current.front.invert" input-id="checkbox-front-invert"
+                                        @change="refreshMatrix()"></ui-checkbox>
+                                    <label for="checkbox-front-invert">Invert colors</label>
+                                </ui-form-field>
+                            </div>
+                        </ui-dialog-content>
+                        <ui-button style="display: none;"></ui-button>
+                    </ui-dialog>
+
+                    <!-- Line -->
+                    <ui-dialog v-model="lineDialogOpen" @close="writeUrl()" mask-closable>
+                        <ui-dialog-title>Line options</ui-dialog-title>
+                        <ui-dialog-content>
+                            <section>
+                                <p>Select line font. Fonts have differents size. Note that you can't edit size of a
+                                    font.</p>
+                                <ui-select outlined v-model="current.line.font" :options="fontList"
+                                    @change="loadFont(current.line.font)" id="fontSelector"></ui-select>
+                                <p>Line number (you can use letters and the text can be different of the hof code).</p>
+                                <div v-if="current.scroll" class="disclaimer">
+                                    <ui-icon translate="no">info</ui-icon>
+                                    <p>The current matrix is scrolling. Consider writing a classic version for
+                                        non-compatible buses.</p>
+                                    <ui-button unelevated @click="refreshMatrix(false, false, true)">view compatibility
+                                        rendering</ui-button>
+                                </div>
+                                <ui-textfield outlined v-model="current.line.text" @keyup="refreshMatrix(true, 'line')"
+                                    @change="refreshMatrix()">front line number</ui-textfield>
+                                <p></p>
+                                <div style="position:relative; display:inline-block">
+                                    <ui-button unelevated type="button"
+                                        v-bind:style="{ backgroundColor: current.line.fore, color: pickerTextColor(current.line.fore) }">
+                                        line color</ui-button raised>
+                                    <input type="color" list="defaultColors" v-model="current.line.fore"
+                                        @change="refreshMatrix()"
+                                        style="opacity:0; position:absolute; left:0;top:0;width:100%" />
+                                </div>
+                                <div style="position:relative; display:inline-block">
+                                    <ui-button unelevated type="button"
+                                        v-bind:style="{ backgroundColor: current.line.outl, color: pickerTextColor(current.line.outl) }">
+                                        line outline</ui-button raised>
+                                    <input type="color" list="defaultColors" v-model="current.line.outl"
+                                        @change="refreshMatrix()"
+                                        style="opacity:0; position:absolute; left:0;top:0;width:100%" />
+                                </div>
+                                <div style="position:relative; display:inline-block">
+                                    <ui-button unelevated type="button"
+                                        v-bind:style="{ backgroundColor: current.line.back, color: pickerTextColor(current.line.back) }">
+                                        line background</ui-button raised>
+                                    <input type="color" list="defaultColors" v-model="current.line.back"
+                                        @change="refreshMatrix()"
+                                        style="opacity:0; position:absolute; left:0;top:0;width:100%" />
+                                </div>
+                            </section>
+                            <ui-form-field>
+                                <ui-checkbox v-model="current.line.partial" input-id="checkbox-partial-line"
+                                    @change="refreshMatrix()"></ui-checkbox>
+                                <label for="checkbox-partial-line">Partial line background</label>
+                            </ui-form-field>
+                            <br>
+                            <ui-form-field>
+                                <ui-checkbox v-model="current.front.line" input-id="checkbox-show-line-front"
+                                    @change="refreshMatrix()"></ui-checkbox>
+                                <label for="checkbox-show-line-front">Show line on front</label>
+                            </ui-form-field>
+                        </ui-dialog-content>
+                        <ui-button style="display: none;"></ui-button>
+                    </ui-dialog>
+
+                    <!-- Side text -->
+                    <ui-dialog v-model="sideDialogOpen" @close="writeUrl()" mask-closable>
+                        <ui-dialog-title>Side text options</ui-dialog-title>
+                        <ui-dialog-content>
+                            <template v-if="current.side.text">
+                                <p>Font(s) selection.</p>
+                                <ui-select outlined v-model="current.side.font" :options="fontList"
+                                    @change="loadFont(current.side.font)" id="fontSelector">{{
+                                    current.side.text.includes('\n') ? 'Top' : 'Main' }} font</ui-select>
+                                <ui-select outlined v-model="current.side.fontb" :options="fontList"
+                                    @change="loadFont(current.side.font)" id="fontSelector"
+                                    v-show="current.side.text.includes('\n')">Bottom font</ui-select>
+                            </template>
+                            <p>Skip a line to write on 2 levels, you can edit the fonts for each level individually.</p>
+                            <div v-if="current.scroll" class="disclaimer">
+                                <ui-icon translate="no">info</ui-icon>
+                                <p>The current matrix is scrolling. Consider writing a classic version for
+                                    non-compatible buses.</p>
+                                <ui-button unelevated @click="refreshMatrix(false, false, true)">view compatibility
+                                    rendering</ui-button>
+                            </div>
+                            <ui-textfield outlined maxlength="150" v-model="current.side.text" id="frontText"
+                                input-type="textarea" rows="2" cols="40" @keyup="refreshMatrix(true, 'side')"
+                                @change="refreshMatrix()">front text</ui-textfield>
+                            <div class="mtb">
+                                <div style="position:relative; display:inline-block">
+                                    <ui-button unelevated type="button"
+                                        v-bind:style="{ backgroundColor: current.side.color, color: pickerTextColor(current.side.color) }">
+                                        side text color</ui-button raised>
+                                    <input type="color" list="defaultColors" v-model="current.side.color"
+                                        @change="refreshMatrix()"
+                                        style="opacity:0; position:absolute; left:0;top:0;width:100%" />
+                                </div>
+                                <ui-form-field>
+                                    <ui-checkbox v-model="current.side.invert" input-id="checkbox-side-invert"
+                                        @change="refreshMatrix()"></ui-checkbox>
+                                    <label for="checkbox-side-invert">Invert colors</label>
+                                </ui-form-field>
+                            </div>
+                        </ui-dialog-content>
+                        <ui-button style="display: none;"></ui-button>
+                    </ui-dialog>
+
+                    <!-- icons options -->
+                    <ui-dialog v-model="iconsDialogOpen" @close="writeUrl()" mask-closable>
+                        <ui-dialog-title>Icon options</ui-dialog-title>
+                        <ui-dialog-content>
+                            <div style="position:relative; display:inline-block">
+                                <ui-button unelevated type="button"
+                                    v-bind:style="{ backgroundColor: current.front.iconHex, color: pickerTextColor(current.front.iconHex) }">
+                                    Front icon color</ui-button raised>
+                                <input type="color" list="defaultColors" v-model="current.front.iconHex"
+                                    @change="refreshMatrix()"
+                                    style="opacity:0; position:absolute; left:0;top:0;width:100%" />
+                            </div>
+                            <div style="position:relative; display:inline-block">
+                                <ui-button unelevated type="button"
+                                    v-bind:style="{ backgroundColor: current.side.iconHex, color: pickerTextColor(current.side.iconHex) }">
+                                    Side icon color</ui-button raised>
+                                <input type="color" list="defaultColors" v-model="current.side.iconHex"
+                                    @change="refreshMatrix()"
+                                    style="opacity:0; position:absolute; left:0;top:0;width:100%" />
+                            </div>
+                            <p></p>
+                            <ui-grid class="icon-select-grid">
+                                <ui-grid-cell columns="6">
+                                    <div class="relative">
+                                        <ui-select outlined v-model="current.front.iconUrlL" :options="iconList"
+                                            @change="refreshMatrix()" icon="add" with-leading-icon>Front left
+                                        </ui-select>
+                                        <img :src="current.front.iconUrlL" alt="">
+                                    </div>
+                                    <div class="relative">
+                                        <ui-select outlined v-model="current.side.iconUrlL" :options="iconList"
+                                            @change="refreshMatrix()" icon="add" with-leading-icon>Side left</ui-select>
+                                        <img :src="current.side.iconUrlL" alt="">
+                                    </div>
+                                </ui-grid-cell>
+                                <ui-grid-cell columns="6">
+                                    <div class="relative">
+                                        <ui-select outlined v-model="current.front.iconUrlR" :options="iconList"
+                                            @change="refreshMatrix()" icon="add" with-leading-icon>Front right
+                                        </ui-select>
+                                        <img :src="current.front.iconUrlR" alt="">
+                                    </div>
+                                    <div class="relative">
+                                        <ui-select outlined v-model="current.side.iconUrlR" :options="iconList"
+                                            @change="refreshMatrix()" icon="add" with-leading-icon>Side right
+                                        </ui-select>
+                                        <img :src="current.side.iconUrlR" alt="">
+                                    </div>
+                                </ui-grid-cell>
+                            </ui-grid>
+                            <br>
+                            <ui-collapse with-icon ripple>
+                                <template #toggle>
+                                    <div>Advanced options</div>
+                                </template>
+                                <div>
+                                    <p style="margin-bottom:0;">Add customs icons.</p>
+                                    <small>Must be black and white .png with 32px height and 29px width.</small>
+                                    <br>
+                                    <input type="file" id="frontIconInputL" @change="iconSubmitted">Front left
+                                    icon</input>
+                                    <input type="file" id="frontIconInputR" @change="iconSubmitted">Front right
+                                    icon</input>
+                                    <input type="file" id="sideIconInputL" @change="iconSubmitted">Side left
+                                    icon</input>
+                                    <input type="file" id="sideIconInputR" @change="iconSubmitted">Side right
+                                    icon</input>
+                                    <br><canvas id="iconLoader" width="32" height="32"
+                                        style="width:32px;height:32px;"></canvas>
+                                </div>
+                            </ui-collapse>
+                        </ui-dialog-content>
+                        <ui-button style="display: none;"></ui-button>
+                    </ui-dialog>
+
+                </section>
+
+                <!-- web app settings section-->
+                <section v-show="settingsSectionOpen" id="settings">
+                    <ui-top-app-bar content-selector=".settings-content" :nav-icon="false" v-shadow="4"
+                        id="settings-tb">
+                        <ui-icon-button icon="arrow_backward" @click="openSettings(false)"></ui-icon-button>
+                        <span translate-fr="Paramètres">Settings</span>
+                    </ui-top-app-bar>
+                    <ui-list class="settings-content">
+                        <ui-item disabled>
+                            <ui-item-text-content translate-fr="Contraste élevé">High Contrast</ui-item-text-content>
+                            <ui-item-last-content>
+                                <ui-form-field>
+                                    <ui-switch disabled onclick="vm.saveSettings();" v-model="settings.highContrast">
+                                    </ui-switch>
+                                </ui-form-field>
+                            </ui-item-last-content>
+                        </ui-item>
+                        <div style="margin: 16px">
+                            <ui-select v-model="selectedLanguage" :options="settingsLanguages"
+                                @selected="onLangSelect($event)">Language</ui-select>
+                            <br><small
+                                translate-fr="Le changement de langue n'affecte pas tout le site, certains boutons ou parties resteront en anglais.">Some
+                                parts of site may not be translated.</small>
+                        </div>
+                        <ui-item>
+                            <ui-button @click="resetLocalStorage" style="background-color: var(--mdc-theme-error);"
+                                translate-fr="Formatter le stockage du site" raised>reset local storage</ui-button>
+                        </ui-item>
+                    </ui-list>
+                </section>
+
+                <!-- Empty selection section -->
+                <section v-show="!current.code" class="empty-state">
+                    <ui-icon translate="no">touch_app</ui-icon>
+                    <p
+                        translate-fr="Commencez par selectionner une destination dans le panneau latéral ou créez-en une avec le bouton plus. Vous pouvez aussi glisser déposer des fichiers hof ou des sauvegardes pour importer plusieurs destinations en même temps.">
+                        Start by select a destination or create it with plus button. You can also drag and drop hof and
+                        backup files on the page.</p>
+                </section>
+
+            </ui-drawer-app-content>
+        </div>
+    </div>
+
+    <datalist id="defaultColors">
+        <option value="#000000"></option>
+        <option value="#EFEFEF"></option>
+        <option value="#0079EF"></option>
+        <option value="#EF7900"></option>
+        <option value="#00EF00"></option>
+        <option value="#EF00EF"></option>
+    </datalist>
+
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/balm-ui@8.22.0/dist/balm-ui.css" as="style"
+        onload="this.onload=null;this.rel='stylesheet'">
+
+</body>
+
+</html>
