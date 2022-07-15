@@ -1268,10 +1268,10 @@ var vm = new Vue({
                     "\t\t" + this.dests[dest].name +
                     "\t\t" + dir + "\\" + this.dests[dest].code + ".png";
                 // add scroll index
-                const sFront = this.dests[dest].scroll.index.includes('11');
-                const sSide = this.dests[dest].scroll.index.includes('12');
-                const sLine = this.dests[dest].scroll.index.includes('13');
                 if (this.dests[dest].scroll) {
+                    const sFront = this.dests[dest].scroll.index.includes('11');
+                    const sSide = this.dests[dest].scroll.index.includes('12');
+                    const sLine = this.dests[dest].scroll.index.includes('13');
                     terminus_list += "\t\t\t" +
                         "\t" + (sFront ? dir + "\\" + this.dests[dest].code + ".png" : "") +
                         "\t" + (sSide ? dir + "\\" + this.dests[dest].code + ".png" : "") +
