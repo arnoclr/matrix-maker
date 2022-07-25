@@ -1418,7 +1418,7 @@ var vm = new Vue({
             if (location.href.indexOf("#") != -1) {
                 let anchor = location.href.split('#').pop().split('/');
                 let id = anchor[0];
-                if (id != undefined) {
+                if (id) {
                     setTimeout(() => {
                         this.selectCurrent(id);
                     }, 250);
