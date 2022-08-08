@@ -1240,7 +1240,8 @@ var vm = new Vue({
                     // draw scroll overlay at export time
                     this.scrollPreviewCtx.drawImage(this.overlayScroll, 0, 0, 4096, 256);
                     this.cropScrollCanvas();
-                    scrollImg.file(vm.dests[vm.indexdl - 1].code + ".png", $("#scrollPreviewCanvas").getCanvasImage().substr(22), { base64: true });
+                    const hoverLineIndex = vm.current.scroll.index.includes('13');
+                    scrollImg.file(vm.dests[vm.indexdl - 1].code + (hoverLineIndex ? ".png" : "_lv.png"), $("#scrollPreviewCanvas").getCanvasImage().substr(22), { base64: true });
                     scrollImg.file(vm.dests[vm.indexdl - 1].code + ".transmap.png", $("#scrollTransmapCanvas").getCanvasImage().substr(22), { base64: true });
                 }
                 vm.selectCurrentForZip(img, scrollImg, zip, hofName);
@@ -1272,10 +1273,11 @@ var vm = new Vue({
                     const sFront = this.dests[dest].scroll.index.includes('11');
                     const sSide = this.dests[dest].scroll.index.includes('12');
                     const sLine = this.dests[dest].scroll.index.includes('13');
+                    const pngName = dir + "\\" + this.dests[dest].code + (sLine ? ".png" : "_lv.png");
                     terminus_list += "\t\t\t" +
-                        "\t" + (sFront ? dir + "\\" + this.dests[dest].code + ".png" : "") +
-                        "\t" + (sSide ? dir + "\\" + this.dests[dest].code + ".png" : "") +
-                        "\t" + (sLine ? dir + "\\" + this.dests[dest].code + ".png" : "") +
+                        "\t" + (sFront ? pngName : "") +
+                        "\t" + (sSide ? pngName : "") +
+                        "\t" + (sLine ? pngName : "") +
                         "\t" +
                         (sLine ? "\t\t" : dir + "\\" + this.dests[dest].code + ".transmap.png\t") +
                         "\t\t\t\t\t\t\t";
