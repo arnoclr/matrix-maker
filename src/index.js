@@ -740,11 +740,11 @@ var vm = new Vue({
                     break;
                 case 4:
                     if (this.current.scroll) {
-                        this.$balmUI.onOpen('scrollDialogOpen');
                         this.writeUrl('scroll');
                     } else {
                         this.addScroll();
                     }
+                    this.$balmUI.onOpen('scrollDialogOpen');
                     break;
                 case 5:
                     this.duplicateDest();
