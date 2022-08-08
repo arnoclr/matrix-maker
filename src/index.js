@@ -1012,7 +1012,11 @@ var vm = new Vue({
         },
         removeScroll: function () {
             this.$confirm('Remove scrolling matrix ?').then((r) => {
-                if (r) delete this.current.scroll;
+                if (r) {
+                    delete this.current.scroll;
+                    this.scrollDialogOpen = false;
+                    this.refreshMatrix(false, false, true);
+                }
             });
         },
         addAlternate: function () {
